@@ -26,7 +26,7 @@ const transportModes: TransportMode[] = [
     name: "Domestic Aviation",
     title: "Domestic Aviation with Tunisair",
     description: "The largest airport is Tunis-Carthage International Airport, named after the ancient Roman city of Carthage. It offers daily flights to dozens of major European cities and operates efficient domestic flights connecting major cities such as Tunis, Djerba, and Monastir.",
-    image: "/lovable-uploads/ac3256b2-ef44-42d4-bdd0-7e70e4b9da3f.png"
+    image: "/uploads/ac3256b2-ef44-42d4-bdd0-7e70e4b9da3f.png"
   },
   {
     id: 2,
@@ -36,7 +36,7 @@ const transportModes: TransportMode[] = [
     name: "Car Rent",
     title: "Car Rental Services",
     description: "Explore Tunisia freely by renting a car. Most road signs are bilingual in Arabic and French. Note that parking spaces can be limited and roads are often narrow, which may be challenging for first-time visitors. We recommend careful planning for your self-driving experience.",
-    image: "/lovable-uploads/8ea83e05-b340-41c9-81da-f416ebb93e0e.png"
+    image: "/uploads/8ea83e05-b340-41c9-81da-f416ebb93e0e.png"
   },
   {
     id: 3,
@@ -46,7 +46,7 @@ const transportModes: TransportMode[] = [
     name: "Taxi",
     title: "Taxi Services",
     description: "Tunisian taxis are easily identifiable by their yellow color. Look for the light indicator: red means available, green means occupied. Fares are approximately one-tenth of Korean taxi prices. A night surcharge applies from 9 PM to 5 AM. For added convenience, the 'Bolt' app offers taxi services at a slightly higher rate but with enhanced comfort.",
-    image: "/lovable-uploads/97b3f2a9-b284-4e18-82c3-189fcad180d9.png"
+    image: "/uploads/97b3f2a9-b284-4e18-82c3-189fcad180d9.png"
   },
   {
     id: 4,
@@ -56,7 +56,7 @@ const transportModes: TransportMode[] = [
     name: "Louage",
     title: "Louage - Shared Minibus Service",
     description: "Louage is an intercity shared minibus service with fixed routes and fares. Each vehicle departs when all 8 seats are filled. Main stations include: Beb Alioua Station (Southwest - Hammamet, Nabeul), Beb Saadoun Station (North - Bizerte, Tabarka), and Moncef Bey Station (South - Sousse, Sfax, Djerba).",
-    image: "/lovable-uploads/8d8f295a-2175-4f00-bd24-9daf31db564e.png"
+    image: "/uploads/8d8f295a-2175-4f00-bd24-9daf31db564e.png"
   },
   {
     id: 5,
@@ -66,7 +66,7 @@ const transportModes: TransportMode[] = [
     name: "Train & Metro",
     title: "Rail Transportation",
     description: "Tunis offers a comprehensive Metro light rail system with six lines connecting throughout the city center. Fares vary by distance but average around 2 TND. The TGM tram connects Tunis to popular tourist destinations like Carthage, Sidi Bou Said, and La Marsa. Intercity train services are also available to suburban areas.",
-    image: "/lovable-uploads/232e232c-2c00-48cb-85c7-18566817152a.png"
+    image: "/uploads/232e232c-2c00-48cb-85c7-18566817152a.png"
   },
   {
     id: 6,
@@ -76,7 +76,7 @@ const transportModes: TransportMode[] = [
     name: "Ferry",
     title: "Ferry Services",
     description: "Tunisia offers ferry connections to European destinations including Italy and France. Domestic ferry services connect to popular tourist islands like Djerba and Kerkena. Regular routes operate from Sfax Port to Kerkena and from Zarzis Port in the south to Djerba.",
-    image: "/lovable-uploads/e3a98202-682c-40c9-b749-02e60494e047.png"
+    image: "/uploads/e3a98202-682c-40c9-b749-02e60494e047.png"
   }
 ];
 

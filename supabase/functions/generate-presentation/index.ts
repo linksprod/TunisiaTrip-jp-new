@@ -64,7 +64,7 @@ Créez une présentation HTML avec ce format EXACT:
 
 <div class="slide cover-slide">
   <div class="slide-content">
-    <div class="cover-image" style="background-image: url('/lovable-uploads/05c1d0ef-d2de-4096-a5eb-7b5cc45a4789.png');">
+    <div class="cover-image" style="background-image: url('/uploads/05c1d0ef-d2de-4096-a5eb-7b5cc45a4789.png');">
       <div class="cover-overlay">
         <h1 class="cover-title">Tunisia Trip Tour</h1>
         <p class="cover-subtitle">Découvrez la magie de la Tunisie</p>

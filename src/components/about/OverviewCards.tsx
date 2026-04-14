@@ -13,37 +13,37 @@ interface OverviewCard {
 
 const overviewCards: OverviewCard[] = [
   {
-    image: "/lovable-uploads/157b2dce-b095-4b76-a1de-65c8049265c7.png",
+    image: "/uploads/157b2dce-b095-4b76-a1de-65c8049265c7.png",
     category: "General Information",
     title: "Tunisia's Official Name",
     description: "The country's official name is Republic of Tunisia or 'Toon-is' in Tunisian Arabic Dialect. The meaning behind this name originates from the word 'Tawannas'..."
   },
   {
-    image: "/lovable-uploads/02f81651-61f1-4410-9750-6af178dfeb82.png",
+    image: "/uploads/02f81651-61f1-4410-9750-6af178dfeb82.png",
     category: "General Information",
     title: "Tunis: The Capital of Tunisia",
     description: "Tunis is the capital city of Tunisia and it's located in North East of the country. This city is famous for multiple things but mainly its traditional locations like Medina..."
   },
   {
-    image: "/lovable-uploads/47f24b6d-8919-4239-8451-7c16e7a085f8.png",
+    image: "/uploads/47f24b6d-8919-4239-8451-7c16e7a085f8.png",
     category: "General Information",
     title: "Population Compared to Area",
     description: "Some Tunisian areas are more dense in population than others and they are mainly cities in the north or center east of the the country. The number of people in Tunis is...."
   },
   {
-    image: "/lovable-uploads/f9130b27-cf48-4cc7-be56-e8e5bbe9205f.png",
+    image: "/uploads/f9130b27-cf48-4cc7-be56-e8e5bbe9205f.png",
     category: "General Information",
     title: "The Mediterranean Climate",
     description: "The country's official name is Republic of Tunisia or 'Toon-is' in Tunisian Arabic Dialect. The meaning behind this name originates from the word 'Tawannas'..."
   },
   {
-    image: "/lovable-uploads/f4dd04d7-55de-47a8-924e-a11575cfc578.png",
+    image: "/uploads/f4dd04d7-55de-47a8-924e-a11575cfc578.png",
     category: "General Information",
     title: "Know Tunisia Politically",
     description: "Tunis is the capital city of Tunisia and it's located in North East of the country. This city is famous for multiple things but mainly its traditional locations like Medina..."
   },
   {
-    image: "/lovable-uploads/4b3c133b-766b-4bb3-9cc7-906fd3b9168d.png",
+    image: "/uploads/4b3c133b-766b-4bb3-9cc7-906fd3b9168d.png",
     category: "General Information",
     title: "Religious Practices in Tunisia",
     description: "Some Tunisian areas are more dense in population than others and they are mainly cities in the north or center east of the the country. The number of people in Tunis is...."

@@ -10,7 +10,7 @@ export const TipContent: React.FC<TipContentProps> = ({ slide }) => {
   const navigate = useNavigate();
   // Special case for health/medicine content
   const isMedicineContent = slide.category.toLowerCase() === "health";
-  const medicineImage = "/lovable-uploads/cca7f6a4-c2a2-4c66-a5bd-64c33eeb8f87.png";
+  const medicineImage = "/uploads/cca7f6a4-c2a2-4c66-a5bd-64c33eeb8f87.png";
   const { currentLanguage } = useTranslation();
 
   // Only translate if not English

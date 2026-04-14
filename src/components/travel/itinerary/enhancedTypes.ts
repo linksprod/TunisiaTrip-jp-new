@@ -23,6 +23,7 @@ export interface ScheduleItem {
   distance?: string;
   type: 'breakfast' | 'activity' | 'lunch' | 'dinner' | 'departure' | 'arrival' | 'free-time';
   image?: string; // Image de l'activité
+  description?: string;
 }
 
 export interface EnhancedDayItinerary {

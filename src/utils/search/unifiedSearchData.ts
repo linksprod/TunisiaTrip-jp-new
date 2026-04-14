@@ -97,7 +97,7 @@ function getSectionSearchData() {
       category: 'about' as const,
       section: 'culture',
       titleJP: 'チュニジア文化',
-      image: '/lovable-uploads/67d662bd-9913-40c8-9171-f34177b63a89.png',
+      image: '/uploads/67d662bd-9913-40c8-9171-f34177b63a89.png',
       keywords: ['culture', 'traditions', 'customs', 'heritage', 'arab', 'berber', 'lifestyle', 'way of life', '文化', '伝統', '習慣'],
       score: 0
     },
@@ -159,7 +159,7 @@ function getCitySearchData() {
       category: 'city' as const,
       section: 'destinations',
       titleJP: 'チュニス',
-      image: '/lovable-uploads/f725cd5d-dab1-4471-90ca-93cf7764136b.png',
+      image: '/uploads/f725cd5d-dab1-4471-90ca-93cf7764136b.png',
       keywords: ['tunis', 'capital', 'city', 'medina', 'museums', 'attractions', 'downtown', 'チュニス', '首都', '都市'],
       score: 0
     },
@@ -171,7 +171,7 @@ function getCitySearchData() {
       category: 'city' as const,
       section: 'destinations',
       titleJP: 'シディ・ブ・サイード',
-      image: '/lovable-uploads/2714f2c3-4465-4a55-8369-5484aa8f3b28.png',
+      image: '/uploads/2714f2c3-4465-4a55-8369-5484aa8f3b28.png',
       keywords: ['sidi bou said', 'blue', 'white', 'village', 'cliff', 'sea', 'views', 'architecture', 'シディブサイード', '青と白', '村'],
       score: 0
     },
@@ -211,7 +211,7 @@ function getActivitySearchData() {
       category: 'activity' as const,
       section: 'desert',
       titleJP: 'サハラ砂漠体験',
-      image: '/lovable-uploads/2714f2c3-4465-4a55-8369-5484aa8f3b28.png',
+      image: '/uploads/2714f2c3-4465-4a55-8369-5484aa8f3b28.png',
       keywords: ['sahara', 'desert', 'camels', 'camping', 'stars', 'adventure', 'dunes', 'oasis', 'サハラ', '砂漠', 'ラクダ'],
       score: 0
     },
@@ -223,7 +223,7 @@ function getActivitySearchData() {
       category: 'activity' as const,
       section: 'entertainment',
       titleJP: 'スターウォーズ撮影地',
-      image: '/lovable-uploads/38ad0f33-36f7-4fa7-87c7-b4e8e7a9c2d1.png',
+      image: '/uploads/38ad0f33-36f7-4fa7-87c7-b4e8e7a9c2d1.png',
       keywords: ['star wars', 'filming', 'locations', 'tatooine', 'movie', 'sets', 'matmata', 'スターウォーズ', '撮影地', '映画'],
       score: 0
     },
@@ -235,7 +235,7 @@ function getActivitySearchData() {
       category: 'activity' as const,
       section: 'history',
       titleJP: 'ローマ遺跡',
-      image: '/lovable-uploads/c0f73b03-8e7e-4aea-996c-25418c3b8927.png',
+      image: '/uploads/c0f73b03-8e7e-4aea-996c-25418c3b8927.png',
       keywords: ['roman', 'ruins', 'archaeological', 'amphitheater', 'unesco', 'heritage', 'ancient', 'history', 'ローマ', '遺跡', '古代'],
       score: 0
     },
@@ -247,7 +247,7 @@ function getActivitySearchData() {
       category: 'activity' as const,
       section: 'beaches',
       titleJP: '地中海ビーチ',
-      image: '/lovable-uploads/f725cd5d-dab1-4471-90ca-93cf7764136b.png',
+      image: '/uploads/f725cd5d-dab1-4471-90ca-93cf7764136b.png',
       keywords: ['beaches', 'mediterranean', 'swimming', 'sun', 'sand', 'water', 'coast', 'seaside', 'ビーチ', '地中海', '海'],
       score: 0
     }

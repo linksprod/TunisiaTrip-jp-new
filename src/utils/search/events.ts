@@ -9,7 +9,7 @@ export const eventsSearchData: SearchItem[] = [
     path: '/blog?category=events&event=carthage-festival',
     category: 'blog',
     titleJP: 'カルタゴ国際フェスティバル',
-    image: '/lovable-uploads/c0f73b03-8e7e-4aea-996c-25418c3b8927.png',
+    image: '/uploads/c0f73b03-8e7e-4aea-996c-25418c3b8927.png',
     keywords: [
       'carthage festival', 'international', 'music', 'theater',
       'summer', 'cultural', 'performances', 'artists',
@@ -22,7 +22,7 @@ export const eventsSearchData: SearchItem[] = [
     path: '/blog?category=events&event=sahara-festival',
     category: 'blog',
     titleJP: 'サハラ祭り - ドゥーズ',
-    image: '/lovable-uploads/2714f2c3-4465-4a55-8369-5484aa8f3b28.png',
+    image: '/uploads/2714f2c3-4465-4a55-8369-5484aa8f3b28.png',
     keywords: [
       'sahara festival', 'douz', 'desert', 'nomadic', 'traditions',
       'camel racing', 'poetry', 'folk music', 'winter',
@@ -35,7 +35,7 @@ export const eventsSearchData: SearchItem[] = [
     path: '/blog?category=events&event=tabarka-jazz',
     category: 'blog',
     titleJP: 'タバルカ ジャズフェスティバル',
-    image: '/lovable-uploads/887573e2-027f-4492-8fb5-dab816ee46da.png',
+    image: '/uploads/887573e2-027f-4492-8fb5-dab816ee46da.png',
     keywords: [
       'tabarka jazz', 'jazz festival', 'music', 'international',
       'summer', 'coral coast', 'concerts', 'artists',

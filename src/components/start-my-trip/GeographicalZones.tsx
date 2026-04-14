@@ -2,7 +2,7 @@ import React, { useState } from 'react';
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Badge } from "@/components/ui/badge";
 import { MapPin, Users, Star } from 'lucide-react';
-import { GeographicalZone } from '@/utils/geographicalHelpers';
+import { groupActivitiesByZones, GeographicalZone } from "@/services/geographicalService";
 import { SmartActivityCard } from './SmartActivityCard';
 import { Hotel } from '@/data/hotels';
 import { GuestHouse } from '@/data/guestHouses';
@@ -58,13 +58,13 @@ export function GeographicalZones({
 
       {zones.map(zone => {
         const isExpanded = expandedZones.has(zone.id);
-        const selectedActivitiesInZone = zone.activities.filter(activity => 
+        const selectedActivitiesInZone = zone.activities.filter(activity =>
           selectedActivities.includes(activity.id)
         ).length;
 
         return (
           <Card key={zone.id} className="overflow-hidden">
-            <CardHeader 
+            <CardHeader
               className="cursor-pointer hover:bg-gray-50 transition-colors"
               onClick={() => toggleZone(zone.id)}
             >

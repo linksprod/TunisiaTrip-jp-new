@@ -7,11 +7,11 @@ import { useTranslation } from "@/hooks/use-translation";
 
 const slides = [
   {
-    src: "/lovable-uploads/6b47c2b1-2c3e-4895-80eb-1813b4351672.png",
+    src: "/uploads/6b47c2b1-2c3e-4895-80eb-1813b4351672.png",
     alt: "Tunis City View with Cathedral"
   },
   {
-    src: "/lovable-uploads/67d662bd-9913-40c8-9171-f34177b63a89.png",
+    src: "/uploads/67d662bd-9913-40c8-9171-f34177b63a89.png",
     alt: "Ancient Roman Ruins in Tunisia"
   }
 ];

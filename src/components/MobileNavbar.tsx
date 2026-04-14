@@ -16,8 +16,8 @@ import { preloadImages } from "@/utils/imageUtils";
 import { OptimizedImage } from "@/components/ui/optimized-image";
 
 // Define the logo path constant to avoid repetition
-const LOGO_PATH = "/lovable-uploads/b8d3011d-f5cd-4edd-b34e-9ef0827ba186.png";
-const JP_FLAG_PATH = "/lovable-uploads/5d66739d-6d91-48f0-99e6-f5ec39df4306.png";
+const LOGO_PATH = "/uploads/b8d3011d-f5cd-4edd-b34e-9ef0827ba186.png";
+const JP_FLAG_PATH = "/uploads/5d66739d-6d91-48f0-99e6-f5ec39df4306.png";
 
 export function MobileNavbar(): JSX.Element {
   const location = useLocation();

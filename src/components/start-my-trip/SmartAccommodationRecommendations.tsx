@@ -7,6 +7,7 @@ import { Star, MapPin, Users, Calendar, Heart } from "lucide-react";
 import { useTranslation } from "@/hooks/use-translation";
 import { TranslateText } from "@/components/translation/TranslateText";
 import { getProximityBasedRecommendations, groupRecommendationsByRegion, AccommodationWithProximity } from "@/utils/proximityRecommendations";
+import { calculatePureDistance as calculateDistance } from "@/services/geographicalService";
 import { useActivities } from "@/hooks/useActivities";
 import { useHotels } from "@/hooks/useHotels";
 import { useGuestHouses } from "@/hooks/useGuestHouses";
@@ -27,7 +28,7 @@ const SmartAccommodationRecommendations: React.FC<SmartAccommodationRecommendati
   const [groupedRecommendations, setGroupedRecommendations] = useState<Record<string, AccommodationWithProximity[]>>({});
   const [selectedAccommodations, setSelectedAccommodations] = useState<Set<string>>(new Set());
   const { currentLanguage } = useTranslation();
-  
+
   // Fetch data hooks
   const { activities: dbActivities } = useActivities();
   const { hotels: dbHotels } = useHotels();
@@ -68,13 +69,15 @@ const SmartAccommodationRecommendations: React.FC<SmartAccommodationRecommendati
         // Filter hotels within MAX_DISTANCE_KM
         dbHotels.forEach(hotel => {
           if (hotel.latitude && hotel.longitude) {
-            const distance = Math.sqrt(
-              Math.pow((Number(hotel.latitude) - activity.coordinates!.lat) * 111, 2) +
-              Math.pow((Number(hotel.longitude) - activity.coordinates!.lng) * 111 * Math.cos(activity.coordinates!.lat * Math.PI / 180), 2)
+            const distance = calculateDistance(
+              activity.coordinates!.lat,
+              activity.coordinates!.lng,
+              Number(hotel.latitude),
+              Number(hotel.longitude)
             );
-            
+
             console.log(`Hôtel ${hotel.name} (${hotel.latitude}, ${hotel.longitude}): distance = ${distance.toFixed(1)} km`);
-            
+
             if (distance <= MAX_DISTANCE_KM) {
               if (!closeHotelIds.includes(hotel.id.toString())) {
                 closeHotelIds.push(hotel.id.toString());
@@ -93,13 +96,15 @@ const SmartAccommodationRecommendations: React.FC<SmartAccommodationRecommendati
         // Filter guest houses within MAX_DISTANCE_KM
         dbGuestHouses.forEach(guestHouse => {
           if (guestHouse.latitude && guestHouse.longitude) {
-            const distance = Math.sqrt(
-              Math.pow((Number(guestHouse.latitude) - activity.coordinates!.lat) * 111, 2) +
-              Math.pow((Number(guestHouse.longitude) - activity.coordinates!.lng) * 111 * Math.cos(activity.coordinates!.lat * Math.PI / 180), 2)
+            const distance = calculateDistance(
+              activity.coordinates!.lat,
+              activity.coordinates!.lng,
+              Number(guestHouse.latitude),
+              Number(guestHouse.longitude)
             );
-            
+
             console.log(`Guest House ${guestHouse.name} (${guestHouse.latitude}, ${guestHouse.longitude}): distance = ${distance.toFixed(1)} km`);
-            
+
             if (distance <= MAX_DISTANCE_KM) {
               if (!closeGuestHouseIds.includes(guestHouse.id.toString())) {
                 closeGuestHouseIds.push(guestHouse.id.toString());
@@ -127,7 +132,7 @@ const SmartAccommodationRecommendations: React.FC<SmartAccommodationRecommendati
       );
 
       const grouped = groupRecommendationsByRegion(proximityRecommendations);
-      
+
       setRecommendations(proximityRecommendations);
       setGroupedRecommendations(grouped);
     } else {
@@ -139,13 +144,13 @@ const SmartAccommodationRecommendations: React.FC<SmartAccommodationRecommendati
   const handleAccommodationToggle = (recommendation: AccommodationWithProximity) => {
     const accommodationId = recommendation.id;
     const isSelected = selectedAccommodations.has(accommodationId);
-    
+
     if (isSelected) {
       selectedAccommodations.delete(accommodationId);
     } else {
       selectedAccommodations.add(accommodationId);
     }
-    
+
     setSelectedAccommodations(new Set(selectedAccommodations));
     onAccommodationSelect(accommodationId, recommendation.type);
   };
@@ -181,7 +186,7 @@ const SmartAccommodationRecommendations: React.FC<SmartAccommodationRecommendati
               {selectedActivities.length} <TranslateText text="activities selected" language={currentLanguage} />
             </Badge>
           </div>
-          
+
           <div className="grid grid-cols-1 md:grid-cols-3 gap-4 text-sm">
             <div className="flex items-center gap-2">
               <Calendar className="h-4 w-4 text-primary" />
@@ -214,7 +219,7 @@ const SmartAccommodationRecommendations: React.FC<SmartAccommodationRecommendati
               Object.entries(groupedRecommendations).map(([region, regionRecs]) => {
                 const regionHotels = regionRecs.filter(rec => rec.type === 'hotel');
                 if (regionHotels.length === 0) return null;
-                
+
                 return (
                   <div key={region} className="space-y-4">
                     <h3 className="text-lg font-semibold text-foreground border-b pb-2">
@@ -244,7 +249,7 @@ const SmartAccommodationRecommendations: React.FC<SmartAccommodationRecommendati
               Object.entries(groupedRecommendations).map(([region, regionRecs]) => {
                 const regionGuestHouses = regionRecs.filter(rec => rec.type === 'guesthouse');
                 if (regionGuestHouses.length === 0) return null;
-                
+
                 return (
                   <div key={region} className="space-y-4">
                     <h3 className="text-lg font-semibold text-foreground border-b pb-2">
@@ -289,7 +294,7 @@ const ProximityAccommodationCard: React.FC<ProximityAccommodationCardProps> = ({
   currentLanguage
 }) => {
   const { name, type, distance, nearbyActivities, reasons } = recommendation;
-  
+
   return (
     <Card className={`transition-all duration-300 hover:shadow-lg ${isSelected ? 'ring-2 ring-primary' : ''}`}>
       <CardContent className="p-6">
@@ -304,7 +309,7 @@ const ProximityAccommodationCard: React.FC<ProximityAccommodationCardProps> = ({
                 {distance.toFixed(1)} km
               </Badge>
             </div>
-            
+
             <div className="flex items-center gap-4 text-sm text-muted-foreground mb-3">
               <div className="flex items-center gap-1">
                 <MapPin className="h-4 w-4" />
@@ -316,7 +321,7 @@ const ProximityAccommodationCard: React.FC<ProximityAccommodationCardProps> = ({
               </div>
             </div>
           </div>
-          
+
           <Button
             variant={isSelected ? "default" : "outline"}
             onClick={onToggle}

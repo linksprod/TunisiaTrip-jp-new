@@ -184,7 +184,7 @@ export function ChatDialog({
           <div className="flex items-center gap-3">
             <Avatar className="h-8 w-8 border-2 border-white">
               <AvatarImage 
-                src="/lovable-uploads/42ee9aec-52e6-40fb-a7f4-f4813e355e7c.png" 
+                src="/uploads/42ee9aec-52e6-40fb-a7f4-f4813e355e7c.png" 
                 alt="Tunisia Trip Expert Avatar"
               />
               <AvatarFallback><UserRound className="h-5 w-5" /></AvatarFallback>

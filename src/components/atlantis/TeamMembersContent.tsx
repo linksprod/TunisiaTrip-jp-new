@@ -8,9 +8,9 @@ import { useTranslation } from "@/hooks/use-translation";
 export function TeamMembersContent() {
   const { currentLanguage } = useTranslation();
   const teamMembers = [
-    "/lovable-uploads/0e8b91dd-c161-45a9-9333-2b524f9117df.png",
-    "/lovable-uploads/7f9acada-726b-43e1-a65e-466d327381ee.png",
-    "/lovable-uploads/520e8e05-6e0d-4465-a70f-76d4df659a27.png",
+    "/uploads/0e8b91dd-c161-45a9-9333-2b524f9117df.png",
+    "/uploads/7f9acada-726b-43e1-a65e-466d327381ee.png",
+    "/uploads/520e8e05-6e0d-4465-a70f-76d4df659a27.png",
   ];
 
   return (

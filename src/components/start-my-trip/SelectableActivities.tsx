@@ -1,13 +1,13 @@
-
 import React, { useMemo } from "react";
 import { Card, CardContent } from "@/components/ui/card";
 import { Checkbox } from "@/components/ui/checkbox";
 import { useActivities } from "@/hooks/useActivities";
 import { useHotels } from "@/hooks/useHotels";
+import { calculatePureDistance as calculateDistance, getActivityRegion } from "@/services/geographicalService";
 import { GuestHouse, guestHouses } from "@/data/guestHouses";
 import { Activity } from "@/data/activities";
 import { Hotel } from "@/data/hotels";
-import { findClosestHotel, findNearbyAccommodations } from "@/utils/geographicalHelpers";
+import { findClosestHotel, findNearbyAccommodations } from "@/services/geographicalService";
 
 interface SelectableActivitiesProps {
   selectedActivities: string[];
@@ -18,8 +18,8 @@ interface SelectableActivitiesProps {
   setSelectedGuestHouses: (guestHouses: string[]) => void;
 }
 
-export function SelectableActivities({ 
-  selectedActivities, 
+export function SelectableActivities({
+  selectedActivities,
   setSelectedActivities,
   selectedHotels,
   setSelectedHotels,
@@ -30,7 +30,7 @@ export function SelectableActivities({
   const { hotels } = useHotels();
 
   // Convert database activities to our Activity type
-  const convertedActivities = useMemo(() => 
+  const convertedActivities = useMemo(() =>
     activities
       .filter(activity => activity.show_in_start_my_trip === true)
       .map(activity => ({
@@ -39,15 +39,15 @@ export function SelectableActivities({
         location: activity.location,
         description: activity.description || '',
         image: activity.images && activity.images.length > 0 ? activity.images[0] : activity.image || '',
-        coordinates: activity.latitude && activity.longitude 
+        coordinates: activity.latitude && activity.longitude
           ? { lat: Number(activity.latitude), lng: Number(activity.longitude) }
           : undefined
-      } as Activity)), 
+      } as Activity)),
     [activities]
   );
 
   // Convert database hotels to our Hotel type
-  const convertedHotels = useMemo(() => 
+  const convertedHotels = useMemo(() =>
     hotels.map(hotel => ({
       id: hotel.id.toString(),
       name: hotel.name,
@@ -56,10 +56,10 @@ export function SelectableActivities({
       description: hotel.description || '',
       amenities: hotel.amenities || [],
       breakfast: hotel.breakfast || false,
-      coordinates: hotel.latitude && hotel.longitude 
+      coordinates: hotel.latitude && hotel.longitude
         ? { lat: Number(hotel.latitude), lng: Number(hotel.longitude) }
         : undefined
-    } as Hotel)), 
+    } as Hotel)),
     [hotels]
   );
 
@@ -100,7 +100,7 @@ export function SelectableActivities({
       <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
         {convertedActivities.map((activity) => {
           const closestHotel = activity.coordinates ? findClosestHotel(activity, convertedHotels) : null;
-          const nearbyAccommodations = activity.coordinates 
+          const nearbyAccommodations = activity.coordinates
             ? findNearbyAccommodations(activity, convertedHotels, guestHouses, 25)
             : { hotels: [], guestHouses: [] };
 
@@ -129,7 +129,7 @@ export function SelectableActivities({
                     📍 {activity.location}
                   </p>
                 </div>
-                
+
                 {activity.description && (
                   <p className="text-sm text-gray-700 line-clamp-2">{activity.description}</p>
                 )}

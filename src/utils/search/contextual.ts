@@ -84,7 +84,7 @@ export const contextualSearchData: SearchItem[] = [
     category: 'travel',
     section: 'beaches',
     titleJP: 'チュニジアのビーチ・海岸地域',
-    image: '/lovable-uploads/f725cd5d-dab1-4471-90ca-93cf7764136b.png',
+    image: '/uploads/f725cd5d-dab1-4471-90ca-93cf7764136b.png',
     keywords: [
       'beaches', 'coast', 'mediterranean', 'swimming', 'sun', 'sand',
       'djerba beaches', 'sousse beaches', 'hammamet', 'nabeul',
@@ -99,7 +99,7 @@ export const contextualSearchData: SearchItem[] = [
     category: 'travel',
     section: 'desert',
     titleJP: 'サハラ砂漠体験',
-    image: '/lovable-uploads/2714f2c3-4465-4a55-8369-5484aa8f3b28.png',
+    image: '/uploads/2714f2c3-4465-4a55-8369-5484aa8f3b28.png',
     keywords: [
       'desert', 'sahara', 'sand dunes', 'camels', 'oasis',
       'camping', 'stars', 'sunset', 'sunrise', 'nomads',
@@ -114,7 +114,7 @@ export const contextualSearchData: SearchItem[] = [
     category: 'travel',
     section: 'entertainment',
     titleJP: 'スターウォーズ撮影地',
-    image: '/lovable-uploads/38ad0f33-36f7-4fa7-87c7-b4e8e7a9c2d1.png',
+    image: '/uploads/38ad0f33-36f7-4fa7-87c7-b4e8e7a9c2d1.png',
     keywords: [
       'star wars', 'tatooine', 'filming locations', 'movie sites',
       'matmata', 'tataouine', 'tozeur', 'tamerza', 'chott el jerid',
@@ -129,7 +129,7 @@ export const contextualSearchData: SearchItem[] = [
     category: 'travel',
     section: 'history',
     titleJP: 'ローマ考古学遺跡',
-    image: '/lovable-uploads/c0f73b03-8e7e-4aea-996c-25418c3b8927.png',
+    image: '/uploads/c0f73b03-8e7e-4aea-996c-25418c3b8927.png',
     keywords: [
       'roman', 'ruins', 'archaeological', 'ancient', 'history',
       'el jem', 'dougga', 'sbeitla', 'carthage', 'bulla regia',

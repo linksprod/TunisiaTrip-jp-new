@@ -7,11 +7,11 @@ import useEmblaCarousel from "embla-carousel-react";
 
 const images = [
   {
-    src: "/lovable-uploads/594e9224-d9ce-498d-9bcf-b9ecd0412353.png",
+    src: "/uploads/594e9224-d9ce-498d-9bcf-b9ecd0412353.png",
     alt: "Colorful Tunisia Illustration 1 (4:5 Ratio)"
   },
   {
-    src: "/lovable-uploads/76eba813-1133-401a-b0e3-e6c519afa261.png",
+    src: "/uploads/76eba813-1133-401a-b0e3-e6c519afa261.png",
     alt: "Colorful Tunisia Illustration 2 (4:5 Ratio)"
   }
 ];

@@ -9,7 +9,7 @@ export const attractionsSearchData: SearchItem[] = [
     path: '/travel-information?tab=activities&attraction=bardo-museum',
     category: 'travel',
     titleJP: 'バルドー博物館 - ローマモザイク',
-    image: '/lovable-uploads/8dc0707d-46c0-424d-a35a-6ef7a8b8436a.png',
+    image: '/uploads/8dc0707d-46c0-424d-a35a-6ef7a8b8436a.png',
     keywords: [
       'bardo museum', 'mosaics', 'roman', 'archaeological',
       'tunis', 'ancient art', 'carthage', 'collection',
@@ -22,7 +22,7 @@ export const attractionsSearchData: SearchItem[] = [
     path: '/travel-information?tab=activities&attraction=el-ghriba',
     category: 'travel',
     titleJP: 'エル・グリバ シナゴーグ',
-    image: '/lovable-uploads/96f6d1b7-6b24-4d51-9156-76ddba2842af.png',
+    image: '/uploads/96f6d1b7-6b24-4d51-9156-76ddba2842af.png',
     keywords: [
       'el ghriba', 'synagogue', 'jewish', 'djerba', 'pilgrimage',
       'oldest', 'heritage', 'religion', 'lag baomer',
@@ -35,7 +35,7 @@ export const attractionsSearchData: SearchItem[] = [
     path: '/travel-information?tab=activities&attraction=chott-el-jerid',
     category: 'travel',
     titleJP: 'ショット・エル・ジェリド - 塩湖',
-    image: '/lovable-uploads/2714f2c3-4465-4a55-8369-5484aa8f3b28.png',
+    image: '/uploads/2714f2c3-4465-4a55-8369-5484aa8f3b28.png',
     keywords: [
       'chott el jerid', 'salt lake', 'desert', 'mirages',
       'sunset', 'sunrise', 'flamingos', 'star wars',
@@ -48,7 +48,7 @@ export const attractionsSearchData: SearchItem[] = [
     path: '/travel-information?tab=activities&attraction=aghlabid-pools',
     category: 'travel',
     titleJP: 'アグラブ朝の貯水池',
-    image: '/lovable-uploads/9eb876d7-b767-4dea-a400-0ee661b1abdc.png',
+    image: '/uploads/9eb876d7-b767-4dea-a400-0ee661b1abdc.png',
     keywords: [
       'aghlabid pools', 'kairouan', 'water basins', 'islamic',
       'architecture', 'engineering', 'historic', '9th century',
@@ -61,7 +61,7 @@ export const attractionsSearchData: SearchItem[] = [
     path: '/travel-information?tab=activities&attraction=hotel-sidi-driss',
     category: 'travel',
     titleJP: 'ホテル・シディ・ドリス',
-    image: '/lovable-uploads/38ad0f33-36f7-4fa7-87c7-b4e8e7a9c2d1.png',
+    image: '/uploads/38ad0f33-36f7-4fa7-87c7-b4e8e7a9c2d1.png',
     keywords: [
       'hotel sidi driss', 'star wars', 'cantina', 'lars homestead',
       'matmata', 'filming location', 'underground', 'troglodyte',

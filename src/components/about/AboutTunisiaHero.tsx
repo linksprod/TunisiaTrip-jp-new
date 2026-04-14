@@ -7,19 +7,19 @@ import { TranslateText } from "@/components/translation/TranslateText";
 const slides = [
   {
     id: 1,
-    image: "/lovable-uploads/06199176-075c-4ff5-9af4-6888ffeffc16.png",
+    image: "/uploads/06199176-075c-4ff5-9af4-6888ffeffc16.png",
     title: "Discover Tunisia",
     subtitle: "A Land of History and Culture"
   },
   {
     id: 2,
-    image: "/lovable-uploads/b1054a66-c723-4e47-b4d5-345f2c611881.png",
+    image: "/uploads/b1054a66-c723-4e47-b4d5-345f2c611881.png",
     title: "Ancient Wonders",
     subtitle: "Explore Tunisia's Historical Sites"
   },
   {
     id: 3,
-    image: "/lovable-uploads/3caaa473-8150-4b29-88b4-e2e9c696bf1d.png",
+    image: "/uploads/3caaa473-8150-4b29-88b4-e2e9c696bf1d.png",
     title: "Desert Adventures",
     subtitle: "Experience the Sahara"
   }

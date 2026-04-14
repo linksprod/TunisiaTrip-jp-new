@@ -109,7 +109,7 @@ export function TripPresentation({
 
               <div className="bg-white/60 backdrop-blur-sm rounded-lg p-6 max-w-md mx-auto">
                 <img 
-                  src="/lovable-uploads/05c1d0ef-d2de-4096-a5eb-7b5cc45a4789.png" 
+                  src="/uploads/05c1d0ef-d2de-4096-a5eb-7b5cc45a4789.png" 
                   alt="Touriste avec tablette" 
                   className="w-full h-auto rounded-lg"
                 />

@@ -9,19 +9,19 @@ const guestHouses = [
   {
     name: "Dar Ben Gacem",
     location: "Medina of Tunis, Tunisia",
-    image: "/lovable-uploads/549c131b-140c-4a2b-a663-3d920f194f91.png",
+    image: "/uploads/549c131b-140c-4a2b-a663-3d920f194f91.png",
     rating: 5,
   },
   {
     name: "Dar Fatma",
     location: "Sidi Bou Said, Tunis, Tunisia",
-    image: "/lovable-uploads/cbd7751a-e460-45c8-847d-849a5ca51bcc.png",
+    image: "/uploads/cbd7751a-e460-45c8-847d-849a5ca51bcc.png",
     rating: 5,
   },
   {
     name: "Dar Ellama",
     location: "Bizerte, Tunisia",
-    image: "/lovable-uploads/549c131b-140c-4a2b-a663-3d920f194f91.png",
+    image: "/uploads/549c131b-140c-4a2b-a663-3d920f194f91.png",
     rating: 5,
   },
 ];

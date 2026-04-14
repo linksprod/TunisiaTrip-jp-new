@@ -47,7 +47,7 @@ export function ContactBanner() {
             {/* Atlantis Logo - replace text with image */}
             <div className="text-white">
               <img 
-                src="/lovable-uploads/887573e2-027f-4492-8fb5-dab816ee46da.png" 
+                src="/uploads/887573e2-027f-4492-8fb5-dab816ee46da.png" 
                 alt="Atlantis Voyages Logo" 
                 className="h-16 w-auto"
               />

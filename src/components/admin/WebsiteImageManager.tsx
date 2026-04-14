@@ -9,6 +9,7 @@ import { Loader2, UploadCloud, RefreshCw, Image as ImageIcon, X } from "lucide-r
 import { useStorage } from "@/hooks/use-storage";
 import { toast } from "@/components/ui/use-toast";
 import { ConfirmDialog } from "@/components/admin/ConfirmDialog";
+import { scanPagesForExternalImages } from "@/utils/imageMigrationUtils";
 
 // Helper type for the image grid
 interface ImageItem {
@@ -17,43 +18,7 @@ interface ImageItem {
   isDeleting: boolean;
 }
 
-// Specifically target Lovable uploads patterns
-const LOVABLE_UPLOAD_PATTERNS = [
-  '/lovable-uploads/',
-  'https://lovable-uploads.',
-  '.lovableproject.com/'
-];
 
-// Function to extract images from HTML
-const extractImagesFromHtml = (html: string): string[] => {
-  const imgRegex = /<img[^>]+src="([^">]+)"/g;
-  const cssRegex = /url\(['"]?([^'"()]+)['"]?\)/g;
-  const results: string[] = [];
-  let match;
-  
-  // Extract from img tags
-  while ((match = imgRegex.exec(html)) !== null) {
-    const url = match[1];
-    // Specifically look for Lovable uploads
-    if (LOVABLE_UPLOAD_PATTERNS.some(pattern => url.includes(pattern)) && 
-        !url.endsWith('.svg') &&
-        !url.startsWith('data:image/svg')) {
-      results.push(url);
-    }
-  }
-  
-  // Extract from CSS background URLs
-  while ((match = cssRegex.exec(html)) !== null) {
-    const url = match[1];
-    if (LOVABLE_UPLOAD_PATTERNS.some(pattern => url.includes(pattern)) && 
-        !url.endsWith('.svg') &&
-        !url.startsWith('data:image/svg')) {
-      results.push(url);
-    }
-  }
-  
-  return [...new Set(results)]; // Remove duplicates
-};
 
 const WebsiteImageManager: React.FC = () => {
   const [images, setImages] = useState<ImageItem[]>([]);
@@ -64,24 +29,24 @@ const WebsiteImageManager: React.FC = () => {
   const [imageToDelete, setImageToDelete] = useState<string | null>(null);
   const [isMigrating, setIsMigrating] = useState(false);
   const [migrationProgress, setMigrationProgress] = useState(0);
-  const [lovableImages, setLovableImages] = useState<string[]>([]);
+  const [externalImages, setExternalImages] = useState<string[]>([]);
   const [searchQuery, setSearchQuery] = useState("");
-  
-  const { 
-    uploadImage, 
-    deleteImage, 
-    listImages, 
+
+  const {
+    uploadImage,
+    deleteImage,
+    listImages,
     migrateImages,
     isUploading: isStorageUploading,
     isLoading: isStorageLoading,
     isMigrating: isStorageMigrating
   } = useStorage();
-  
+
   // Fetch images when the folder changes
   useEffect(() => {
     loadImages();
   }, [selectedFolder]);
-  
+
   // Load images from Supabase
   const loadImages = async () => {
     setIsLoading(true);
@@ -104,20 +69,20 @@ const WebsiteImageManager: React.FC = () => {
       setIsLoading(false);
     }
   };
-  
+
   // Handle file upload
   const handleFileUpload = async (e: React.ChangeEvent<HTMLInputElement>) => {
     const files = e.target.files;
     if (!files || files.length === 0) return;
-    
+
     setIsUploading(true);
     try {
       const uploadPromises = Array.from(files).map(file => uploadImage(file, selectedFolder));
       const results = await Promise.all(uploadPromises);
-      
+
       const successCount = results.filter(Boolean).length;
       const failCount = results.length - successCount;
-      
+
       if (successCount > 0) {
         toast({
           title: "Upload successful",
@@ -144,24 +109,24 @@ const WebsiteImageManager: React.FC = () => {
       e.target.value = '';
     }
   };
-  
+
   // Handle image deletion
   const confirmDeleteImage = (url: string) => {
     setImageToDelete(url);
     setDeleteConfirmOpen(true);
   };
-  
+
   const handleDeleteImage = async () => {
     if (!imageToDelete) return;
-    
+
     const imageIndex = images.findIndex(img => img.url === imageToDelete);
     if (imageIndex === -1) return;
-    
+
     // Mark the image as deleting
-    setImages(prev => prev.map((img, idx) => 
+    setImages(prev => prev.map((img, idx) =>
       idx === imageIndex ? { ...img, isDeleting: true } : img
     ));
-    
+
     try {
       const success = await deleteImage(imageToDelete);
       if (success) {
@@ -173,10 +138,10 @@ const WebsiteImageManager: React.FC = () => {
       }
     } catch (error) {
       // Reset the deleting state on error
-      setImages(prev => prev.map((img, idx) => 
+      setImages(prev => prev.map((img, idx) =>
         idx === imageIndex ? { ...img, isDeleting: false } : img
       ));
-      
+
       toast({
         title: "Deletion failed",
         description: "Failed to delete image",
@@ -187,17 +152,17 @@ const WebsiteImageManager: React.FC = () => {
       setImageToDelete(null);
     }
   };
-  
-  // Scan the site specifically for Lovable uploads
-  const scanWebsiteForLovableUploads = async () => {
+
+  // Scan the site specifically for External uploads
+  const scanWebsiteForExternalUploads = async () => {
     try {
       setIsMigrating(true);
       setMigrationProgress(0);
       toast({
         title: "Scanning website",
-        description: "Looking for Lovable upload images across the website...",
+        description: "Looking for External upload images across the website...",
       });
-      
+
       // Get HTML content from key pages to extract images
       const pagesToScan = [
         '/',
@@ -207,78 +172,22 @@ const WebsiteImageManager: React.FC = () => {
         '/admin',
         '/atlantis'
       ];
-      
-      const foundImages: string[] = [];
-      
-      // Scan current page first
-      const currentPageHtml = document.documentElement.outerHTML;
-      
-      // Specifically look for Lovable uploads
-      const lovableUploadsFromCurrentPage = extractImagesFromHtml(currentPageHtml);
-      foundImages.push(...lovableUploadsFromCurrentPage);
-      
-      // Scan other main pages
-      let scannedPages = 1;
-      const totalPages = pagesToScan.length;
-      
-      for (const path of pagesToScan) {
-        try {
-          const response = await fetch(path);
-          if (!response.ok) continue;
-          
-          const html = await response.text();
-          const pageImages = extractImagesFromHtml(html);
-          foundImages.push(...pageImages);
-          
-          // Update progress
-          scannedPages++;
-          setMigrationProgress(Math.round((scannedPages / totalPages) * 100));
-        } catch (error) {
-          console.error(`Error scanning page ${path}:`, error);
-        }
-      }
-      
-      // Process image URLs to make them absolute
-      const processedImages = foundImages.map(src => {
-        // Skip data URLs
-        if (src.startsWith('data:')) return null;
-        
-        // Handle relative URLs
-        if (src.startsWith('/')) {
-          return window.location.origin + src;
-        }
-        
-        // Keep absolute URLs as is
-        if (src.startsWith('http')) {
-          return src;
-        }
-        
-        // Handle relative URLs without leading slash
-        return window.location.origin + '/' + src;
-      }).filter(Boolean) as string[];
-      
-      // Filter out non-Lovable uploads
-      const filteredLovableImages = processedImages.filter(url => {
-        if (!url) return false;
-        
-        // Only include Lovable uploads
-        return LOVABLE_UPLOAD_PATTERNS.some(pattern => url.includes(pattern)) &&
-               !url.endsWith('.svg');
+
+      const uniqueImages = await scanPagesForExternalImages(pagesToScan, (scanned, total) => {
+        setMigrationProgress(Math.round((scanned / total) * 100));
       });
-      
-      // Remove duplicates
-      const uniqueImages = [...new Set(filteredLovableImages)];
-      setLovableImages(uniqueImages);
-      
+
+      setExternalImages(uniqueImages);
+
       toast({
         title: "Scan complete",
-        description: `Found ${uniqueImages.length} unique Lovable upload images`,
+        description: `Found ${uniqueImages.length} unique External upload images`,
       });
     } catch (error) {
       console.error("Error scanning website for images:", error);
       toast({
         title: "Scan failed",
-        description: "Failed to scan website for Lovable upload images",
+        description: "Failed to scan website for External upload images",
         variant: "destructive"
       });
     } finally {
@@ -286,29 +195,29 @@ const WebsiteImageManager: React.FC = () => {
       setMigrationProgress(100);
     }
   };
-  
-  // Migrate found Lovable uploads to Supabase
-  const handleMigrateLovableImages = async () => {
-    if (lovableImages.length === 0) {
+
+  // Migrate found External uploads to Supabase
+  const handleMigrateExternalImages = async () => {
+    if (externalImages.length === 0) {
       toast({
         title: "No images to migrate",
-        description: "Please scan the website for Lovable upload images first",
+        description: "Please scan the website for External upload images first",
       });
       return;
     }
-    
+
     setIsMigrating(true);
     setMigrationProgress(0);
-    
+
     try {
       toast({
         title: "Starting migration",
-        description: `Migrating ${lovableImages.length} Lovable images to Supabase...`,
+        description: `Migrating ${externalImages.length} External images to Supabase...`,
       });
-      
+
       // Start migration and track progress
-      const results = await migrateImages(lovableImages, selectedFolder);
-      
+      const results = await migrateImages(externalImages, selectedFolder);
+
       // Update progress periodically
       const progressInterval = setInterval(() => {
         setMigrationProgress(prev => {
@@ -319,20 +228,20 @@ const WebsiteImageManager: React.FC = () => {
           return prev + 5;
         });
       }, 1000);
-      
+
       // Refresh the image list
       await loadImages();
-      
+
       // Clear interval and set to 100%
       clearInterval(progressInterval);
       setMigrationProgress(100);
-      
+
       toast({
         title: "Migration complete",
         description: `Successfully migrated ${results.success} images, failed: ${results.failed}`,
         variant: results.failed > 0 ? "destructive" : "default"
       });
-      
+
       // Add migration mapping to console for reference
       console.log("Image URL mapping:", results.urls);
     } catch (error) {
@@ -346,22 +255,22 @@ const WebsiteImageManager: React.FC = () => {
       setIsMigrating(false);
     }
   };
-  
+
   // Filter images based on search query
-  const filteredImages = images.filter(image => 
+  const filteredImages = images.filter(image =>
     image.name.toLowerCase().includes(searchQuery.toLowerCase()));
-  
+
   return (
     <Card className="p-6 border border-gray-200 shadow-sm">
       <div className="mb-6 flex flex-col space-y-4">
         <h2 className="text-2xl font-bold">Website Image Manager</h2>
         <p className="text-gray-600">
-          Upload, manage, and migrate website images with automatic compression and WebP conversion. 
+          Upload, manage, and migrate website images with automatic compression and WebP conversion.
           All images are compressed to max 400 KB and stored in Supabase.
         </p>
-        
+
         <div className="flex flex-wrap gap-2 mt-4">
-          <Button 
+          <Button
             onClick={() => document.getElementById('file-upload')?.click()}
             disabled={isUploading}
             className="bg-admin-primary hover:bg-admin-accent"
@@ -378,7 +287,7 @@ const WebsiteImageManager: React.FC = () => {
               </>
             )}
           </Button>
-          
+
           <Input
             id="file-upload"
             type="file"
@@ -388,16 +297,16 @@ const WebsiteImageManager: React.FC = () => {
             onChange={handleFileUpload}
             disabled={isUploading}
           />
-          
-          <Button 
-            onClick={loadImages} 
+
+          <Button
+            onClick={loadImages}
             variant="outline"
             disabled={isLoading}
           >
             <RefreshCw className={`mr-2 h-4 w-4 ${isLoading ? 'animate-spin' : ''}`} />
             Refresh
           </Button>
-          
+
           <Input
             placeholder="Search images..."
             className="w-full md:w-48"
@@ -406,13 +315,13 @@ const WebsiteImageManager: React.FC = () => {
           />
         </div>
       </div>
-      
+
       <Tabs defaultValue="stored" className="space-y-4">
         <TabsList>
           <TabsTrigger value="stored">Stored Images</TabsTrigger>
-          <TabsTrigger value="migrate">Lovable Migration</TabsTrigger>
+          <TabsTrigger value="migrate">External Migration</TabsTrigger>
         </TabsList>
-        
+
         <TabsContent value="stored" className="space-y-4">
           <div className="flex flex-wrap gap-2 mb-4">
             {['website', 'blog', 'uploads', 'products'].map(folder => (
@@ -426,7 +335,7 @@ const WebsiteImageManager: React.FC = () => {
               </Button>
             ))}
           </div>
-            
+
           {isLoading ? (
             <div className="flex items-center justify-center p-12">
               <Loader2 className="h-8 w-8 animate-spin text-gray-500" />
@@ -434,16 +343,16 @@ const WebsiteImageManager: React.FC = () => {
           ) : filteredImages.length > 0 ? (
             <div className="grid grid-cols-2 md:grid-cols-4 gap-4">
               {filteredImages.map((image, index) => (
-                <div 
-                  key={index} 
+                <div
+                  key={index}
                   className="relative aspect-square border rounded-md bg-gray-50 overflow-hidden group"
                 >
-                  <img 
-                    src={image.url} 
+                  <img
+                    src={image.url}
                     alt={image.name}
-                    className="w-full h-full object-cover" 
+                    className="w-full h-full object-cover"
                   />
-                  
+
                   <div className="absolute inset-0 bg-black bg-opacity-0 group-hover:bg-opacity-50 transition-all flex items-center justify-center opacity-0 group-hover:opacity-100">
                     <Button
                       variant="destructive"
@@ -459,7 +368,7 @@ const WebsiteImageManager: React.FC = () => {
                       )}
                     </Button>
                   </div>
-                  
+
                   <div className="absolute bottom-0 left-0 right-0 bg-black bg-opacity-50 text-white text-xs p-1 truncate">
                     {image.name}
                   </div>
@@ -475,18 +384,18 @@ const WebsiteImageManager: React.FC = () => {
             </div>
           )}
         </TabsContent>
-        
+
         <TabsContent value="migrate" className="space-y-4">
           <Alert>
             <AlertDescription>
-              This tool helps you scan your website for images from Lovable uploads and migrate them to Supabase storage.
+              This tool helps you scan your website for images from External uploads and migrate them to Supabase storage.
               All images will be compressed to max 400KB and converted to WebP format for better performance.
             </AlertDescription>
           </Alert>
-          
+
           <div className="flex flex-wrap gap-2">
             <Button
-              onClick={scanWebsiteForLovableUploads}
+              onClick={scanWebsiteForExternalUploads}
               disabled={isMigrating}
               variant="outline"
             >
@@ -495,12 +404,12 @@ const WebsiteImageManager: React.FC = () => {
               ) : (
                 <RefreshCw className="mr-2 h-4 w-4" />
               )}
-              Scan for Lovable Uploads
+              Scan for External Uploads
             </Button>
-            
+
             <Button
-              onClick={handleMigrateLovableImages}
-              disabled={isMigrating || lovableImages.length === 0}
+              onClick={handleMigrateExternalImages}
+              disabled={isMigrating || externalImages.length === 0}
               className="bg-admin-primary hover:bg-admin-accent"
             >
               {isMigrating ? (
@@ -511,16 +420,16 @@ const WebsiteImageManager: React.FC = () => {
               ) : (
                 <>
                   <UploadCloud className="mr-2 h-4 w-4" />
-                  Migrate {lovableImages.length} Images
+                  Migrate {externalImages.length} Images
                 </>
               )}
             </Button>
           </div>
-          
+
           {isMigrating && (
             <div className="mt-4">
               <div className="h-2 bg-gray-200 rounded-full overflow-hidden">
-                <div 
+                <div
                   className="h-full bg-green-500 transition-all"
                   style={{ width: `${migrationProgress}%` }}
                 ></div>
@@ -528,13 +437,13 @@ const WebsiteImageManager: React.FC = () => {
               <p className="text-sm text-center mt-1">{migrationProgress}% Complete</p>
             </div>
           )}
-          
-          {lovableImages.length > 0 && (
+
+          {externalImages.length > 0 && (
             <div className="mt-4">
-              <h3 className="font-semibold mb-2">Found Lovable Uploads ({lovableImages.length})</h3>
+              <h3 className="font-semibold mb-2">Found External Uploads ({externalImages.length})</h3>
               <div className="max-h-60 overflow-y-auto border rounded-md p-2">
                 <ul className="space-y-1 text-xs">
-                  {lovableImages.map((url, idx) => (
+                  {externalImages.map((url, idx) => (
                     <li key={idx} className="truncate text-blue-600 hover:underline">
                       <a href={url} target="_blank" rel="noreferrer">{url}</a>
                     </li>
@@ -545,7 +454,7 @@ const WebsiteImageManager: React.FC = () => {
           )}
         </TabsContent>
       </Tabs>
-      
+
       {/* Delete Confirmation Dialog */}
       <ConfirmDialog
         open={deleteConfirmOpen}

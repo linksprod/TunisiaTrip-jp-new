@@ -37,7 +37,7 @@ export function LanguageSelector() {
           <div className="flex items-center gap-2">
             {currentLanguage === "JP" ? (
               <img 
-                src="/lovable-uploads/5d66739d-6d91-48f0-99e6-f5ec39df4306.png" 
+                src="/uploads/5d66739d-6d91-48f0-99e6-f5ec39df4306.png" 
                 alt="Japanese flag" 
                 className="w-6 h-5 object-cover border border-gray-200 rounded-sm shadow-sm"
               />
@@ -65,7 +65,7 @@ export function LanguageSelector() {
           <SelectItem value="JP" className="flex items-center gap-2">
             <span className="flex items-center gap-2">
               <img 
-                src="/lovable-uploads/5d66739d-6d91-48f0-99e6-f5ec39df4306.png" 
+                src="/uploads/5d66739d-6d91-48f0-99e6-f5ec39df4306.png" 
                 alt="Japanese flag" 
                 className="w-6 h-5 object-cover border border-gray-200 rounded-sm shadow-sm"
               />

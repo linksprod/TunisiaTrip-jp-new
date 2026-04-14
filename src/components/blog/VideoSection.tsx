@@ -16,19 +16,19 @@ const videos: VideoCard[] = [
   {
     title: "MYSTICAL EXPLORATIONS IN TUNISIA",
     subtitle: "Watch video",
-    image: "/lovable-uploads/f490eb11-b7d5-4bb1-86c7-33f38275a59b.png",
+    image: "/uploads/f490eb11-b7d5-4bb1-86c7-33f38275a59b.png",
     comingSoon: true
   },
   {
     title: "TUNIS VLOG",
     subtitle: "チュニジアのメディナでのブイログ",
-    image: "/lovable-uploads/7004eb7b-0db7-4919-a8fd-c6eb54f3e157.png",
+    image: "/uploads/7004eb7b-0db7-4919-a8fd-c6eb54f3e157.png",
     comingSoon: true
   },
   {
     title: "DISCOVER TOZEUR",
     subtitle: "トジュールを発見",
-    image: "/lovable-uploads/2a55f591-b880-443b-bfe4-1f5662503a3d.png",
+    image: "/uploads/2a55f591-b880-443b-bfe4-1f5662503a3d.png",
     comingSoon: true
   }
 ];

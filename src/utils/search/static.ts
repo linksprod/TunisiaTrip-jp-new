@@ -9,7 +9,7 @@ export const staticSearchData: SearchItem[] = [
     path: '/about-tunisia',
     category: 'about',
     titleJP: 'チュニジアについて',
-    image: '/lovable-uploads/2341be42-96ea-48c1-83f9-701f53a33454.png',
+    image: '/uploads/2341be42-96ea-48c1-83f9-701f53a33454.png',
     keywords: [
       'tunisia', 'about', 'information', 'country', 'overview',
       'north africa', 'maghreb', 'mediterranean', 'introduction',
@@ -26,7 +26,7 @@ export const staticSearchData: SearchItem[] = [
     section: 'culture',
     category: 'about',
     titleJP: 'チュニジア文化',
-    image: '/lovable-uploads/cbd7751a-e460-45c8-847d-849a5ca51bcc.png',
+    image: '/uploads/cbd7751a-e460-45c8-847d-849a5ca51bcc.png',
     keywords: [
       'culture', 'traditions', 'customs', 'heritage', 'cultural',
       'art', 'crafts', 'music', 'dance', 'traditional',
@@ -44,7 +44,7 @@ export const staticSearchData: SearchItem[] = [
     section: 'languages',
     category: 'about',
     titleJP: 'チュニジアの言語',
-    image: '/lovable-uploads/67d662bd-9913-40c8-9171-f34177b63a89.png',
+    image: '/uploads/67d662bd-9913-40c8-9171-f34177b63a89.png',
     keywords: [
       'languages', 'arabic', 'french', 'language', 'speak',
       'dialect', 'tunisian', 'communication', 'linguistic',
@@ -62,7 +62,7 @@ export const staticSearchData: SearchItem[] = [
     section: 'weather',
     category: 'about',
     titleJP: 'チュニジアの天気と気候',
-    image: '/lovable-uploads/e18f95d0-cdde-41b5-91cf-75188ee44366.png',
+    image: '/uploads/e18f95d0-cdde-41b5-91cf-75188ee44366.png',
     keywords: [
       'weather', 'climate', 'temperature', 'forecast',
       'seasons', 'summer', 'winter', 'spring', 'autumn',
@@ -79,7 +79,7 @@ export const staticSearchData: SearchItem[] = [
     path: '/travel-information',
     category: 'travel',
     titleJP: '旅行情報',
-    image: '/lovable-uploads/4baa4a7e-ac9b-4e42-8219-450bde66a3df.png',
+    image: '/uploads/4baa4a7e-ac9b-4e42-8219-450bde66a3df.png',
     keywords: [
       'travel', 'tourism', 'information', 'guide', 'trip',
       'itinerary', 'tours', 'excursions', 'visiting',
@@ -97,7 +97,7 @@ export const staticSearchData: SearchItem[] = [
     tab: 'activities',
     category: 'travel',
     titleJP: 'チュニジアのアクティビティ',
-    image: '/lovable-uploads/96f6d1b7-6b24-4d51-9156-76ddba2842af.png',
+    image: '/uploads/96f6d1b7-6b24-4d51-9156-76ddba2842af.png',
     keywords: [
       'activities', 'attractions', 'sites', 'visits', 'things to do',
       'excursions', 'experiences', 'leisure', 'entertainment',
@@ -117,7 +117,7 @@ export const staticSearchData: SearchItem[] = [
     scrollTo: 'museums',
     category: 'travel',
     titleJP: 'チュニジアの博物館',
-    image: '/lovable-uploads/8dc0707d-46c0-424d-a35a-6ef7a8b8436a.png',
+    image: '/uploads/8dc0707d-46c0-424d-a35a-6ef7a8b8436a.png',
     keywords: [
       'museums', 'heritage', 'history', 'historical',
       'archaeology', 'exhibitions', 'collections', 'art',
@@ -136,7 +136,7 @@ export const staticSearchData: SearchItem[] = [
     section: 'transportation',
     category: 'travel',
     titleJP: 'チュニジアの交通',
-    image: '/lovable-uploads/8d781b00-a095-48ad-ab1e-c584f33cc173.png',
+    image: '/uploads/8d781b00-a095-48ad-ab1e-c584f33cc173.png',
     keywords: [
       'transport', 'transportation', 'travel', 'taxi', 'bus',
       'train', 'car', 'rental', 'plane', 'airport',
@@ -155,7 +155,7 @@ export const staticSearchData: SearchItem[] = [
     scrollTo: 'hotels',
     category: 'accommodation',
     titleJP: 'ホテル・宿泊施設',
-    image: '/lovable-uploads/887573e2-027f-4492-8fb5-dab816ee46da.png',
+    image: '/uploads/887573e2-027f-4492-8fb5-dab816ee46da.png',
     keywords: [
       'hotels', 'accommodation', 'stay', 'lodging',
       'rooms', 'booking', 'reservation', 'guest houses',
@@ -172,7 +172,7 @@ export const staticSearchData: SearchItem[] = [
     path: '/company-information',
     category: 'atlantis',
     titleJP: 'アトランティス旅行サービス',
-    image: '/lovable-uploads/bd5ba590-fb88-434b-b2b0-a6eae62e1144.png',
+    image: '/uploads/bd5ba590-fb88-434b-b2b0-a6eae62e1144.png',
     keywords: [
       'atlantis', 'travel', 'services', 'agency', 'professional',
       'organization', 'bookings', 'assistance', 'support',
@@ -190,7 +190,7 @@ export const staticSearchData: SearchItem[] = [
     tab: 'itinerary',
     category: 'travel',
     titleJP: 'ツアーパッケージ',
-    image: '/lovable-uploads/4baa4a7e-ac9b-4e42-8219-450bde66a3df.png',
+    image: '/uploads/4baa4a7e-ac9b-4e42-8219-450bde66a3df.png',
     keywords: [
       'tours', 'packages', 'itineraries', 'programs',
       'stays', 'organized trips', 'groups', 'individual',
@@ -207,7 +207,7 @@ export const staticSearchData: SearchItem[] = [
     path: '/blog?category=food',
     category: 'blog',
     titleJP: 'チュニジア料理',
-    image: '/lovable-uploads/6cb11651-d5dc-47a3-ba8c-2b563eaa9b25.png',
+    image: '/uploads/6cb11651-d5dc-47a3-ba8c-2b563eaa9b25.png',
     keywords: [
       'food', 'cuisine', 'gastronomy', 'dishes', 'eating',
       'specialties', 'couscous', 'tajine', 'brik', 'harissa',
@@ -224,7 +224,7 @@ export const staticSearchData: SearchItem[] = [
     path: '/blog',
     category: 'blog',
     titleJP: 'ブログ・記事',
-    image: '/lovable-uploads/e344bb17-31ee-41bb-90b5-fb4b09b103e0.png',
+    image: '/uploads/e344bb17-31ee-41bb-90b5-fb4b09b103e0.png',
     keywords: [
       'blog', 'articles', 'news', 'information', 'stories',
       'tips', 'guides', 'testimonials', 'experiences',

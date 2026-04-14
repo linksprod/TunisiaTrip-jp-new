@@ -6,7 +6,7 @@ import { MapPin, Hotel, Star, Plus, Check } from 'lucide-react';
 import { Activity } from '@/data/activities';
 import { Hotel as HotelType } from '@/data/hotels';
 import { GuestHouse } from '@/data/guestHouses';
-import { findNearbyAccommodations, calculateDistance } from '@/utils/geographicalHelpers';
+import { findNearbyAccommodations, calculatePureDistance as calculateDistance } from '@/services/geographicalService';
 import { TranslateText } from "@/components/translation/TranslateText";
 import { useTranslation } from "@/hooks/use-translation";
 
@@ -65,10 +65,9 @@ export function SmartActivityCard({
   return (
     <div className="space-y-3">
       {/* Activity Card */}
-      <Card 
-        className={`cursor-pointer transition-all duration-200 hover:shadow-md ${
-          isSelected ? 'ring-2 ring-primary bg-primary/5' : ''
-        }`}
+      <Card
+        className={`cursor-pointer transition-all duration-200 hover:shadow-md ${isSelected ? 'ring-2 ring-primary bg-primary/5' : ''
+          }`}
         onClick={handleActivityToggle}
       >
         <CardContent className="p-4">
@@ -79,13 +78,12 @@ export function SmartActivityCard({
                 alt={activity.name}
                 className="w-20 h-20 object-cover rounded-lg"
               />
-              <div className={`absolute -top-2 -right-2 w-6 h-6 rounded-full flex items-center justify-center ${
-                isSelected ? 'bg-primary text-white' : 'bg-gray-200 text-gray-400'
-              }`}>
+              <div className={`absolute -top-2 -right-2 w-6 h-6 rounded-full flex items-center justify-center ${isSelected ? 'bg-primary text-white' : 'bg-gray-200 text-gray-400'
+                }`}>
                 {isSelected ? <Check className="h-4 w-4" /> : <Plus className="h-4 w-4" />}
               </div>
             </div>
-            
+
             <div className="flex-1 min-w-0">
               <h3 className="font-semibold text-base mb-1 truncate">
                 <TranslateText text={activity.name} language={currentLanguage} />
@@ -97,7 +95,7 @@ export function SmartActivityCard({
               <p className="text-sm text-gray-700 line-clamp-2">
                 <TranslateText text={activity.description || ''} language={currentLanguage} />
               </p>
-              
+
               {isSelected && (nearbyHotels.length > 0 || nearbyGuestHouses.length > 0) && (
                 <Button
                   variant="outline"
@@ -109,9 +107,9 @@ export function SmartActivityCard({
                   }}
                 >
                   <Hotel className="h-3 w-3 mr-1" />
-                  <TranslateText 
-                    text={`${nearbyHotels.length + nearbyGuestHouses.length} hébergements proches`} 
-                    language={currentLanguage} 
+                  <TranslateText
+                    text={`${nearbyHotels.length + nearbyGuestHouses.length} hébergements proches`}
+                    language={currentLanguage}
                   />
                 </Button>
               )}
@@ -128,17 +126,16 @@ export function SmartActivityCard({
               <Hotel className="h-4 w-4" />
               <TranslateText text="Hébergements recommandés à proximité" language={currentLanguage} />
             </h4>
-            
+
             <div className="space-y-3">
               {/* Hotels */}
               {nearbyHotels.slice(0, 2).map(hotel => (
                 <div
                   key={hotel.id}
-                  className={`flex items-center gap-3 p-3 rounded-lg border cursor-pointer transition-all ${
-                    selectedHotels.includes(hotel.id)
+                  className={`flex items-center gap-3 p-3 rounded-lg border cursor-pointer transition-all ${selectedHotels.includes(hotel.id)
                       ? 'bg-green-100 border-green-300'
                       : 'bg-white border-gray-200 hover:border-blue-300'
-                  }`}
+                    }`}
                   onClick={() => onHotelSelect(hotel.id)}
                 >
                   <img
@@ -160,11 +157,10 @@ export function SmartActivityCard({
                       </Badge>
                     )}
                   </div>
-                  <div className={`w-5 h-5 rounded-full border-2 flex items-center justify-center ${
-                    selectedHotels.includes(hotel.id)
+                  <div className={`w-5 h-5 rounded-full border-2 flex items-center justify-center ${selectedHotels.includes(hotel.id)
                       ? 'bg-green-500 border-green-500'
                       : 'border-gray-300'
-                  }`}>
+                    }`}>
                     {selectedHotels.includes(hotel.id) && (
                       <Check className="h-3 w-3 text-white" />
                     )}
@@ -176,11 +172,10 @@ export function SmartActivityCard({
               {nearbyGuestHouses.slice(0, 2).map(guestHouse => (
                 <div
                   key={guestHouse.id}
-                  className={`flex items-center gap-3 p-3 rounded-lg border cursor-pointer transition-all ${
-                    selectedGuestHouses.includes(guestHouse.id)
+                  className={`flex items-center gap-3 p-3 rounded-lg border cursor-pointer transition-all ${selectedGuestHouses.includes(guestHouse.id)
                       ? 'bg-green-100 border-green-300'
                       : 'bg-white border-gray-200 hover:border-blue-300'
-                  }`}
+                    }`}
                   onClick={() => onGuestHouseSelect(guestHouse.id)}
                 >
                   <img
@@ -198,11 +193,10 @@ export function SmartActivityCard({
                     </div>
                     <p className="text-xs text-gray-600 truncate">{guestHouse.location}</p>
                   </div>
-                  <div className={`w-5 h-5 rounded-full border-2 flex items-center justify-center ${
-                    selectedGuestHouses.includes(guestHouse.id)
+                  <div className={`w-5 h-5 rounded-full border-2 flex items-center justify-center ${selectedGuestHouses.includes(guestHouse.id)
                       ? 'bg-green-500 border-green-500'
                       : 'border-gray-300'
-                  }`}>
+                    }`}>
                     {selectedGuestHouses.includes(guestHouse.id) && (
                       <Check className="h-3 w-3 text-white" />
                     )}

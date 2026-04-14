@@ -1,5 +1,4 @@
-import { calculateDistance } from './geographicalHelpers';
-import { getAccommodationForActivities, getActivityRegion } from './geographicalMatching';
+import { calculatePureDistance as calculateDistance, getActivityRegion } from '../services/geographicalService';
 import { Activity } from '@/data/activities';
 
 export interface AccommodationWithProximity {
@@ -45,9 +44,9 @@ export function getProximityBasedRecommendations(
     allHotels
       .filter(hotel => hotel.id && selectedHotelIds.includes(hotel.id.toString()))
       .forEach(hotel => {
-        const hotelCoords = hotel.coordinates || 
+        const hotelCoords = hotel.coordinates ||
           (hotel.latitude && hotel.longitude ? { lat: hotel.latitude, lng: hotel.longitude } : null);
-        
+
         if (!hotelCoords) return;
 
         const distance = calculateDistance(
@@ -86,9 +85,9 @@ export function getProximityBasedRecommendations(
     allGuestHouses
       .filter(guestHouse => guestHouse.id && selectedGuestHouseIds.includes(guestHouse.id.toString()))
       .forEach(guestHouse => {
-        const guestHouseCoords = guestHouse.coordinates || 
+        const guestHouseCoords = guestHouse.coordinates ||
           (guestHouse.latitude && guestHouse.longitude ? { lat: guestHouse.latitude, lng: guestHouse.longitude } : null);
-        
+
         if (!guestHouseCoords) return;
 
         const distance = calculateDistance(
@@ -163,9 +162,9 @@ export function getProximityBasedRecommendations(
   if (allRecommendations.length > 0) {
     const closestAccommodation = allRecommendations[0];
     filteredRecommendations.push(closestAccommodation);
-    
+
     console.log('Closest accommodation:', closestAccommodation.name, 'at', closestAccommodation.distance, 'km');
-    
+
     // Add additional accommodations only if they're within 30km of the closest one
     for (let i = 1; i < allRecommendations.length; i++) {
       const distanceBetweenAccommodations = calculateDistance(
@@ -174,9 +173,9 @@ export function getProximityBasedRecommendations(
         allRecommendations[i].coordinates.lat,
         allRecommendations[i].coordinates.lng
       );
-      
+
       console.log(`Distance between ${closestAccommodation.name} and ${allRecommendations[i].name}: ${distanceBetweenAccommodations} km`);
-      
+
       if (distanceBetweenAccommodations <= 30) {
         filteredRecommendations.push(allRecommendations[i]);
         console.log(`Added ${allRecommendations[i].name} (within 30km)`);

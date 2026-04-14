@@ -9,37 +9,37 @@ const hotels = [
   {
     name: "Four Seasons Hotel",
     location: "Tunis, Tunisia",
-    image: "/lovable-uploads/31fa750b-9618-4556-9aa2-c9b62cf3b480.png",
+    image: "/uploads/31fa750b-9618-4556-9aa2-c9b62cf3b480.png",
     rating: 5,
   },
   {
     name: "Anantara Tozeur",
     location: "Tozeur, Tunisia",
-    image: "/lovable-uploads/7848de0b-5463-4416-ae56-7922714a447b.png",
+    image: "/uploads/7848de0b-5463-4416-ae56-7922714a447b.png",
     rating: 5,
   },
   {
     name: "Movenpick Sousse",
     location: "Sousse, Tunisia",
-    image: "/lovable-uploads/d5b362eb-773a-485d-aa39-67eff2ccf55e.png",
+    image: "/uploads/d5b362eb-773a-485d-aa39-67eff2ccf55e.png",
     rating: 5,
   },
   {
     name: "The Residence Tunis",
     location: "Tunis, Tunisia",
-    image: "/lovable-uploads/4de6ef16-ca24-431b-899d-e5c7cf11c73c.png",
+    image: "/uploads/4de6ef16-ca24-431b-899d-e5c7cf11c73c.png",
     rating: 5,
   },
   {
     name: "Le Kasbah Kairouan",
     location: "Kairouan, Tunisia",
-    image: "/lovable-uploads/4fdc3022-820b-4653-8401-6d31df53747b.png",
+    image: "/uploads/4fdc3022-820b-4653-8401-6d31df53747b.png",
     rating: 5,
   },
   {
     name: "Pansy KSAR Ghilene",
     location: "Ghilene, Tunisia",
-    image: "/lovable-uploads/53341fca-0b8d-47ff-a07c-7a30290c0170.png",
+    image: "/uploads/53341fca-0b8d-47ff-a07c-7a30290c0170.png",
     rating: 5,
   },
 ];

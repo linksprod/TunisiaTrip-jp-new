@@ -16,7 +16,7 @@ export function DynamicMetaTags() {
   const japaneseUrl = `${baseUrl}${currentPath}`;
 
   // Japanese site only - fixed OG image
-  const ogImage = "https://tunisiatrip.jp/lovable-uploads/0c1b3cad-b8c4-4e02-a789-e700a147f440.png";
+  const ogImage = "https://tunisiatrip.jp/uploads/0c1b3cad-b8c4-4e02-a789-e700a147f440.png";
 
   // Japanese site meta content
   const metaContent = {

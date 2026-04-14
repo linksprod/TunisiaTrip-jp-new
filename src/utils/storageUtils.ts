@@ -1,6 +1,7 @@
 import { supabase } from "@/integrations/supabase/client";
 import { v4 as uuidv4 } from "uuid";
 import { toast } from "@/components/ui/use-toast";
+import { EXTERNAL_UPLOAD_PATTERNS } from "./imageMigrationUtils";
 
 const BUCKET_NAME = "website_images"; // Using the existing bucket
 const MAX_FILE_SIZE = 400 * 1024; // 400 KB in bytes
@@ -18,30 +19,30 @@ export const compressImage = async (file: File, maxSizeKB = 100): Promise<Blob> 
     reader.onload = (event) => {
       const img = new Image();
       img.src = event.target?.result as string;
-      
+
       img.onload = () => {
         const canvas = document.createElement('canvas');
         let width = img.width;
         let height = img.height;
-        
+
         // Keep aspect ratio while resizing if needed
         if (width > 1920 || height > 1080) {
           const ratio = Math.min(1920 / width, 1080 / height);
           width *= ratio;
           height *= ratio;
         }
-        
+
         canvas.width = width;
         canvas.height = height;
-        
+
         const ctx = canvas.getContext('2d');
         if (!ctx) {
           reject(new Error('Could not get canvas context'));
           return;
         }
-        
+
         ctx.drawImage(img, 0, 0, width, height);
-        
+
         // Start with high quality
         let quality = 0.9;
         const tryCompression = () => {
@@ -53,7 +54,7 @@ export const compressImage = async (file: File, maxSizeKB = 100): Promise<Blob> 
                 reject(new Error('Could not create blob from canvas'));
                 return;
               }
-              
+
               // Check if the blob size is within limits
               if (blob.size <= maxSizeKB * 1024 || quality <= 0.3) {
                 // If size is good or we've reduced quality enough, return the blob
@@ -68,15 +69,15 @@ export const compressImage = async (file: File, maxSizeKB = 100): Promise<Blob> 
             quality
           );
         };
-        
+
         tryCompression();
       };
-      
+
       img.onerror = () => {
         reject(new Error('Failed to load image for compression'));
       };
     };
-    
+
     reader.onerror = () => {
       reject(new Error('Could not read the file'));
     };
@@ -92,7 +93,7 @@ const ensureBucketExists = async (): Promise<void> => {
   // we'll just check if we can access it
   try {
     const { data, error } = await supabase.storage.from(BUCKET_NAME).list();
-    
+
     if (error) {
       console.warn(`Warning: Could not access the ${BUCKET_NAME} bucket. Uploads may fail.`, error);
     } else {
@@ -113,20 +114,20 @@ export const uploadImage = async (file: File, folder = "blog"): Promise<string |
   try {
     // First check if bucket is accessible
     await ensureBucketExists();
-    
+
     // Compress and convert to WebP if it's an image
     let fileToUpload: File | Blob = file;
     let fileName = file.name;
-    
+
     if (file.type.startsWith('image/')) {
       console.log("Compressing image before upload...");
       try {
         // Compress the image
         const compressedBlob = await compressImage(file);
-        
+
         // Generate a unique filename with WebP extension
         fileName = `${uuidv4()}.webp`;
-        
+
         // Convert Blob to File
         fileToUpload = new File([compressedBlob], fileName, { type: 'image/webp' });
         console.log(`Image compressed: ${file.size} -> ${compressedBlob.size} bytes`);
@@ -142,9 +143,9 @@ export const uploadImage = async (file: File, folder = "blog"): Promise<string |
       const fileExt = file.name.split('.').pop();
       fileName = `${uuidv4()}.${fileExt}`;
     }
-    
+
     console.log(`Uploading file to ${folder}/${fileName}`);
-    
+
     // Upload the file
     const { data, error } = await supabase.storage
       .from(BUCKET_NAME)
@@ -152,10 +153,10 @@ export const uploadImage = async (file: File, folder = "blog"): Promise<string |
         cacheControl: "3600",
         upsert: true // Overwrite if file exists
       });
-    
+
     if (error) {
       console.error("Error uploading image:", error);
-      
+
       // Provide more specific error messages
       if (error.message.includes("does not exist")) {
         toast({
@@ -178,12 +179,12 @@ export const uploadImage = async (file: File, folder = "blog"): Promise<string |
       }
       return null;
     }
-    
+
     // Get public URL
     const { data: { publicUrl } } = supabase.storage
       .from(BUCKET_NAME)
       .getPublicUrl(`${folder}/${fileName}`);
-      
+
     console.log("Upload successful, URL:", publicUrl);
     return publicUrl;
   } catch (err) {
@@ -208,13 +209,13 @@ export const deleteImage = async (imageUrl: string): Promise<boolean> => {
     const urlObj = new URL(imageUrl);
     const pathParts = urlObj.pathname.split('/');
     const fileName = pathParts.slice(2).join('/'); // Remove domain and bucket part
-    
+
     console.log(`Attempting to delete file: ${fileName}`);
-    
+
     const { error } = await supabase.storage
       .from(BUCKET_NAME)
       .remove([fileName]);
-    
+
     if (error) {
       console.error("Error deleting image:", error);
       toast({
@@ -224,7 +225,7 @@ export const deleteImage = async (imageUrl: string): Promise<boolean> => {
       });
       return false;
     }
-    
+
     console.log("File deleted successfully");
     return true;
   } catch (err) {
@@ -247,12 +248,12 @@ export const listImages = async (folder = "blog"): Promise<string[]> => {
   const { data, error } = await supabase.storage
     .from(BUCKET_NAME)
     .list(folder);
-  
+
   if (error) {
     console.error("Error listing images:", error);
     return [];
   }
-  
+
   return data
     .filter(item => !item.id.endsWith('/')) // Filter out folders
     .map(item => {
@@ -280,7 +281,7 @@ const isValidImageUrl = async (url: string): Promise<boolean> => {
 };
 
 /**
- * Migrates existing images to Supabase storage with focus on Lovable uploads
+ * Migrates existing images to Supabase storage with focus on External uploads
  * @param imageUrls Array of image URLs to migrate
  * @param folder Target folder in storage
  * @param progressCallback Function to report progress
@@ -298,14 +299,14 @@ export const migrateExistingImages = async (
   };
 
   // Filter out already migrated URLs or invalid URLs
-  // Here we're specifically focusing on Lovable uploads
-  const filteredUrls = imageUrls.filter(url => 
-    !url.includes('storage.googleapis.com') && 
+  // Here we're specifically focusing on External uploads
+  const filteredUrls = imageUrls.filter(url =>
+    !url.includes('storage.googleapis.com') &&
     !url.includes('supabase.co') &&
-    !url.endsWith('.svg') && 
-    (url.includes('/lovable-uploads/') || url.includes('lovableproject.com'))
+    !url.endsWith('.svg') &&
+    EXTERNAL_UPLOAD_PATTERNS.some(pattern => url.includes(pattern))
   );
-  
+
   if (filteredUrls.length === 0) {
     return results;
   }
@@ -313,10 +314,10 @@ export const migrateExistingImages = async (
   // Process in batches to avoid overwhelming the network
   const batchSize = 5;
   const totalItems = filteredUrls.length;
-  
+
   for (let i = 0; i < filteredUrls.length; i += batchSize) {
     const batch = filteredUrls.slice(i, i + batchSize);
-    
+
     // Process batch in parallel
     const batchResults = await Promise.allSettled(
       batch.map(async (url) => {
@@ -326,39 +327,39 @@ export const migrateExistingImages = async (
           if (!isValid) {
             throw new Error(`Invalid image URL or not accessible: ${url}`);
           }
-          
+
           // Fetch the image
           const response = await fetch(url);
           if (!response.ok) {
             throw new Error(`Failed to fetch image (${response.status}): ${url}`);
           }
-          
+
           // Get file extension from URL or content-type
           const contentType = response.headers.get('content-type') || '';
           const urlPath = new URL(url).pathname;
           let originalFilename = urlPath.split('/').pop() || 'image';
-          
+
           // Some URLs might not have file extensions
           const hasExtension = originalFilename.includes('.');
           const extension = hasExtension
-            ? originalFilename.split('.').pop()?.toLowerCase() 
+            ? originalFilename.split('.').pop()?.toLowerCase()
             : contentType.split('/').pop() || 'jpg';
-            
+
           if (!hasExtension) {
             originalFilename = `${originalFilename}.${extension}`;
           }
-          
+
           // Convert to blob
           const blob = await response.blob();
-          
+
           // Create a File object
-          const file = new File([blob], originalFilename, { 
-            type: contentType || `image/${extension}` 
+          const file = new File([blob], originalFilename, {
+            type: contentType || `image/${extension}`
           });
-          
+
           // Upload to Supabase using our existing function which handles compression
           const newUrl = await uploadImage(file, folder);
-          
+
           if (newUrl) {
             return { originalUrl: url, newUrl };
           } else {
@@ -370,7 +371,7 @@ export const migrateExistingImages = async (
         }
       })
     );
-    
+
     // Process batch results
     batchResults.forEach((result) => {
       if (result.status === 'fulfilled' && 'newUrl' in result.value) {
@@ -380,18 +381,18 @@ export const migrateExistingImages = async (
         results.failed++;
       }
     });
-    
+
     // Report progress
     const progress = Math.min(100, Math.round(((i + batch.length) / totalItems) * 100));
     if (progressCallback) {
       progressCallback(progress);
     }
-    
+
     // Small delay to avoid rate limiting
     if (i + batchSize < filteredUrls.length) {
       await new Promise(resolve => setTimeout(resolve, 500));
     }
   }
-  
+
   return results;
 };

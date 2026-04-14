@@ -24,19 +24,19 @@ export function CountryLocationContent() {
   // Info box data
   const infoBoxes = [
     {
-      image: "/lovable-uploads/cb67e138-371a-4482-9650-3409b56f6de7.png",
+      image: "/uploads/cb67e138-371a-4482-9650-3409b56f6de7.png",
       category: "Interesting Fact",
       title: "Northernmost point in Africa",
       description: "It is located at the northernmost point of the African continent and is the smallest of the countries along the Atlas Mountains."
     },
     {
-      image: "/lovable-uploads/e344bb17-31ee-41bb-90b5-fb4b09b103e0.png",
+      image: "/uploads/e344bb17-31ee-41bb-90b5-fb4b09b103e0.png",
       category: "Location in Africa",
       title: "North Africa",
       description: "Located in the Maghreb region, which means \"the land where the sun sets\" in Arabic, Tunisia is bordered by Algeria to the west and Libya to the southeast."
     },
     {
-      image: "/lovable-uploads/134dc3ba-4ed3-4d2d-adf9-27e9258ee4cd.png",
+      image: "/uploads/134dc3ba-4ed3-4d2d-adf9-27e9258ee4cd.png",
       category: "Location in Mediterranean Sea",
       title: "Mediterranean Sea",
       description: "Located on the western shore of the Mediterranean, it's also the gateway between Africa and Europe."
@@ -60,7 +60,7 @@ export function CountryLocationContent() {
       {/* Main World Map Section */}
       <div className="bg-white rounded-[13px] overflow-hidden flex justify-center items-center p-0 mb-4">
         <img 
-          src="/lovable-uploads/534c60aa-bed3-4af9-af75-4cfbfd73f35e.png" 
+          src="/uploads/534c60aa-bed3-4af9-af75-4cfbfd73f35e.png" 
           alt="Tunisia World Map Location" 
           className="w-full h-auto object-contain"
         />

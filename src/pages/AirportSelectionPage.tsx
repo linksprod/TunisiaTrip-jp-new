@@ -10,7 +10,6 @@ import { Label } from "@/components/ui/label";
 import { TranslateText } from "@/components/translation/TranslateText";
 import { useTranslation } from "@/hooks/use-translation";
 import { toast } from "sonner";
-import { generateSmartItinerary } from "@/utils/smartItineraryGenerator";
 import { useAirports } from "@/hooks/useAirports";
 import { AirportMap } from "@/components/start-my-trip/AirportMap";
 import { useActivities } from "@/hooks/useActivities";
@@ -23,13 +22,13 @@ const AirportSelectionPage = () => {
   const navigate = useNavigate();
   const location = useLocation();
   const { currentLanguage } = useTranslation();
-  
+
   const selectedActivities = location.state?.selectedActivities || [];
   const selectedHotels = location.state?.selectedHotels || [];
   const selectedGuestHouses = location.state?.selectedGuestHouses || [];
   const checkInDate = location.state?.checkInDate;
   const checkOutDate = location.state?.checkOutDate;
-  
+
   const [arrivalAirport, setArrivalAirport] = useState<string | null>(null);
   const [departureAirport, setDepartureAirport] = useState<string | null>(null);
   const [isGeneratingItinerary, setIsGeneratingItinerary] = useState(false);
@@ -98,12 +97,12 @@ const AirportSelectionPage = () => {
   const findNearestAccommodations = (airportId: string) => {
     const airport = airports.find(a => a.id === airportId);
     if (!airport || !airport.latitude || !airport.longitude) return [];
-    
+
     const allAccommodations = [
       ...dbHotels.map(h => ({ ...h, type: 'hotel' })),
       ...dbGuestHouses.map(g => ({ ...g, type: 'guesthouse' }))
     ].filter(acc => acc.latitude && acc.longitude);
-    
+
     // Calculate distances and sort by proximity
     const withDistances = allAccommodations.map(acc => {
       const distance = calculateDistance(
@@ -112,7 +111,7 @@ const AirportSelectionPage = () => {
       );
       return { ...acc, distance };
     }).sort((a, b) => a.distance - b.distance);
-    
+
     return withDistances.slice(0, 3); // Top 3 nearest
   };
 
@@ -134,7 +133,7 @@ const AirportSelectionPage = () => {
     }
 
     setIsGeneratingItinerary(true);
-    
+
     toast.info(
       <TranslateText text="Generating your optimized itinerary..." language={currentLanguage} />,
       {
@@ -142,10 +141,10 @@ const AirportSelectionPage = () => {
         duration: 3000
       }
     );
-    
+
     try {
-      navigate('/itinerary-generation', { 
-        state: { 
+      navigate('/itinerary-generation', {
+        state: {
           selectedActivities,
           selectedHotels,
           selectedGuestHouses,
@@ -158,7 +157,7 @@ const AirportSelectionPage = () => {
           selectedDepartureAccommodation
         }
       });
-      
+
       toast.success(
         <TranslateText text="Your itinerary has been generated!" language={currentLanguage} />,
         {
@@ -194,16 +193,16 @@ const AirportSelectionPage = () => {
         <div className="w-full max-w-[1400px] mx-auto px-4 sm:px-6 md:px-8 py-6 sm:py-8 md:py-10">
           {/* Header */}
           <div className="mb-8">
-            <Button 
-              variant="ghost" 
-              className="flex items-center gap-2 text-primary hover:bg-primary/10 mb-4" 
+            <Button
+              variant="ghost"
+              className="flex items-center gap-2 text-primary hover:bg-primary/10 mb-4"
               onClick={handleBackToAccommodations}
               disabled={isGeneratingItinerary}
             >
               <ArrowLeft className="h-4 w-4" />
               <TranslateText text="Back to Accommodations" language={currentLanguage} />
             </Button>
-            
+
             <div className="text-center space-y-4">
               <h1 className="text-4xl font-bold text-foreground">
                 <TranslateText text="Choose Your Airports" language={currentLanguage} />
@@ -240,7 +239,7 @@ const AirportSelectionPage = () => {
                         {airportRecommendations.reasoning}
                       </p>
                       <div className="flex items-center gap-2 mt-3">
-                        <Badge 
+                        <Badge
                           variant={airportRecommendations.confidence === 'high' ? 'default' : 'secondary'}
                           className="text-xs"
                         >
@@ -267,8 +266,8 @@ const AirportSelectionPage = () => {
                     <h3 className="text-lg font-semibold text-blue-900 dark:text-blue-100 mb-3">
                       <TranslateText text="First Day Preference" language={currentLanguage} />
                     </h3>
-                    <RadioGroup 
-                      value={stayNearAirport ? "airport" : "activities"} 
+                    <RadioGroup
+                      value={stayNearAirport ? "airport" : "activities"}
                       onValueChange={(value) => setStayNearAirport(value === "airport")}
                     >
                       <div className="flex items-center space-x-2 mb-2">
@@ -284,7 +283,7 @@ const AirportSelectionPage = () => {
                         </Label>
                       </div>
                     </RadioGroup>
-                    
+
                     {stayNearAirport && arrivalAirport && (
                       <div className="mt-4 p-3 bg-blue-100/50 dark:bg-blue-900/20 rounded-lg">
                         <p className="text-sm text-blue-800 dark:text-blue-200 mb-3">
@@ -292,13 +291,12 @@ const AirportSelectionPage = () => {
                         </p>
                         <div className="grid gap-2">
                           {findNearestAccommodations(arrivalAirport).map(acc => (
-                            <Card 
-                              key={acc.id} 
-                              className={`cursor-pointer transition-all p-3 ${
-                                selectedArrivalAccommodation === acc.id 
-                                  ? 'ring-2 ring-primary bg-primary/5' 
+                            <Card
+                              key={acc.id}
+                              className={`cursor-pointer transition-all p-3 ${selectedArrivalAccommodation === acc.id
+                                  ? 'ring-2 ring-primary bg-primary/5'
                                   : 'hover:bg-muted/50'
-                              }`}
+                                }`}
                               onClick={() => setSelectedArrivalAccommodation(acc.id)}
                             >
                               <div className="flex items-center justify-between">
@@ -315,8 +313,8 @@ const AirportSelectionPage = () => {
                                   </div>
                                 </div>
                                 {acc.images?.[0] && (
-                                  <img 
-                                    src={acc.images[0]} 
+                                  <img
+                                    src={acc.images[0]}
                                     alt={acc.name}
                                     className="w-12 h-12 object-cover rounded ml-2"
                                   />
@@ -349,13 +347,12 @@ const AirportSelectionPage = () => {
                       </p>
                       <div className="grid gap-2">
                         {findNearestAccommodations(departureAirport).map(acc => (
-                          <Card 
-                            key={acc.id} 
-                            className={`cursor-pointer transition-all p-3 ${
-                              selectedDepartureAccommodation === acc.id 
-                                ? 'ring-2 ring-primary bg-primary/5' 
+                          <Card
+                            key={acc.id}
+                            className={`cursor-pointer transition-all p-3 ${selectedDepartureAccommodation === acc.id
+                                ? 'ring-2 ring-primary bg-primary/5'
                                 : 'hover:bg-muted/50'
-                            }`}
+                              }`}
                             onClick={() => setSelectedDepartureAccommodation(acc.id)}
                           >
                             <div className="flex items-center justify-between">
@@ -372,8 +369,8 @@ const AirportSelectionPage = () => {
                                 </div>
                               </div>
                               {acc.images?.[0] && (
-                                <img 
-                                  src={acc.images[0]} 
+                                <img
+                                  src={acc.images[0]}
                                   alt={acc.name}
                                   className="w-12 h-12 object-cover rounded ml-2"
                                 />
@@ -401,349 +398,345 @@ const AirportSelectionPage = () => {
                     <TranslateText text="Arrival Airport" language={currentLanguage} />
                   </h3>
                 </div>
-                 <div className="grid gap-3">
-                   {airports.map((airport) => {
-                     const isRecommended = isAirportRecommended(airport.id, 'arrival', airportRecommendations);
-                     const nearbyAccommodations = findNearestAccommodations(airport.id);
-                     return (
-                       <Card
-                         key={`arrival-${airport.id}`}
-                         className={`cursor-pointer transition-all hover:shadow-lg hover:border-primary/20 group relative ${
-                           arrivalAirport === airport.id ? 'ring-2 ring-primary bg-primary/5' : ''
-                         } ${isRecommended ? 'border-amber-200 bg-amber-50/30 dark:border-amber-800 dark:bg-amber-950/10' : ''}`}
-                         onClick={() => handleAirportSelect(airport.id, 'arrival')}
-                       >
-                         {isRecommended && (
-                           <div className="absolute top-2 right-2">
-                             <Badge variant="secondary" className="text-xs bg-amber-100 text-amber-800 dark:bg-amber-900 dark:text-amber-200">
-                               <Star className="h-3 w-3 mr-1" />
-                               <TranslateText text="Recommended" language={currentLanguage} />
-                             </Badge>
-                           </div>
-                         )}
-                         <CardContent className="p-4">
-                           <div className="flex items-start gap-4">
-                             {airport.images?.[0] && (
-                               <img 
-                                 src={airport.images[0]} 
-                                 alt={airport.name}
-                                 className="w-16 h-16 object-cover rounded-lg flex-shrink-0"
-                               />
-                             )}
-                             <div className="flex-1 min-w-0">
-                               <div className="flex items-center gap-2 mb-1">
-                                 <h4 className="font-bold text-base truncate">{airport.name}</h4>
-                                 <Badge variant="secondary" className="text-xs flex-shrink-0">
-                                   {airport.code}
-                                 </Badge>
-                               </div>
-                               <p className="text-sm text-muted-foreground flex items-center gap-1 mb-2">
-                                 <MapPin className="h-3 w-3 flex-shrink-0" />
-                                 <span className="truncate">{airport.location}</span>
-                               </p>
-                               {airport.description && (
-                                 <p className="text-xs text-muted-foreground mb-2 line-clamp-2">
-                                   {airport.description}
-                                 </p>
-                               )}
-                               
-                                {/* Nearby Accommodations Preview */}
-                                {nearbyAccommodations.length > 0 && (
-                                  <div className="mt-3 p-2 bg-muted/30 rounded-lg">
-                                    <p className="text-xs font-medium text-muted-foreground mb-2 flex items-center gap-1">
-                                      <Hotel className="h-3 w-3" />
-                                      <TranslateText text="Nearby accommodations:" language={currentLanguage} />
-                                    </p>
-                                    <div className="space-y-1">
-                                      {nearbyAccommodations.slice(0, 2).map(acc => (
-                                        <div key={acc.id} className="flex items-center justify-between text-xs">
-                                          <span className="truncate font-medium">{acc.name}</span>
-                                          <Badge variant="outline" className="text-xs ml-2 flex-shrink-0">
-                                            {Math.round(acc.distance)}km
-                                          </Badge>
-                                        </div>
-                                      ))}
-                                      {nearbyAccommodations.length > 2 && (
-                                        <p className="text-xs text-muted-foreground">
-                                          +{nearbyAccommodations.length - 2} more nearby
-                                        </p>
-                                      )}
-                                    </div>
-                                  </div>
-                                )}
-
-                               {arrivalAirport === airport.id && (
-                                 <Badge variant="default" className="text-xs mt-2">
-                                   <PlaneLanding className="h-3 w-3 mr-1" />
-                                   <TranslateText text="Selected" language={currentLanguage} />
-                                 </Badge>
-                               )}
-                             </div>
-                           </div>
-                          </CardContent>
-                        </Card>
-                      );
-                    })}
-                  </div>
-                  
-                  {/* Arrival Airport Accommodations Selection */}
-                  {arrivalAirport && (
-                    <div className="mt-6">
-                      <div className="flex items-center gap-2 mb-4">
-                        <Hotel className="h-5 w-5 text-primary" />
-                        <h4 className="text-lg font-semibold">
-                          <TranslateText text="Select Arrival Accommodation" language={currentLanguage} />
-                        </h4>
-                      </div>
-                      <p className="text-sm text-muted-foreground mb-4">
-                        <TranslateText text="Choose where to stay for arrival night or first nights near your selected airport" language={currentLanguage} />
-                      </p>
-                      <div className="grid gap-3">
-                        {findNearestAccommodations(arrivalAirport).map(acc => (
-                          <Card 
-                            key={`arrival-acc-${acc.id}`}
-                            className={`cursor-pointer transition-all hover:shadow-md hover:border-primary/20 ${
-                              selectedArrivalAccommodation === acc.id 
-                                ? 'ring-2 ring-primary bg-primary/5 border-primary/30' 
-                                : 'hover:bg-muted/30'
-                            }`}
-                            onClick={() => setSelectedArrivalAccommodation(acc.id)}
-                          >
-                            <CardContent className="p-4">
-                              <div className="flex items-start gap-4">
-                                {acc.images?.[0] && (
-                                  <img 
-                                    src={acc.images[0]} 
-                                    alt={acc.name}
-                                    className="w-16 h-16 object-cover rounded-lg flex-shrink-0"
-                                  />
-                                )}
-                                <div className="flex-1 min-w-0">
-                                  <div className="flex items-start justify-between mb-2">
-                                    <div className="flex-1 min-w-0">
-                                      <h5 className="font-semibold text-base truncate">{acc.name}</h5>
-                                      <p className="text-sm text-muted-foreground flex items-center gap-1">
-                                        <MapPin className="h-3 w-3 flex-shrink-0" />
-                                        <span className="truncate">{acc.location}</span>
-                                      </p>
-                                    </div>
-                                    {selectedArrivalAccommodation === acc.id && (
-                                      <Badge variant="default" className="text-xs ml-2 flex-shrink-0">
-                                        <TranslateText text="Selected" language={currentLanguage} />
-                                      </Badge>
-                                    )}
-                                  </div>
-                                  
-                                  <div className="flex items-center gap-2 flex-wrap">
-                                    <Badge variant="outline" className="text-xs">
-                                      {Math.round(acc.distance)}km from airport
-                                    </Badge>
-                                    <Badge variant="secondary" className="text-xs">
-                                      {acc.type === 'hotel' ? 'Hôtel' : 'Guest House'}
-                                    </Badge>
-                                    {acc.rating && (
-                                      <Badge variant="outline" className="text-xs">
-                                        <Star className="h-3 w-3 mr-1" />
-                                        {acc.rating}
-                                      </Badge>
-                                    )}
-                                    {acc.price_per_night && (
-                                      <Badge variant="outline" className="text-xs">
-                                        {acc.price_per_night}/night
-                                      </Badge>
-                                    )}
-                                  </div>
-                                  
-                                  {acc.description && (
-                                    <p className="text-xs text-muted-foreground mt-2 line-clamp-2">
-                                      {acc.description}
-                                    </p>
-                                  )}
-                                </div>
+                <div className="grid gap-3">
+                  {airports.map((airport) => {
+                    const isRecommended = isAirportRecommended(airport.id, 'arrival', airportRecommendations);
+                    const nearbyAccommodations = findNearestAccommodations(airport.id);
+                    return (
+                      <Card
+                        key={`arrival-${airport.id}`}
+                        className={`cursor-pointer transition-all hover:shadow-lg hover:border-primary/20 group relative ${arrivalAirport === airport.id ? 'ring-2 ring-primary bg-primary/5' : ''
+                          } ${isRecommended ? 'border-amber-200 bg-amber-50/30 dark:border-amber-800 dark:bg-amber-950/10' : ''}`}
+                        onClick={() => handleAirportSelect(airport.id, 'arrival')}
+                      >
+                        {isRecommended && (
+                          <div className="absolute top-2 right-2">
+                            <Badge variant="secondary" className="text-xs bg-amber-100 text-amber-800 dark:bg-amber-900 dark:text-amber-200">
+                              <Star className="h-3 w-3 mr-1" />
+                              <TranslateText text="Recommended" language={currentLanguage} />
+                            </Badge>
+                          </div>
+                        )}
+                        <CardContent className="p-4">
+                          <div className="flex items-start gap-4">
+                            {airport.images?.[0] && (
+                              <img
+                                src={airport.images[0]}
+                                alt={airport.name}
+                                className="w-16 h-16 object-cover rounded-lg flex-shrink-0"
+                              />
+                            )}
+                            <div className="flex-1 min-w-0">
+                              <div className="flex items-center gap-2 mb-1">
+                                <h4 className="font-bold text-base truncate">{airport.name}</h4>
+                                <Badge variant="secondary" className="text-xs flex-shrink-0">
+                                  {airport.code}
+                                </Badge>
                               </div>
-                            </CardContent>
-                          </Card>
-                        ))}
-                      </div>
-                    </div>
-                  )}
+                              <p className="text-sm text-muted-foreground flex items-center gap-1 mb-2">
+                                <MapPin className="h-3 w-3 flex-shrink-0" />
+                                <span className="truncate">{airport.location}</span>
+                              </p>
+                              {airport.description && (
+                                <p className="text-xs text-muted-foreground mb-2 line-clamp-2">
+                                  {airport.description}
+                                </p>
+                              )}
+
+                              {/* Nearby Accommodations Preview */}
+                              {nearbyAccommodations.length > 0 && (
+                                <div className="mt-3 p-2 bg-muted/30 rounded-lg">
+                                  <p className="text-xs font-medium text-muted-foreground mb-2 flex items-center gap-1">
+                                    <Hotel className="h-3 w-3" />
+                                    <TranslateText text="Nearby accommodations:" language={currentLanguage} />
+                                  </p>
+                                  <div className="space-y-1">
+                                    {nearbyAccommodations.slice(0, 2).map(acc => (
+                                      <div key={acc.id} className="flex items-center justify-between text-xs">
+                                        <span className="truncate font-medium">{acc.name}</span>
+                                        <Badge variant="outline" className="text-xs ml-2 flex-shrink-0">
+                                          {Math.round(acc.distance)}km
+                                        </Badge>
+                                      </div>
+                                    ))}
+                                    {nearbyAccommodations.length > 2 && (
+                                      <p className="text-xs text-muted-foreground">
+                                        +{nearbyAccommodations.length - 2} more nearby
+                                      </p>
+                                    )}
+                                  </div>
+                                </div>
+                              )}
+
+                              {arrivalAirport === airport.id && (
+                                <Badge variant="default" className="text-xs mt-2">
+                                  <PlaneLanding className="h-3 w-3 mr-1" />
+                                  <TranslateText text="Selected" language={currentLanguage} />
+                                </Badge>
+                              )}
+                            </div>
+                          </div>
+                        </CardContent>
+                      </Card>
+                    );
+                  })}
                 </div>
 
-               {/* Departure Airport Selection */}
-               <div>
-                 <div className="flex items-center gap-2 mb-4">
-                   <PlaneTakeoff className="h-5 w-5 text-primary" />
-                   <h3 className="text-xl font-bold">
-                     <TranslateText text="Departure Airport" language={currentLanguage} />
-                   </h3>
-                 </div>
-                 <div className="grid gap-3">
-                   {airports.map((airport) => {
-                     const isRecommended = isAirportRecommended(airport.id, 'departure', airportRecommendations);
-                     const nearbyAccommodations = findNearestAccommodations(airport.id);
-                     return (
-                       <Card
-                         key={`departure-${airport.id}`}
-                         className={`cursor-pointer transition-all hover:shadow-lg hover:border-primary/20 group relative ${
-                           departureAirport === airport.id ? 'ring-2 ring-primary bg-primary/5' : ''
-                         } ${isRecommended ? 'border-amber-200 bg-amber-50/30 dark:border-amber-800 dark:bg-amber-950/10' : ''}`}
-                         onClick={() => handleAirportSelect(airport.id, 'departure')}
-                       >
-                         {isRecommended && (
-                           <div className="absolute top-2 right-2">
-                             <Badge variant="secondary" className="text-xs bg-amber-100 text-amber-800 dark:bg-amber-900 dark:text-amber-200">
-                               <Star className="h-3 w-3 mr-1" />
-                               <TranslateText text="Recommended" language={currentLanguage} />
-                             </Badge>
-                           </div>
-                         )}
-                         <CardContent className="p-4">
-                           <div className="flex items-start gap-4">
-                             {airport.images?.[0] && (
-                               <img 
-                                 src={airport.images[0]} 
-                                 alt={airport.name}
-                                 className="w-16 h-16 object-cover rounded-lg flex-shrink-0"
-                               />
-                             )}
-                             <div className="flex-1 min-w-0">
-                               <div className="flex items-center gap-2 mb-1">
-                                 <h4 className="font-bold text-base truncate">{airport.name}</h4>
-                                 <Badge variant="secondary" className="text-xs flex-shrink-0">
-                                   {airport.code}
-                                 </Badge>
-                               </div>
-                               <p className="text-sm text-muted-foreground flex items-center gap-1 mb-2">
-                                 <MapPin className="h-3 w-3 flex-shrink-0" />
-                                 <span className="truncate">{airport.location}</span>
-                               </p>
-                               {airport.description && (
-                                 <p className="text-xs text-muted-foreground mb-2 line-clamp-2">
-                                   {airport.description}
-                                 </p>
-                               )}
-                               
-                                {/* Nearby Accommodations Preview */}
-                                {nearbyAccommodations.length > 0 && (
-                                  <div className="mt-3 p-2 bg-muted/30 rounded-lg">
-                                    <p className="text-xs font-medium text-muted-foreground mb-2 flex items-center gap-1">
-                                      <Hotel className="h-3 w-3" />
-                                      <TranslateText text="Nearby accommodations:" language={currentLanguage} />
-                                    </p>
-                                    <div className="space-y-1">
-                                      {nearbyAccommodations.slice(0, 2).map(acc => (
-                                        <div key={acc.id} className="flex items-center justify-between text-xs">
-                                          <span className="truncate font-medium">{acc.name}</span>
-                                          <Badge variant="outline" className="text-xs ml-2 flex-shrink-0">
-                                            {Math.round(acc.distance)}km
-                                          </Badge>
-                                        </div>
-                                      ))}
-                                      {nearbyAccommodations.length > 2 && (
-                                        <p className="text-xs text-muted-foreground">
-                                          +{nearbyAccommodations.length - 2} more nearby
-                                        </p>
-                                      )}
-                                    </div>
-                                  </div>
-                                )}
-
-                               {departureAirport === airport.id && (
-                                 <Badge variant="default" className="text-xs mt-2">
-                                   <PlaneTakeoff className="h-3 w-3 mr-1" />
-                                   <TranslateText text="Selected" language={currentLanguage} />
-                                 </Badge>
-                               )}
-                             </div>
-                           </div>
-                          </CardContent>
-                        </Card>
-                      );
-                    })}
-                  </div>
-                  
-                  {/* Departure Airport Accommodations Selection */}
-                  {departureAirport && (
-                    <div className="mt-6">
-                      <div className="flex items-center gap-2 mb-4">
-                        <Hotel className="h-5 w-5 text-primary" />
-                        <h4 className="text-lg font-semibold">
-                          <TranslateText text="Select Departure Accommodation" language={currentLanguage} />
-                        </h4>
-                      </div>
-                      <p className="text-sm text-muted-foreground mb-4">
-                        <TranslateText text="Choose where to stay for your last night near departure airport for easy departure" language={currentLanguage} />
-                      </p>
-                      <div className="grid gap-3">
-                        {findNearestAccommodations(departureAirport).map(acc => (
-                          <Card 
-                            key={`departure-acc-${acc.id}`}
-                            className={`cursor-pointer transition-all hover:shadow-md hover:border-primary/20 ${
-                              selectedDepartureAccommodation === acc.id 
-                                ? 'ring-2 ring-primary bg-primary/5 border-primary/30' 
-                                : 'hover:bg-muted/30'
+                {/* Arrival Airport Accommodations Selection */}
+                {arrivalAirport && (
+                  <div className="mt-6">
+                    <div className="flex items-center gap-2 mb-4">
+                      <Hotel className="h-5 w-5 text-primary" />
+                      <h4 className="text-lg font-semibold">
+                        <TranslateText text="Select Arrival Accommodation" language={currentLanguage} />
+                      </h4>
+                    </div>
+                    <p className="text-sm text-muted-foreground mb-4">
+                      <TranslateText text="Choose where to stay for arrival night or first nights near your selected airport" language={currentLanguage} />
+                    </p>
+                    <div className="grid gap-3">
+                      {findNearestAccommodations(arrivalAirport).map(acc => (
+                        <Card
+                          key={`arrival-acc-${acc.id}`}
+                          className={`cursor-pointer transition-all hover:shadow-md hover:border-primary/20 ${selectedArrivalAccommodation === acc.id
+                              ? 'ring-2 ring-primary bg-primary/5 border-primary/30'
+                              : 'hover:bg-muted/30'
                             }`}
-                            onClick={() => setSelectedDepartureAccommodation(acc.id)}
-                          >
-                            <CardContent className="p-4">
-                              <div className="flex items-start gap-4">
-                                {acc.images?.[0] && (
-                                  <img 
-                                    src={acc.images[0]} 
-                                    alt={acc.name}
-                                    className="w-16 h-16 object-cover rounded-lg flex-shrink-0"
-                                  />
-                                )}
-                                <div className="flex-1 min-w-0">
-                                  <div className="flex items-start justify-between mb-2">
-                                    <div className="flex-1 min-w-0">
-                                      <h5 className="font-semibold text-base truncate">{acc.name}</h5>
-                                      <p className="text-sm text-muted-foreground flex items-center gap-1">
-                                        <MapPin className="h-3 w-3 flex-shrink-0" />
-                                        <span className="truncate">{acc.location}</span>
-                                      </p>
-                                    </div>
-                                    {selectedDepartureAccommodation === acc.id && (
-                                      <Badge variant="default" className="text-xs ml-2 flex-shrink-0">
-                                        <TranslateText text="Selected" language={currentLanguage} />
-                                      </Badge>
-                                    )}
-                                  </div>
-                                  
-                                  <div className="flex items-center gap-2 flex-wrap">
-                                    <Badge variant="outline" className="text-xs">
-                                      {Math.round(acc.distance)}km from airport
-                                    </Badge>
-                                    <Badge variant="secondary" className="text-xs">
-                                      {acc.type === 'hotel' ? 'Hôtel' : 'Guest House'}
-                                    </Badge>
-                                    {acc.rating && (
-                                      <Badge variant="outline" className="text-xs">
-                                        <Star className="h-3 w-3 mr-1" />
-                                        {acc.rating}
-                                      </Badge>
-                                    )}
-                                    {acc.price_per_night && (
-                                      <Badge variant="outline" className="text-xs">
-                                        {acc.price_per_night}/night
-                                      </Badge>
-                                    )}
-                                  </div>
-                                  
-                                  {acc.description && (
-                                    <p className="text-xs text-muted-foreground mt-2 line-clamp-2">
-                                      {acc.description}
+                          onClick={() => setSelectedArrivalAccommodation(acc.id)}
+                        >
+                          <CardContent className="p-4">
+                            <div className="flex items-start gap-4">
+                              {acc.images?.[0] && (
+                                <img
+                                  src={acc.images[0]}
+                                  alt={acc.name}
+                                  className="w-16 h-16 object-cover rounded-lg flex-shrink-0"
+                                />
+                              )}
+                              <div className="flex-1 min-w-0">
+                                <div className="flex items-start justify-between mb-2">
+                                  <div className="flex-1 min-w-0">
+                                    <h5 className="font-semibold text-base truncate">{acc.name}</h5>
+                                    <p className="text-sm text-muted-foreground flex items-center gap-1">
+                                      <MapPin className="h-3 w-3 flex-shrink-0" />
+                                      <span className="truncate">{acc.location}</span>
                                     </p>
+                                  </div>
+                                  {selectedArrivalAccommodation === acc.id && (
+                                    <Badge variant="default" className="text-xs ml-2 flex-shrink-0">
+                                      <TranslateText text="Selected" language={currentLanguage} />
+                                    </Badge>
                                   )}
                                 </div>
+
+                                <div className="flex items-center gap-2 flex-wrap">
+                                  <Badge variant="outline" className="text-xs">
+                                    {Math.round(acc.distance)}km from airport
+                                  </Badge>
+                                  <Badge variant="secondary" className="text-xs">
+                                    {acc.type === 'hotel' ? 'Hôtel' : 'Guest House'}
+                                  </Badge>
+                                  {acc.rating && (
+                                    <Badge variant="outline" className="text-xs">
+                                      <Star className="h-3 w-3 mr-1" />
+                                      {acc.rating}
+                                    </Badge>
+                                  )}
+                                  {acc.price_per_night && (
+                                    <Badge variant="outline" className="text-xs">
+                                      {acc.price_per_night}/night
+                                    </Badge>
+                                  )}
+                                </div>
+
+                                {acc.description && (
+                                  <p className="text-xs text-muted-foreground mt-2 line-clamp-2">
+                                    {acc.description}
+                                  </p>
+                                )}
                               </div>
-                            </CardContent>
-                          </Card>
-                        ))}
-                      </div>
+                            </div>
+                          </CardContent>
+                        </Card>
+                      ))}
                     </div>
-                  )}
+                  </div>
+                )}
+              </div>
+
+              {/* Departure Airport Selection */}
+              <div>
+                <div className="flex items-center gap-2 mb-4">
+                  <PlaneTakeoff className="h-5 w-5 text-primary" />
+                  <h3 className="text-xl font-bold">
+                    <TranslateText text="Departure Airport" language={currentLanguage} />
+                  </h3>
                 </div>
+                <div className="grid gap-3">
+                  {airports.map((airport) => {
+                    const isRecommended = isAirportRecommended(airport.id, 'departure', airportRecommendations);
+                    const nearbyAccommodations = findNearestAccommodations(airport.id);
+                    return (
+                      <Card
+                        key={`departure-${airport.id}`}
+                        className={`cursor-pointer transition-all hover:shadow-lg hover:border-primary/20 group relative ${departureAirport === airport.id ? 'ring-2 ring-primary bg-primary/5' : ''
+                          } ${isRecommended ? 'border-amber-200 bg-amber-50/30 dark:border-amber-800 dark:bg-amber-950/10' : ''}`}
+                        onClick={() => handleAirportSelect(airport.id, 'departure')}
+                      >
+                        {isRecommended && (
+                          <div className="absolute top-2 right-2">
+                            <Badge variant="secondary" className="text-xs bg-amber-100 text-amber-800 dark:bg-amber-900 dark:text-amber-200">
+                              <Star className="h-3 w-3 mr-1" />
+                              <TranslateText text="Recommended" language={currentLanguage} />
+                            </Badge>
+                          </div>
+                        )}
+                        <CardContent className="p-4">
+                          <div className="flex items-start gap-4">
+                            {airport.images?.[0] && (
+                              <img
+                                src={airport.images[0]}
+                                alt={airport.name}
+                                className="w-16 h-16 object-cover rounded-lg flex-shrink-0"
+                              />
+                            )}
+                            <div className="flex-1 min-w-0">
+                              <div className="flex items-center gap-2 mb-1">
+                                <h4 className="font-bold text-base truncate">{airport.name}</h4>
+                                <Badge variant="secondary" className="text-xs flex-shrink-0">
+                                  {airport.code}
+                                </Badge>
+                              </div>
+                              <p className="text-sm text-muted-foreground flex items-center gap-1 mb-2">
+                                <MapPin className="h-3 w-3 flex-shrink-0" />
+                                <span className="truncate">{airport.location}</span>
+                              </p>
+                              {airport.description && (
+                                <p className="text-xs text-muted-foreground mb-2 line-clamp-2">
+                                  {airport.description}
+                                </p>
+                              )}
+
+                              {/* Nearby Accommodations Preview */}
+                              {nearbyAccommodations.length > 0 && (
+                                <div className="mt-3 p-2 bg-muted/30 rounded-lg">
+                                  <p className="text-xs font-medium text-muted-foreground mb-2 flex items-center gap-1">
+                                    <Hotel className="h-3 w-3" />
+                                    <TranslateText text="Nearby accommodations:" language={currentLanguage} />
+                                  </p>
+                                  <div className="space-y-1">
+                                    {nearbyAccommodations.slice(0, 2).map(acc => (
+                                      <div key={acc.id} className="flex items-center justify-between text-xs">
+                                        <span className="truncate font-medium">{acc.name}</span>
+                                        <Badge variant="outline" className="text-xs ml-2 flex-shrink-0">
+                                          {Math.round(acc.distance)}km
+                                        </Badge>
+                                      </div>
+                                    ))}
+                                    {nearbyAccommodations.length > 2 && (
+                                      <p className="text-xs text-muted-foreground">
+                                        +{nearbyAccommodations.length - 2} more nearby
+                                      </p>
+                                    )}
+                                  </div>
+                                </div>
+                              )}
+
+                              {departureAirport === airport.id && (
+                                <Badge variant="default" className="text-xs mt-2">
+                                  <PlaneTakeoff className="h-3 w-3 mr-1" />
+                                  <TranslateText text="Selected" language={currentLanguage} />
+                                </Badge>
+                              )}
+                            </div>
+                          </div>
+                        </CardContent>
+                      </Card>
+                    );
+                  })}
+                </div>
+
+                {/* Departure Airport Accommodations Selection */}
+                {departureAirport && (
+                  <div className="mt-6">
+                    <div className="flex items-center gap-2 mb-4">
+                      <Hotel className="h-5 w-5 text-primary" />
+                      <h4 className="text-lg font-semibold">
+                        <TranslateText text="Select Departure Accommodation" language={currentLanguage} />
+                      </h4>
+                    </div>
+                    <p className="text-sm text-muted-foreground mb-4">
+                      <TranslateText text="Choose where to stay for your last night near departure airport for easy departure" language={currentLanguage} />
+                    </p>
+                    <div className="grid gap-3">
+                      {findNearestAccommodations(departureAirport).map(acc => (
+                        <Card
+                          key={`departure-acc-${acc.id}`}
+                          className={`cursor-pointer transition-all hover:shadow-md hover:border-primary/20 ${selectedDepartureAccommodation === acc.id
+                              ? 'ring-2 ring-primary bg-primary/5 border-primary/30'
+                              : 'hover:bg-muted/30'
+                            }`}
+                          onClick={() => setSelectedDepartureAccommodation(acc.id)}
+                        >
+                          <CardContent className="p-4">
+                            <div className="flex items-start gap-4">
+                              {acc.images?.[0] && (
+                                <img
+                                  src={acc.images[0]}
+                                  alt={acc.name}
+                                  className="w-16 h-16 object-cover rounded-lg flex-shrink-0"
+                                />
+                              )}
+                              <div className="flex-1 min-w-0">
+                                <div className="flex items-start justify-between mb-2">
+                                  <div className="flex-1 min-w-0">
+                                    <h5 className="font-semibold text-base truncate">{acc.name}</h5>
+                                    <p className="text-sm text-muted-foreground flex items-center gap-1">
+                                      <MapPin className="h-3 w-3 flex-shrink-0" />
+                                      <span className="truncate">{acc.location}</span>
+                                    </p>
+                                  </div>
+                                  {selectedDepartureAccommodation === acc.id && (
+                                    <Badge variant="default" className="text-xs ml-2 flex-shrink-0">
+                                      <TranslateText text="Selected" language={currentLanguage} />
+                                    </Badge>
+                                  )}
+                                </div>
+
+                                <div className="flex items-center gap-2 flex-wrap">
+                                  <Badge variant="outline" className="text-xs">
+                                    {Math.round(acc.distance)}km from airport
+                                  </Badge>
+                                  <Badge variant="secondary" className="text-xs">
+                                    {acc.type === 'hotel' ? 'Hôtel' : 'Guest House'}
+                                  </Badge>
+                                  {acc.rating && (
+                                    <Badge variant="outline" className="text-xs">
+                                      <Star className="h-3 w-3 mr-1" />
+                                      {acc.rating}
+                                    </Badge>
+                                  )}
+                                  {acc.price_per_night && (
+                                    <Badge variant="outline" className="text-xs">
+                                      {acc.price_per_night}/night
+                                    </Badge>
+                                  )}
+                                </div>
+
+                                {acc.description && (
+                                  <p className="text-xs text-muted-foreground mt-2 line-clamp-2">
+                                    {acc.description}
+                                  </p>
+                                )}
+                              </div>
+                            </div>
+                          </CardContent>
+                        </Card>
+                      ))}
+                    </div>
+                  </div>
+                )}
+              </div>
             </div>
 
             {/* Interactive Map - 1/3 on large screens, sticky */}
@@ -775,7 +768,7 @@ const AirportSelectionPage = () => {
 
           {/* Generate Itinerary Button */}
           <div className="text-center">
-            <Button 
+            <Button
               onClick={handleGenerateItinerary}
               disabled={!arrivalAirport || !departureAirport || isGeneratingItinerary}
               size="lg"

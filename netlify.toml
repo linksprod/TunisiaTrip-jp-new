@@ -17,7 +17,7 @@
 
 # Long-term caching for assets with versioning
 [[headers]]
-  for = "/lovable-uploads/*"
+  for = "/uploads/*"
   [headers.values]
     Cache-Control = "public, max-age=31536000, immutable"
 

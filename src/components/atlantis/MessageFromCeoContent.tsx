@@ -39,7 +39,7 @@ export function MessageFromCeoContent() {
 
         <div className="w-full md:w-[400px] h-[200px] md:h-[400px] flex-shrink-0">
           <img
-            src="/lovable-uploads/3f34fd48-7842-479e-9fc4-24e87660235a.png"
+            src="/uploads/3f34fd48-7842-479e-9fc4-24e87660235a.png"
             alt="CEO Kamel Lagha"
             className="w-full h-full object-cover rounded-xl"
           />

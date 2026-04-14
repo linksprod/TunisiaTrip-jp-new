@@ -39,7 +39,7 @@ export function FooterSection(): JSX.Element {
         <div className="flex flex-col md:flex-row justify-between items-center mb-8">
           <Link to="/" className="flex items-center gap-4 mb-4 md:mb-0">
             <img 
-              src="/lovable-uploads/bcf38a22-1f23-45b7-8c14-701164c5d1b9.png" 
+              src="/uploads/bcf38a22-1f23-45b7-8c14-701164c5d1b9.png" 
               alt="Tunisia Trip Logo" 
               className="h-8 md:h-10 w-auto"
             />

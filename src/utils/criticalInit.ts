@@ -24,9 +24,9 @@ export const addCriticalResourceHints = () => {
 // Preload LCP image and other critical assets
 export const preloadCriticalAssets = () => {
   const criticalAssets = [
-    "/lovable-uploads/b8d3011d-f5cd-4edd-b34e-9ef0827ba186.png", // Logo - visible in viewport
+    "/uploads/b8d3011d-f5cd-4edd-b34e-9ef0827ba186.png", // Logo - visible in viewport
     "https://i.imgur.com/5YtDgG9.gif", // Loading animation
-    "/lovable-uploads/3caaa473-8150-4b29-88b4-e2e9c696bf1d.png" // LCP image - hero slideshow
+    "/uploads/3caaa473-8150-4b29-88b4-e2e9c696bf1d.png" // LCP image - hero slideshow
   ];
   
   criticalAssets.forEach((src, index) => {

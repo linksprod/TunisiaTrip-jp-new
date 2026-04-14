@@ -6,7 +6,7 @@ import { Badge } from "@/components/ui/badge";
 import { useGuestHouses } from "@/hooks/useGuestHouses";
 import { useActivities } from "@/hooks/useActivities";
 
-import { calculateDistance } from "@/utils/geographicalHelpers";
+import { calculatePureDistance as calculateDistance } from "@/services/geographicalService";
 
 interface EnhancedSelectableGuestHousesProps {
   selectedGuestHouses: string[];
@@ -16,31 +16,31 @@ interface EnhancedSelectableGuestHousesProps {
   preferenceType?: 'luxury' | 'authentic' | 'mixed';
 }
 
-export function EnhancedSelectableGuestHouses({ 
-  selectedGuestHouses, 
-  setSelectedGuestHouses, 
+export function EnhancedSelectableGuestHouses({
+  selectedGuestHouses,
+  setSelectedGuestHouses,
   selectedActivities,
   totalDays,
   preferenceType = 'mixed'
 }: EnhancedSelectableGuestHousesProps) {
   const { guestHouses = [], isLoading } = useGuestHouses();
   const { activities = [] } = useActivities();
-  
+
   // Simplified recommendations - show all guest houses with default recommendations
   const recommendations = useMemo(() => {
     let recommendedGuestHouses = guestHouses;
     let reasons = ['Authentic experience for your trip'];
-    
+
     // If activities are selected, filter by proximity
     if (selectedActivities.length > 0) {
       recommendedGuestHouses = guestHouses.filter(guestHouse => {
         if (!guestHouse.latitude || !guestHouse.longitude) return false;
-        
+
         // Check if guest house is within 30km of any selected activity
         return activities.some(activity => {
           if (!selectedActivities.includes(activity.id?.toString() || '')) return false;
           if (!activity.latitude || !activity.longitude) return false;
-          
+
           const distance = calculateDistance(
             guestHouse.latitude!,
             guestHouse.longitude!,
@@ -79,16 +79,16 @@ export function EnhancedSelectableGuestHouses({
   // Convert database guest houses to include recommendation data
   const enhancedGuestHouses = useMemo(() => {
     return guestHouses.map(guestHouse => {
-      const recommendation = guestHouseRecommendations.find(rec => 
-        rec.accommodation.id === guestHouse.id?.toString() || 
+      const recommendation = guestHouseRecommendations.find(rec =>
+        rec.accommodation.id === guestHouse.id?.toString() ||
         rec.accommodation.name.toLowerCase() === guestHouse.name.toLowerCase()
       );
 
       // Calculate nearby activities for non-recommended guest houses
-      let nearbyActivities: Array<{id: string, title: string, distance: number}> = [];
+      let nearbyActivities: Array<{ id: string, title: string, distance: number }> = [];
       if (guestHouse.latitude && guestHouse.longitude && selectedActivities.length > 0) {
         nearbyActivities = activities
-          .filter(activity => 
+          .filter(activity =>
             selectedActivities.includes(activity.id?.toString() || '') &&
             activity.latitude && activity.longitude
           )
@@ -121,7 +121,7 @@ export function EnhancedSelectableGuestHouses({
       return b.score - a.score;
     });
   }, [guestHouses, guestHouseRecommendations, activities, selectedActivities]);
-  
+
   const handleGuestHouseToggle = (guestHouseId: string) => {
     if (selectedGuestHouses.includes(guestHouseId)) {
       setSelectedGuestHouses(selectedGuestHouses.filter(id => id !== guestHouseId));
@@ -166,13 +166,12 @@ export function EnhancedSelectableGuestHouses({
 
       <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
         {enhancedGuestHouses.map((guestHouse) => guestHouse.id && (
-          <Card 
-            key={guestHouse.id} 
-            className={`overflow-hidden transition-all duration-300 cursor-pointer transform hover:scale-105 ${
-              selectedGuestHouses.includes(guestHouse.id) 
-                ? 'ring-4 ring-success shadow-2xl bg-success/5 border-success scale-105' 
+          <Card
+            key={guestHouse.id}
+            className={`overflow-hidden transition-all duration-300 cursor-pointer transform hover:scale-105 ${selectedGuestHouses.includes(guestHouse.id)
+                ? 'ring-4 ring-success shadow-2xl bg-success/5 border-success scale-105'
                 : 'hover:shadow-xl border-gray-200 hover:border-success/30'
-            }`}
+              }`}
             onClick={() => handleGuestHouseToggle(guestHouse.id)}
           >
             <div className="relative">
@@ -183,22 +182,20 @@ export function EnhancedSelectableGuestHouses({
                   className="w-full h-48 object-cover"
                 />
               )}
-              
+
               {/* CHECKBOX ULTRA VISIBLE */}
               <div className="absolute top-3 left-3 z-50">
-                <div className={`rounded-full p-2 shadow-2xl border-3 ${
-                  selectedGuestHouses.includes(guestHouse.id) 
-                    ? 'bg-success border-white' 
+                <div className={`rounded-full p-2 shadow-2xl border-3 ${selectedGuestHouses.includes(guestHouse.id)
+                    ? 'bg-success border-white'
                     : 'bg-white/95 border-gray-300'
-                }`}>
+                  }`}>
                   <Checkbox
                     checked={selectedGuestHouses.includes(guestHouse.id)}
                     onCheckedChange={() => handleGuestHouseToggle(guestHouse.id)}
-                    className={`h-6 w-6 border-2 ${
-                      selectedGuestHouses.includes(guestHouse.id)
+                    className={`h-6 w-6 border-2 ${selectedGuestHouses.includes(guestHouse.id)
                         ? 'bg-white border-white data-[state=checked]:bg-white data-[state=checked]:text-success'
                         : 'bg-white border-gray-400 data-[state=checked]:bg-success data-[state=checked]:border-success data-[state=checked]:text-white'
-                    }`}
+                      }`}
                     onClick={(e) => e.stopPropagation()}
                   />
                 </div>
@@ -206,18 +203,16 @@ export function EnhancedSelectableGuestHouses({
 
               {/* BADGES ULTRA VISIBLES */}
               <div className="absolute top-3 right-3 flex flex-col gap-2 z-40">
-                <Badge className={`text-xs font-bold shadow-xl ${
-                  selectedGuestHouses.includes(guestHouse.id) 
-                    ? 'bg-white text-success border-2 border-success' 
+                <Badge className={`text-xs font-bold shadow-xl ${selectedGuestHouses.includes(guestHouse.id)
+                    ? 'bg-white text-success border-2 border-success'
                     : 'bg-success text-white'
-                }`}>
+                  }`}>
                   🏠 {guestHouse.isRecommended ? 'RECOMMANDÉ' : 'AUTHENTIQUE'}
                 </Badge>
-                <Badge className={`text-xs font-bold shadow-xl ${
-                  selectedGuestHouses.includes(guestHouse.id)
+                <Badge className={`text-xs font-bold shadow-xl ${selectedGuestHouses.includes(guestHouse.id)
                     ? 'bg-white text-green-600 border-2 border-green-600'
                     : 'bg-green-500 text-white'
-                }`}>
+                  }`}>
                   📅 {guestHouse.recommendation?.daysRecommended || Math.ceil(totalDays / 3)} JOUR{(guestHouse.recommendation?.daysRecommended || Math.ceil(totalDays / 3)) > 1 ? 'S' : ''}
                 </Badge>
               </div>
@@ -246,9 +241,8 @@ export function EnhancedSelectableGuestHouses({
                     {Array.from({ length: 5 }).map((_, i) => (
                       <Star
                         key={i}
-                        className={`w-4 h-4 ${
-                          i < guestHouse.rating! ? 'text-yellow-400 fill-current' : 'text-gray-300'
-                        }`}
+                        className={`w-4 h-4 ${i < guestHouse.rating! ? 'text-yellow-400 fill-current' : 'text-gray-300'
+                          }`}
                       />
                     ))}
                     <span className="text-sm text-muted-foreground ml-1">({guestHouse.rating})</span>

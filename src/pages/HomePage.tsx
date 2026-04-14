@@ -28,8 +28,8 @@ export const HomePage: React.FC = () => {
   // Dynamic image selection based on language
   const getOGImage = () => {
     return currentLanguage === 'EN' 
-      ? "/lovable-uploads/f4547708-3e81-4d1e-b626-844cc888dabd.png"
-      : "/lovable-uploads/0c1b3cad-b8c4-4e02-a789-e700a147f440.png";
+      ? "/uploads/f4547708-3e81-4d1e-b626-844cc888dabd.png"
+      : "/uploads/0c1b3cad-b8c4-4e02-a789-e700a147f440.png";
   };
 
   return (

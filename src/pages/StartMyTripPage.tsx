@@ -23,14 +23,14 @@ import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Badge } from "@/components/ui/badge";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import { toast } from "sonner";
-import { 
-  PlayCircle, 
-  ArrowLeft, 
-  Lightbulb, 
-  CheckCircle, 
-  Plane, 
-  MapPin, 
-  Info, 
+import {
+  PlayCircle,
+  ArrowLeft,
+  Lightbulb,
+  CheckCircle,
+  Plane,
+  MapPin,
+  Info,
   Send,
   Calendar,
   Activity as ActivityIcon,
@@ -72,7 +72,7 @@ const StartMyTripPageOptimized = () => {
   const { currentLanguage } = useTranslation();
   const activitiesScrollRef = useRef<HTMLDivElement>(null);
   const mainPageRef = useRef<HTMLDivElement>(null);
-  
+
   // Use Supabase hooks for dynamic data
   const { activities = [], isLoading: activitiesLoading } = useActivities();
   const { hotels = [], isLoading: hotelsLoading } = useHotels();
@@ -122,7 +122,7 @@ const StartMyTripPageOptimized = () => {
       );
       return;
     }
-    
+
     const totalAccommodations = selectedHotels.length + selectedGuestHouses.length;
     if (totalAccommodations === 0) {
       toast.warning(
@@ -133,10 +133,10 @@ const StartMyTripPageOptimized = () => {
       );
       return;
     }
-    
+
     setIsGeneratingPresentation(true);
     setShowPresentation(true);
-    
+
     toast.info(
       <TranslateText text="Génération de votre présentation personnalisée..." language={currentLanguage} />,
       {
@@ -144,12 +144,12 @@ const StartMyTripPageOptimized = () => {
         duration: 3000
       }
     );
-    
+
     try {
       // Prepare selected activities and hotels data
       const selectedActivitiesData = activities.filter(a => selectedActivities.includes(a.id?.toString() || ''));
       const selectedHotelsData = hotels.filter(h => selectedHotels.includes(h.id?.toString() || ''));
-      
+
       const { data, error } = await supabase.functions.invoke('generate-presentation', {
         body: {
           activities: selectedActivitiesData,
@@ -157,12 +157,12 @@ const StartMyTripPageOptimized = () => {
           language: 'french'
         }
       });
-      
+
       if (error) throw error;
-      
+
       setPresentationContent(data.htmlContent);
       window.scrollTo({ top: 0, behavior: 'smooth' });
-      
+
       toast.success(
         <TranslateText text="Votre présentation de voyage a été créée !" language={currentLanguage} />,
         {
@@ -182,7 +182,7 @@ const StartMyTripPageOptimized = () => {
     setIsGenerating(true);
     setShowItinerary(true);
     setShowPresentation(false);
-    
+
     toast.info(
       <TranslateText text="Generating Your Optimized Itinerary..." language={currentLanguage} />,
       {
@@ -190,25 +190,27 @@ const StartMyTripPageOptimized = () => {
         duration: 3000
       }
     );
-    
+
     try {
-      // Import the new intelligent generator
-      const { generateIntelligentItinerary } = await import('../utils/intelligentItineraryGenerator');
-      
-      const generatedItinerary = await generateIntelligentItinerary(
-        selectedDays, 
-        selectedActivities, 
-        selectedHotels, 
+      // Use the consolidated itinerary service
+      const { generateItinerary } = await import('../services/itineraryService');
+
+      const generatedItinerary = await generateItinerary(
+        selectedDays,
+        selectedActivities,
+        selectedHotels,
         selectedGuestHouses,
-        [], // activities will be fetched inside the function
-        [], // hotels will be fetched inside the function  
-        [], // guesthouses will be fetched inside the function
-        []  // airports will be fetched inside the function
+        {
+          activities,
+          hotels,
+          guestHouses,
+          airports: [] // Will fetch if needed or passing empty
+        }
       );
-      
+
       setItinerary(generatedItinerary);
       window.scrollTo({ top: 0, behavior: 'smooth' });
-      
+
       if (generatedItinerary.length > 0) {
         toast.success(
           <TranslateText text={`Your optimized ${selectedDays}-day itinerary has been created!`} language={currentLanguage} />,
@@ -253,8 +255,8 @@ const StartMyTripPageOptimized = () => {
 
   const handleManualSelection = () => {
     // Navigate to accommodation selection page with selected activities and days
-    navigate('/select-accommodations', { 
-      state: { 
+    navigate('/select-accommodations', {
+      state: {
         selectedActivities,
         selectedDays
       }
@@ -268,24 +270,24 @@ const StartMyTripPageOptimized = () => {
   };
 
   const handleHotelToggle = (hotelId: string) => {
-    setSelectedHotels(prev => 
-      prev.includes(hotelId) 
+    setSelectedHotels(prev =>
+      prev.includes(hotelId)
         ? prev.filter(id => id !== hotelId)
         : [...prev, hotelId]
     );
   };
 
   const handleGuestHouseToggle = (guestHouseId: string) => {
-    setSelectedGuestHouses(prev => 
-      prev.includes(guestHouseId) 
+    setSelectedGuestHouses(prev =>
+      prev.includes(guestHouseId)
         ? prev.filter(id => id !== guestHouseId)
         : [...prev, guestHouseId]
     );
   };
 
   const handleActivityToggle = (activityId: string) => {
-    setSelectedActivities(prev => 
-      prev.includes(activityId) 
+    setSelectedActivities(prev =>
+      prev.includes(activityId)
         ? prev.filter(id => id !== activityId)
         : [...prev, activityId]
     );
@@ -322,19 +324,19 @@ const StartMyTripPageOptimized = () => {
     const handleScroll = (e: WheelEvent) => {
       const activitiesScroll = activitiesScrollRef.current;
       const mainPage = mainPageRef.current;
-      
+
       if (!activitiesScroll || !mainPage) return;
-      
+
       const { scrollTop, scrollHeight, clientHeight } = activitiesScroll;
       const isAtBottom = scrollTop + clientHeight >= scrollHeight - 1;
       const isAtTop = scrollTop <= 1;
-      
+
       if (e.deltaY > 0 && isAtBottom) {
         e.preventDefault();
         window.scrollBy(0, e.deltaY);
         return;
       }
-      
+
       if (e.deltaY < 0 && window.scrollY <= 0 && !isAtTop) {
         e.preventDefault();
         activitiesScroll.scrollBy(0, e.deltaY);
@@ -385,23 +387,23 @@ const StartMyTripPageOptimized = () => {
                 <TranslateText text="Back to Selection" language={currentLanguage} />
               </Button>
             </div>
-            
+
             <div className="flex flex-col xl:flex-row gap-6">
               <div className="w-full xl:w-2/3">
-                <ModernItineraryTimeline 
-                  isLoading={isGenerating} 
-                  itinerary={itinerary} 
-                  onCustomize={handleCustomizeItinerary} 
+                <ModernItineraryTimeline
+                  isLoading={isGenerating}
+                  itinerary={itinerary}
+                  onCustomize={handleCustomizeItinerary}
                   selectedActivities={selectedActivities}
                   selectedHotels={selectedHotels}
                   selectedGuestHouses={selectedGuestHouses}
                   selectedDays={selectedDays}
                 />
               </div>
-              
+
               <div className="w-full xl:w-1/3">
                 <div className="sticky top-4 space-y-4">
-                  <SelectedItems 
+                  <SelectedItems
                     selectedActivities={selectedActivities}
                     selectedHotels={selectedHotels}
                     selectedGuestHouses={selectedGuestHouses}
@@ -410,7 +412,7 @@ const StartMyTripPageOptimized = () => {
                     hotels={hotels}
                     guestHouses={guestHouses}
                   />
-                  
+
                   <div className="bg-gradient-to-r from-success/10 to-success/5 border border-success/20 rounded-lg p-4">
                     <div className="text-center">
                       <h3 className="text-lg font-semibold text-success-foreground mb-2">
@@ -425,8 +427,8 @@ const StartMyTripPageOptimized = () => {
                         selectedGuestHouses={selectedGuestHouses}
                         selectedDays={selectedDays}
                         trigger={
-                          <Button 
-                            size="lg" 
+                          <Button
+                            size="lg"
                             className="w-full flex items-center justify-center gap-2"
                           >
                             <Send className="h-5 w-5" />
@@ -476,7 +478,7 @@ const StartMyTripPageOptimized = () => {
                   <TranslateText text="Plan Your Perfect Trip to Tunisia" language={currentLanguage} />
                 </h1>
               </div>
-              
+
               <p className="text-lg text-muted-foreground max-w-3xl mx-auto leading-relaxed">
                 <TranslateText text="Select activities and accommodations that interest you, and we'll create an optimized itinerary for your Tunisian adventure." language={currentLanguage} />
               </p>
@@ -490,23 +492,23 @@ const StartMyTripPageOptimized = () => {
           {/* Theme Selection View */}
           {viewMode === 'theme' && (
             <div className="space-y-6">
-        <ThemeSelection 
-          activities={activities} 
-          hotels={hotels}
-          guestHouses={guestHouses}
-          onThemeSelect={handleThemeSelect}
-          onManualChoice={() => setViewMode('manual')}
-          selectedActivities={selectedActivities}
-          setSelectedActivities={setSelectedActivities}
-          selectedHotels={selectedHotels}
-          setSelectedHotels={setSelectedHotels}
-          selectedGuestHouses={selectedGuestHouses}
-          setSelectedGuestHouses={setSelectedGuestHouses}
-          checkInDate={checkInDate}
-          checkOutDate={checkOutDate}
-          setCheckInDate={setCheckInDate}
-          setCheckOutDate={setCheckOutDate}
-        />
+              <ThemeSelection
+                activities={activities}
+                hotels={hotels}
+                guestHouses={guestHouses}
+                onThemeSelect={handleThemeSelect}
+                onManualChoice={() => setViewMode('manual')}
+                selectedActivities={selectedActivities}
+                setSelectedActivities={setSelectedActivities}
+                selectedHotels={selectedHotels}
+                setSelectedHotels={setSelectedHotels}
+                selectedGuestHouses={selectedGuestHouses}
+                setSelectedGuestHouses={setSelectedGuestHouses}
+                checkInDate={checkInDate}
+                checkOutDate={checkOutDate}
+                setCheckInDate={setCheckInDate}
+                setCheckOutDate={setCheckOutDate}
+              />
             </div>
           )}
 
@@ -535,7 +537,7 @@ const StartMyTripPageOptimized = () => {
                   <ArrowLeft className="h-4 w-4" />
                   <TranslateText text="Back to Themes" language={currentLanguage} />
                 </Button>
-                
+
                 {selectedActivities.length > 0 && (
                   <Button onClick={handleProceedToGrouping}>
                     <TranslateText text="Continue with Selection" language={currentLanguage} />
@@ -556,8 +558,8 @@ const StartMyTripPageOptimized = () => {
                     <CardContent>
                       <Tabs value={activeTab} onValueChange={setActiveTab} className="w-full">
                         <TabsList className="grid w-full grid-cols-3 mb-6">
-                           <TabsTrigger value="activities" className="flex items-center gap-2">
-                             <ActivityIcon className="h-4 w-4" />
+                          <TabsTrigger value="activities" className="flex items-center gap-2">
+                            <ActivityIcon className="h-4 w-4" />
                             <span className="hidden sm:inline">
                               <TranslateText text="Activities" language={currentLanguage} />
                             </span>
@@ -590,9 +592,9 @@ const StartMyTripPageOptimized = () => {
                             )}
                           </TabsTrigger>
                         </TabsList>
-                        
+
                         <TabsContent value="activities" className="mt-0">
-                          <SelectableActivities 
+                          <SelectableActivities
                             selectedActivities={selectedActivities}
                             setSelectedActivities={setSelectedActivities}
                             selectedHotels={selectedHotels}
@@ -601,9 +603,9 @@ const StartMyTripPageOptimized = () => {
                             setSelectedGuestHouses={setSelectedGuestHouses}
                           />
                         </TabsContent>
-                        
+
                         <TabsContent value="hotels" className="mt-0">
-                          <EnhancedSelectableHotels 
+                          <EnhancedSelectableHotels
                             selectedHotels={selectedHotels}
                             setSelectedHotels={setSelectedHotels}
                             selectedActivities={selectedActivities}
@@ -611,9 +613,9 @@ const StartMyTripPageOptimized = () => {
                             preferenceType="mixed"
                           />
                         </TabsContent>
-                        
+
                         <TabsContent value="guesthouses" className="mt-0">
-                          <EnhancedSelectableGuestHouses 
+                          <EnhancedSelectableGuestHouses
                             selectedGuestHouses={selectedGuestHouses}
                             setSelectedGuestHouses={setSelectedGuestHouses}
                             selectedActivities={selectedActivities}
@@ -651,8 +653,8 @@ const StartMyTripPageOptimized = () => {
                         />
                       </div>
                     </Card>
-                    
-                    <SelectedItems 
+
+                    <SelectedItems
                       selectedActivities={selectedActivities}
                       selectedHotels={selectedHotels}
                       selectedGuestHouses={selectedGuestHouses}
@@ -679,7 +681,7 @@ const StartMyTripPageOptimized = () => {
                               {tripDurationCalculation.suggestedDays} <TranslateText text="days" language={currentLanguage} />
                             </Badge>
                           </div>
-                          
+
                           <DateRangePicker
                             checkInDate={checkInDate}
                             checkOutDate={checkOutDate}
@@ -687,16 +689,16 @@ const StartMyTripPageOptimized = () => {
                             setCheckOutDate={setCheckOutDate}
                             onDaysChange={setSelectedDays}
                           />
-                          
+
                           {showDurationSelector && (
                             <div className="space-y-3">
-                              <DaySelector 
+                              <DaySelector
                                 selectedDays={selectedDays}
                                 setSelectedDays={setSelectedDays}
                                 minDays={tripDurationCalculation.minDays}
                                 maxDays={Math.max(tripDurationCalculation.suggestedDays + 3, 14)}
                               />
-                              
+
                               <div className="text-xs text-blue-700 dark:text-blue-300 leading-relaxed">
                                 {tripDurationCalculation.reasoning}
                               </div>
@@ -722,17 +724,17 @@ const StartMyTripPageOptimized = () => {
                             <TranslateText text="Ready to Generate?" language={currentLanguage} />
                           </h3>
                         </div>
-                        
+
                         <p className="text-sm text-muted-foreground">
                           <TranslateText text="Create your personalized itinerary with optimized routes" language={currentLanguage} />
                         </p>
-                        
-                         <Button 
-                           onClick={handleGeneratePresentation}
-                           disabled={!canGenerate || isGenerating}
-                           size="lg"
-                           className="w-full"
-                         >
+
+                        <Button
+                          onClick={handleGeneratePresentation}
+                          disabled={!canGenerate || isGenerating}
+                          size="lg"
+                          className="w-full"
+                        >
                           {isGenerating ? (
                             <>
                               <div className="animate-spin rounded-full h-4 w-4 border-b-2 border-white mr-2" />
@@ -745,7 +747,7 @@ const StartMyTripPageOptimized = () => {
                             </>
                           )}
                         </Button>
-                        
+
                         {!canGenerate && (
                           <div className="flex items-start gap-2 text-xs text-muted-foreground bg-muted/50 p-3 rounded-lg">
                             <Info className="h-4 w-4 mt-0.5 flex-shrink-0" />

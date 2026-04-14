@@ -3,7 +3,7 @@ import React from "react";
 import { TipCircleProps } from "./types";
 
 const TipCircle: React.FC<TipCircleProps> = ({ isActive = false, image, onClick, category }) => {
-  const healthImage = "/lovable-uploads/7b86a3b2-caf9-430a-b0ff-cfeb58b8a665.png";
+  const healthImage = "/uploads/7b86a3b2-caf9-430a-b0ff-cfeb58b8a665.png";
   const displayImage = category?.toLowerCase() === "health" ? healthImage : image;
 
   return (

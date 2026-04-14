@@ -24,7 +24,7 @@ export function getThemeImageFromActivities(themeId: string, activities: any[]):
     const activityWithImage = activities.find(activity => 
       activity.images?.[0] || activity.image
     );
-    return activityWithImage?.images?.[0] || activityWithImage?.image || "/lovable-uploads/549c131b-140c-4a2b-a663-3d920f194f91.png";
+    return activityWithImage?.images?.[0] || activityWithImage?.image || "/uploads/549c131b-140c-4a2b-a663-3d920f194f91.png";
   }
   
   // Find activity that matches theme keywords and has an image
@@ -44,7 +44,7 @@ export function getThemeImageFromActivities(themeId: string, activities: any[]):
   }
   
   // Fallback to default image
-  return "/lovable-uploads/549c131b-140c-4a2b-a663-3d920f194f91.png";
+  return "/uploads/549c131b-140c-4a2b-a663-3d920f194f91.png";
 }
 
 export function getThemeActivities(themeId: string, activities: any[]): string[] {
@@ -194,5 +194,5 @@ export function getAccommodationImage(accommodation: any): string {
   if (accommodation.images && accommodation.images.length > 0) {
     return accommodation.images[0];
   }
-  return accommodation.image || "/lovable-uploads/549c131b-140c-4a2b-a663-3d920f194f91.png";
+  return accommodation.image || "/uploads/549c131b-140c-4a2b-a663-3d920f194f91.png";
 }

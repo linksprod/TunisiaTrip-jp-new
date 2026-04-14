@@ -6,7 +6,7 @@ const IMAGE_CACHE = 'tunisiatrip-images-v1';
 // Critical assets to cache immediately
 const PRECACHE_ASSETS = [
   '/',
-  '/lovable-uploads/3caaa473-8150-4b29-88b4-e2e9c696bf1d.png', // First slideshow image (LCP)
+  '/uploads/3caaa473-8150-4b29-88b4-e2e9c696bf1d.png', // First slideshow image (LCP)
 ];
 
 // Install event - cache critical assets
@@ -51,7 +51,7 @@ self.addEventListener('fetch', (event) => {
 
   // Handle image requests with cache-first strategy
   if (request.destination === 'image' || 
-      url.pathname.includes('/lovable-uploads/') ||
+      url.pathname.includes('/uploads/') ||
       url.pathname.includes('/images/')) {
     event.respondWith(
       caches.open(IMAGE_CACHE).then((cache) => {

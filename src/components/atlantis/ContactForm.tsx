@@ -89,7 +89,7 @@ export function ContactForm() {
     <div className="w-full mx-auto">
       <div className="w-full h-[180px] relative mb-4">
         <img
-          src="/lovable-uploads/7750fd54-c8b5-41c9-8087-42fc1c8e6d94.png"
+          src="/uploads/7750fd54-c8b5-41c9-8087-42fc1c8e6d94.png"
           alt="Office interior"
           className="object-cover w-full h-full rounded-xl"
         />

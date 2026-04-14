@@ -9,7 +9,7 @@ export const activitiesSearchData: SearchItem[] = [
     path: '/travel-information?tab=activities&activity=camel-trekking',
     category: 'travel',
     titleJP: 'ラクダトレッキング',
-    image: '/lovable-uploads/2714f2c3-4465-4a55-8369-5484aa8f3b28.png',
+    image: '/uploads/2714f2c3-4465-4a55-8369-5484aa8f3b28.png',
     keywords: [
       'camel trekking', 'desert', 'sahara', 'nomad', 'adventure',
       'sunset', 'sunrise', 'dunes', 'douz', 'tozeur',
@@ -22,7 +22,7 @@ export const activitiesSearchData: SearchItem[] = [
     path: '/travel-information?tab=activities&activity=desert-camping',
     category: 'travel',
     titleJP: '砂漠キャンプ',
-    image: '/lovable-uploads/2714f2c3-4465-4a55-8369-5484aa8f3b28.png',
+    image: '/uploads/2714f2c3-4465-4a55-8369-5484aa8f3b28.png',
     keywords: [
       'desert camping', 'sahara', 'overnight', 'stars', 'bedouin',
       'traditional tent', 'campfire', 'music', 'storytelling',
@@ -35,7 +35,7 @@ export const activitiesSearchData: SearchItem[] = [
     path: '/travel-information?tab=activities&activity=pottery',
     category: 'travel',
     titleJP: '陶器ワークショップ',
-    image: '/lovable-uploads/cbd7751a-e460-45c8-847d-849a5ca51bcc.png',
+    image: '/uploads/cbd7751a-e460-45c8-847d-849a5ca51bcc.png',
     keywords: [
       'pottery workshop', 'ceramics', 'nabeul', 'djerba', 'traditional',
       'crafts', 'hands on', 'souvenirs', 'local artisans',
@@ -48,7 +48,7 @@ export const activitiesSearchData: SearchItem[] = [
     path: '/travel-information?tab=activities&activity=carpet-weaving',
     category: 'travel',
     titleJP: 'カーペット織り',
-    image: '/lovable-uploads/9eb876d7-b767-4dea-a400-0ee661b1abdc.png',
+    image: '/uploads/9eb876d7-b767-4dea-a400-0ee661b1abdc.png',
     keywords: [
       'carpet weaving', 'kairouan', 'traditional', 'handicraft',
       'wool', 'patterns', 'workshop', 'authentic', 'artisans',
@@ -61,7 +61,7 @@ export const activitiesSearchData: SearchItem[] = [
     path: '/travel-information?tab=activities&activity=diving',
     category: 'travel',
     titleJP: 'ダイビング・シュノーケル',
-    image: '/lovable-uploads/887573e2-027f-4492-8fb5-dab816ee46da.png',
+    image: '/uploads/887573e2-027f-4492-8fb5-dab816ee46da.png',
     keywords: [
       'diving', 'snorkeling', 'underwater', 'coral', 'fish',
       'tabarka', 'djerba', 'mediterranean', 'sea life',
@@ -74,7 +74,7 @@ export const activitiesSearchData: SearchItem[] = [
     path: '/travel-information?tab=activities&activity=hammam',
     category: 'travel',
     titleJP: '伝統的ハマム',
-    image: '/lovable-uploads/cbd7751a-e460-45c8-847d-849a5ca51bcc.png',
+    image: '/uploads/cbd7751a-e460-45c8-847d-849a5ca51bcc.png',
     keywords: [
       'hammam', 'traditional bath', 'spa', 'wellness', 'relaxation',
       'massage', 'steam', 'exfoliation', 'authentic',

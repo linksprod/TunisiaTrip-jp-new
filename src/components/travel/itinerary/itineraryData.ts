@@ -13,7 +13,7 @@ export const dayByDayItinerary: DayItinerary[] = [
     ],
     description: "Begin your journey in the vibrant capital city of Tunisia. After settling in, enjoy the Mediterranean atmosphere with a seaside stroll.",
     additionalInfo: "La Marsa is one of Tunis' most upscale suburbs, known for its beautiful beach and seaside promenade.",
-    image: "/lovable-uploads/f66ee597-e8d7-44b5-834e-d0eb1266a0ba.png",
+    image: "/uploads/f66ee597-e8d7-44b5-834e-d0eb1266a0ba.png",
     color: "blue"
   },
   {
@@ -28,7 +28,7 @@ export const dayByDayItinerary: DayItinerary[] = [
     ],
     description: "Discover the ancient ruins of Carthage and the picturesque blue and white village of Sidi Bou Said.",
     additionalInfo: "Carthage was the center of the ancient Carthaginian civilization and is now a UNESCO World Heritage site.",
-    image: "/lovable-uploads/67603b3f-7233-4442-a28f-cb07d0b628bc.png",
+    image: "/uploads/67603b3f-7233-4442-a28f-cb07d0b628bc.png",
     color: "amber"
   },
   {
@@ -43,7 +43,7 @@ export const dayByDayItinerary: DayItinerary[] = [
     ],
     description: "Walk through the winding streets of the medina, exploring its rich history and vibrant market life.",
     additionalInfo: "The Medina of Tunis is a UNESCO World Heritage site featuring over 700 monuments.",
-    image: "/lovable-uploads/18062777-c533-46bf-9135-48f839209443.png",
+    image: "/uploads/18062777-c533-46bf-9135-48f839209443.png",
     color: "green"
   },
   {
@@ -58,7 +58,7 @@ export const dayByDayItinerary: DayItinerary[] = [
     ],
     description: "Visit the holy city of Kairouan and marvel at the Roman amphitheater of El Jem.",
     additionalInfo: "Kairouan is famous for its religious monuments while El Jem amphitheater is one of the best-preserved Roman ruins in the world.",
-    image: "/lovable-uploads/3caaa473-8150-4b29-88b4-e2e9c696bf1d.png",
+    image: "/uploads/3caaa473-8150-4b29-88b4-e2e9c696bf1d.png",
     color: "orange"
   },
   {
@@ -73,7 +73,7 @@ export const dayByDayItinerary: DayItinerary[] = [
     ],
     description: "Discover Tunisia's second-largest city and the unique underground homes of Matmata.",
     additionalInfo: "Matmata's cave homes provided filming locations for Star Wars' planet Tatooine.",
-    image: "/lovable-uploads/4494507c-a2f0-4f76-883d-3d753283567a.png",
+    image: "/uploads/4494507c-a2f0-4f76-883d-3d753283567a.png",
     color: "yellow"
   },
   {
@@ -88,7 +88,7 @@ export const dayByDayItinerary: DayItinerary[] = [
     ],
     description: "Experience the cultural diversity of Djerba island and the otherworldly landscapes of Tataouine.",
     additionalInfo: "Tataouine's desert landscapes inspired the name of Luke Skywalker's home planet in Star Wars.",
-    image: "/lovable-uploads/f6049873-1977-41a3-8e74-0815988c84a9.png",
+    image: "/uploads/f6049873-1977-41a3-8e74-0815988c84a9.png",
     color: "purple"
   },
   {
@@ -103,7 +103,7 @@ export const dayByDayItinerary: DayItinerary[] = [
     ],
     description: "Journey through the ancient Berber fortresses and relax in the desert oasis of Ksar Ghilane.",
     additionalInfo: "Ksar Ghilane is a beautiful oasis at the edge of the Grand Erg Oriental, featuring natural hot springs surrounded by sand dunes.",
-    image: "/lovable-uploads/16f46703-2934-4d65-9162-b8824a40c64f.png",
+    image: "/uploads/16f46703-2934-4d65-9162-b8824a40c64f.png",
     color: "red"
   },
   {
@@ -117,7 +117,7 @@ export const dayByDayItinerary: DayItinerary[] = [
     ],
     description: "Experience the 'Gateway to the Sahara' before heading home with wonderful memories of Tunisia.",
     additionalInfo: "Douz is famous for its annual International Festival of the Sahara celebrating desert culture.",
-    image: "/lovable-uploads/2714f2c3-4465-4a55-8369-5484aa8f3b28.png",
+    image: "/uploads/2714f2c3-4465-4a55-8369-5484aa8f3b28.png",
     color: "indigo"
   }
 ];

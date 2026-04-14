@@ -64,9 +64,9 @@ export const setupGlobalErrorHandling = () => {
 // Preload secondary images after initial load
 export const preloadSecondaryAssets = () => {
   const secondaryImages = [
-    "/lovable-uploads/5d66739d-6d91-48f0-99e6-f5ec39df4306.png", // JP flag
-    "/lovable-uploads/44101cc8-fa72-4b3f-bd5f-aaf7b31185be.png", // Population image
-    "/lovable-uploads/6cb11651-d5dc-47a3-ba8c-2b563eaa9b25.png", // Tourists image
+    "/uploads/5d66739d-6d91-48f0-99e6-f5ec39df4306.png", // JP flag
+    "/uploads/44101cc8-fa72-4b3f-bd5f-aaf7b31185be.png", // Population image
+    "/uploads/6cb11651-d5dc-47a3-ba8c-2b563eaa9b25.png", // Tourists image
   ];
   
   preloadImages(secondaryImages, { 

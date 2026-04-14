@@ -10,7 +10,7 @@ export const transportSearchData: SearchItem[] = [
     category: 'travel',
     section: 'transportation',
     titleJP: 'TGMトラム',
-    image: '/lovable-uploads/8d781b00-a095-48ad-ab1e-c584f33cc173.png',
+    image: '/uploads/8d781b00-a095-48ad-ab1e-c584f33cc173.png',
     keywords: [
       'tgm', 'tram', 'tunis goulette marsa', 'train', 'sidi bou said',
       'carthage', 'la marsa', 'public transport', 'scenic route',
@@ -24,7 +24,7 @@ export const transportSearchData: SearchItem[] = [
     category: 'travel',
     section: 'transportation',
     titleJP: 'ルアージュ - 乗り合いタクシー',
-    image: '/lovable-uploads/8d781b00-a095-48ad-ab1e-c584f33cc173.png',
+    image: '/uploads/8d781b00-a095-48ad-ab1e-c584f33cc173.png',
     keywords: [
       'louage', 'shared taxi', 'collective taxi', 'intercity',
       'affordable', 'local transport', 'stations',
@@ -38,7 +38,7 @@ export const transportSearchData: SearchItem[] = [
     category: 'travel',
     section: 'transportation',
     titleJP: 'チュニス地下鉄',
-    image: '/lovable-uploads/8d781b00-a095-48ad-ab1e-c584f33cc173.png',
+    image: '/uploads/8d781b00-a095-48ad-ab1e-c584f33cc173.png',
     keywords: [
       'metro', 'light rail', 'tunis', 'urban transport',
       'modern', 'efficient', 'city center', 'suburbs',

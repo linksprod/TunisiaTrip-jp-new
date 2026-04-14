@@ -40,7 +40,7 @@ export function HeroSection(): JSX.Element {
         <div
           className="w-full h-full bg-contain bg-bottom bg-no-repeat"
           style={{ 
-            backgroundImage: "url('/lovable-uploads/b87f5384-55dd-4ccb-a2bb-18d70a68a396.png')",
+            backgroundImage: "url('/uploads/b87f5384-55dd-4ccb-a2bb-18d70a68a396.png')",
             backgroundSize: isMobile ? "250%" : "100%"
           }}
           role="presentation"

@@ -1,5 +1,5 @@
 import { Activity } from '../data/activities';
-import { optimizeGeographicalRoute } from './improvedGeographicalOptimizer';
+import { optimizeGeographicalRoute } from '../services/geographicalService';
 
 export interface TripDurationCalculation {
   minDays: number;
@@ -25,7 +25,7 @@ export function calculateOptimalTripDuration(
   }
 
   // Use geographical optimizer to cluster activities
-  const optimizedRoute = optimizeGeographicalRoute(selectedActivities, []);
+  const optimizedRoute = optimizeGeographicalRoute(selectedActivities, [], 7);
   const clusters = optimizedRoute.clusters;
 
   let totalDays = 0;
@@ -44,25 +44,25 @@ export function calculateOptimalTripDuration(
   clusters.forEach((cluster, index) => {
     const activitiesInCluster = cluster.activities.length;
     let daysNeeded = Math.ceil(activitiesInCluster / 3); // Max 3 activities per day
-    
+
     // Minimum 1 day per region
     daysNeeded = Math.max(1, daysNeeded);
-    
+
     // Special rules for regions
     if (cluster.region === 'south' && activitiesInCluster >= 2) {
       daysNeeded = Math.max(2, daysNeeded); // South needs minimum 2 days due to distances
     }
-    
+
     totalDays += daysNeeded;
-    
+
     clusterDetails.push({
       region: cluster.region,
       activities: cluster.activities.map(a => a.name),
       days: daysNeeded
     });
 
-    const regionName = cluster.region === 'north' ? 'North' : 
-                      cluster.region === 'center' ? 'Center' : 'South';
+    const regionName = cluster.region === 'north' ? 'North' :
+      cluster.region === 'center' ? 'Center' : 'South';
     reasoning.push(`${regionName} region: ${daysNeeded} day${daysNeeded > 1 ? 's' : ''} (${activitiesInCluster} activities)`);
 
     // Add travel day if changing regions (except for first cluster)

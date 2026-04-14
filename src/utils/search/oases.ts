@@ -9,7 +9,7 @@ export const oasesSearchData: SearchItem[] = [
     path: '/travel-information?tab=activities&attraction=chebika',
     category: 'travel',
     titleJP: 'シェビカ - 山のオアシス',
-    image: '/lovable-uploads/ce206baa-f2a6-439f-a44e-970d73e72c06.png',
+    image: '/uploads/ce206baa-f2a6-439f-a44e-970d73e72c06.png',
     keywords: [
       'chebika', 'mountain oasis', 'waterfall', 'palm trees',
       'tozeur', 'hiking', 'star wars', 'abandoned village',
@@ -22,7 +22,7 @@ export const oasesSearchData: SearchItem[] = [
     path: '/travel-information?tab=activities&attraction=tamerza',
     category: 'travel',
     titleJP: 'タメルザ - 最大の山オアシス',
-    image: '/lovable-uploads/ce206baa-f2a6-439f-a44e-970d73e72c06.png',
+    image: '/uploads/ce206baa-f2a6-439f-a44e-970d73e72c06.png',
     keywords: [
       'tamerza', 'mountain oasis', 'waterfall', 'old village',
       'grand canyon', 'tozeur', 'hiking', 'palm grove',
@@ -35,7 +35,7 @@ export const oasesSearchData: SearchItem[] = [
     path: '/travel-information?tab=activities&attraction=mides',
     category: 'travel',
     titleJP: 'ミデス - 峡谷オアシス',
-    image: '/lovable-uploads/ce206baa-f2a6-439f-a44e-970d73e72c06.png',
+    image: '/uploads/ce206baa-f2a6-439f-a44e-970d73e72c06.png',
     keywords: [
       'mides', 'canyon', 'oasis', 'gorge', 'filming location',
       'tozeur', 'english patient', 'desert', 'dramatic landscape',

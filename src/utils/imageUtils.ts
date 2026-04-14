@@ -91,8 +91,8 @@ export const convertToWebP = (imageUrl: string): string => {
  */
 export const preloadCriticalUIImages = (): void => {
   const criticalImages = [
-    "/lovable-uploads/b8d3011d-f5cd-4edd-b34e-9ef0827ba186.png", // Logo
-    "/lovable-uploads/5d66739d-6d91-48f0-99e6-f5ec39df4306.png", // JP flag
+    "/uploads/b8d3011d-f5cd-4edd-b34e-9ef0827ba186.png", // Logo
+    "/uploads/5d66739d-6d91-48f0-99e6-f5ec39df4306.png", // JP flag
     "https://i.imgur.com/5YtDgG9.gif", // Loading GIF
   ];
   
@@ -113,7 +113,7 @@ export const setupImageOptimizations = (): void => {
   }));
   
   // Set up preconnect for CDNs
-  const origins = ['https://lovable-uploads.s3.amazonaws.com', 'https://i.imgur.com'];
+  const origins = ['https://uploads.s3.amazonaws.com', 'https://i.imgur.com'];
   
   origins.forEach(origin => {
     const link = document.createElement('link');

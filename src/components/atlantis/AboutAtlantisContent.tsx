@@ -25,7 +25,7 @@ export function AboutAtlantisContent() {
       <div className="bg-gray-50 p-6 rounded-lg shadow-sm">
         <div className="mb-6">
           <img
-            src="/lovable-uploads/4b6750cd-a4dc-435b-be65-8e7faa7d8960.png"
+            src="/uploads/4b6750cd-a4dc-435b-be65-8e7faa7d8960.png"
             alt="Atlantis Office Interior"
             className="w-full h-auto rounded-lg object-cover"
           />

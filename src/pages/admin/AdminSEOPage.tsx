@@ -18,7 +18,7 @@ import { Globe, Flag, Plus, X, Tag, Map, ListFilter, RefreshCw } from "lucide-re
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
 
 // Default Open Graph Image path
-const DEFAULT_OG_IMAGE = "/lovable-uploads/ff0d63a1-cc6c-4694-be17-2df916fd6334.png";
+const DEFAULT_OG_IMAGE = "/uploads/ff0d63a1-cc6c-4694-be17-2df916fd6334.png";
 
 // Local Storage Keys
 const SEO_DATA_KEY = "tunisiaTourism_seoData";

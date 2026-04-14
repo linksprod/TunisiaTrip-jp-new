@@ -6,7 +6,7 @@ import { Badge } from "@/components/ui/badge";
 import { useHotels } from "@/hooks/useHotels";
 import { useActivities } from "@/hooks/useActivities";
 
-import { calculateDistance } from "@/utils/geographicalHelpers";
+import { calculatePureDistance as calculateDistance } from "@/services/geographicalService";
 
 interface EnhancedSelectableHotelsProps {
   selectedHotels: string[];
@@ -16,31 +16,31 @@ interface EnhancedSelectableHotelsProps {
   preferenceType?: 'luxury' | 'authentic' | 'mixed';
 }
 
-export function EnhancedSelectableHotels({ 
-  selectedHotels, 
-  setSelectedHotels, 
+export function EnhancedSelectableHotels({
+  selectedHotels,
+  setSelectedHotels,
   selectedActivities,
   totalDays,
   preferenceType = 'mixed'
 }: EnhancedSelectableHotelsProps) {
   const { hotels = [], isLoading } = useHotels();
   const { activities = [] } = useActivities();
-  
+
   // Simplified recommendations - show all hotels with default recommendations
   const recommendations = useMemo(() => {
     let recommendedHotels = hotels;
     let reasons = ['Excellent choice for your trip'];
-    
+
     // If activities are selected, filter by proximity
     if (selectedActivities.length > 0) {
       recommendedHotels = hotels.filter(hotel => {
         if (!hotel.latitude || !hotel.longitude) return false;
-        
+
         // Check if hotel is within 50km of any selected activity
         return activities.some(activity => {
           if (!selectedActivities.includes(activity.id?.toString() || '')) return false;
           if (!activity.latitude || !activity.longitude) return false;
-          
+
           const distance = calculateDistance(
             hotel.latitude!,
             hotel.longitude!,
@@ -79,16 +79,16 @@ export function EnhancedSelectableHotels({
   // Convert database hotels to include recommendation data
   const enhancedHotels = useMemo(() => {
     return hotels.map(hotel => {
-      const recommendation = hotelRecommendations.find(rec => 
-        rec.accommodation.id === hotel.id?.toString() || 
+      const recommendation = hotelRecommendations.find(rec =>
+        rec.accommodation.id === hotel.id?.toString() ||
         rec.accommodation.name.toLowerCase() === hotel.name.toLowerCase()
       );
 
       // Calculate nearby activities for non-recommended hotels
-      let nearbyActivities: Array<{id: string, title: string, distance: number}> = [];
+      let nearbyActivities: Array<{ id: string, title: string, distance: number }> = [];
       if (hotel.latitude && hotel.longitude && selectedActivities.length > 0) {
         nearbyActivities = activities
-          .filter(activity => 
+          .filter(activity =>
             selectedActivities.includes(activity.id?.toString() || '') &&
             activity.latitude && activity.longitude
           )
@@ -121,7 +121,7 @@ export function EnhancedSelectableHotels({
       return b.score - a.score;
     });
   }, [hotels, hotelRecommendations, activities, selectedActivities]);
-  
+
   const handleHotelToggle = (hotelId: string) => {
     if (selectedHotels.includes(hotelId)) {
       setSelectedHotels(selectedHotels.filter(id => id !== hotelId));
@@ -168,11 +168,10 @@ export function EnhancedSelectableHotels({
         {enhancedHotels.map((hotel) => {
           const isSelected = selectedHotels.includes(hotel.id || '');
           return hotel.id && (
-            <Card 
-              key={hotel.id} 
-              className={`cursor-pointer transition-all duration-200 hover:shadow-md ${
-                isSelected ? 'ring-2 ring-primary bg-primary/5' : ''
-              }`}
+            <Card
+              key={hotel.id}
+              className={`cursor-pointer transition-all duration-200 hover:shadow-md ${isSelected ? 'ring-2 ring-primary bg-primary/5' : ''
+                }`}
               onClick={() => handleHotelToggle(hotel.id)}
             >
               <CardContent className="p-4">
@@ -183,13 +182,12 @@ export function EnhancedSelectableHotels({
                       alt={hotel.name}
                       className="w-20 h-20 object-cover rounded-lg"
                     />
-                    <div className={`absolute -top-2 -right-2 w-6 h-6 rounded-full flex items-center justify-center ${
-                      isSelected ? 'bg-primary text-white' : 'bg-gray-200 text-gray-400'
-                    }`}>
+                    <div className={`absolute -top-2 -right-2 w-6 h-6 rounded-full flex items-center justify-center ${isSelected ? 'bg-primary text-white' : 'bg-gray-200 text-gray-400'
+                      }`}>
                       {isSelected ? <Check className="h-4 w-4" /> : <Plus className="h-4 w-4" />}
                     </div>
                   </div>
-                  
+
                   <div className="flex-1 min-w-0">
                     <h3 className="font-semibold text-base mb-1 truncate">
                       {hotel.name}
@@ -198,7 +196,7 @@ export function EnhancedSelectableHotels({
                       <MapPin className="h-3 w-3" />
                       <span className="truncate">{hotel.location}</span>
                     </div>
-                    
+
                     {/* Price and Rating */}
                     <div className="flex items-center gap-4 text-sm mb-2">
                       {hotel.price_per_night && (

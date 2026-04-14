@@ -8,7 +8,7 @@ import { useTranslation } from "@/hooks/use-translation";
 const layoverCities = [{
   city: "Paris, France",
   airline: "Air France",
-  logo: "/lovable-uploads/79a94578-0dc6-427f-8ff7-d3e23a03bb7d.png",
+  logo: "/uploads/79a94578-0dc6-427f-8ff7-d3e23a03bb7d.png",
   airlineLogo: "https://upload.wikimedia.org/wikipedia/commons/4/44/Air_France_Logo.svg",
   fromKoreaTime: "14Hrs 30 Mins",
   toTunisiaTime: "2 Hours",
@@ -16,7 +16,7 @@ const layoverCities = [{
 }, {
   city: "Doha, Qatar",
   airline: "Qatar Airways",
-  logo: "/lovable-uploads/79a94578-0dc6-427f-8ff7-d3e23a03bb7d.png",
+  logo: "/uploads/79a94578-0dc6-427f-8ff7-d3e23a03bb7d.png",
   airlineLogo: "https://upload.wikimedia.org/wikipedia/en/thumb/9/9b/Qatar_Airways_Logo.svg/300px-Qatar_Airways_Logo.svg.png",
   fromKoreaTime: "14Hrs 30 Mins",
   toTunisiaTime: "2 Hours",
@@ -24,16 +24,16 @@ const layoverCities = [{
 }, {
   city: "Istanbul, Turkiye",
   airline: "Turkish Airlines",
-  logo: "/lovable-uploads/79a94578-0dc6-427f-8ff7-d3e23a03bb7d.png",
-  airlineLogo: "/lovable-uploads/6e55d8c2-7a0f-4614-b85b-e023f3789099.png",
+  logo: "/uploads/79a94578-0dc6-427f-8ff7-d3e23a03bb7d.png",
+  airlineLogo: "/uploads/6e55d8c2-7a0f-4614-b85b-e023f3789099.png",
   fromKoreaTime: "14Hrs 30 Mins",
   toTunisiaTime: "2 Hours",
   active: false
 }, {
   city: "Dubai, UAE",
   airline: "Emirates",
-  logo: "/lovable-uploads/79a94578-0dc6-427f-8ff7-d3e23a03bb7d.png",
-  airlineLogo: "/lovable-uploads/7b6a6969-e5e2-426d-a054-10a4985a12a7.png",
+  logo: "/uploads/79a94578-0dc6-427f-8ff7-d3e23a03bb7d.png",
+  airlineLogo: "/uploads/7b6a6969-e5e2-426d-a054-10a4985a12a7.png",
   fromKoreaTime: "14Hrs 30 Mins",
   toTunisiaTime: "2 Hours",
   active: false
@@ -106,7 +106,7 @@ export function TravelRoutes() {
       </div>
       <div className="w-full flex justify-center mt-4">
         <img 
-          src={type === "arrival" ? "/lovable-uploads/2fbba722-8066-4b0a-83a5-2b1a5f5a148a.png" : "/lovable-uploads/e87632b4-7ea3-4ced-a3f2-c9ce81f18e2a.png"}
+          src={type === "arrival" ? "/uploads/2fbba722-8066-4b0a-83a5-2b1a5f5a148a.png" : "/uploads/e87632b4-7ea3-4ced-a3f2-c9ce81f18e2a.png"}
           alt="Airplane Icon" 
           className="w-24 h-24 object-contain"
         />

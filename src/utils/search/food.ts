@@ -9,7 +9,7 @@ export const foodSearchData: SearchItem[] = [
     path: '/blog?category=food&dish=couscous',
     category: 'blog',
     titleJP: 'クスクス - 国民料理',
-    image: '/lovable-uploads/6cb11651-d5dc-47a3-ba8c-2b563eaa9b25.png',
+    image: '/uploads/6cb11651-d5dc-47a3-ba8c-2b563eaa9b25.png',
     keywords: [
       'couscous', 'national dish', 'semolina', 'vegetables',
       'meat', 'traditional', 'friday', 'family meal',
@@ -22,7 +22,7 @@ export const foodSearchData: SearchItem[] = [
     path: '/blog?category=food&dish=brik',
     category: 'blog',
     titleJP: 'ブリック - チュニジアンペストリー',
-    image: '/lovable-uploads/6cb11651-d5dc-47a3-ba8c-2b563eaa9b25.png',
+    image: '/uploads/6cb11651-d5dc-47a3-ba8c-2b563eaa9b25.png',
     keywords: [
       'brik', 'pastry', 'egg', 'tuna', 'crispy', 'fried',
       'appetizer', 'street food', 'malsouka', 'popular',
@@ -35,7 +35,7 @@ export const foodSearchData: SearchItem[] = [
     path: '/blog?category=food&dish=harissa',
     category: 'blog',
     titleJP: 'ハリッサ - スパイシーペースト',
-    image: '/lovable-uploads/6cb11651-d5dc-47a3-ba8c-2b563eaa9b25.png',
+    image: '/uploads/6cb11651-d5dc-47a3-ba8c-2b563eaa9b25.png',
     keywords: [
       'harissa', 'spicy', 'chili paste', 'hot sauce', 'condiment',
       'red pepper', 'garlic', 'spices', 'traditional',
@@ -48,7 +48,7 @@ export const foodSearchData: SearchItem[] = [
     path: '/blog?category=food&dish=dates',
     category: 'blog',
     titleJP: 'デグレット・ヌール - 高級ナツメヤシ',
-    image: '/lovable-uploads/ce206baa-f2a6-439f-a44e-970d73e72c06.png',
+    image: '/uploads/ce206baa-f2a6-439f-a44e-970d73e72c06.png',
     keywords: [
       'deglet noor', 'dates', 'premium', 'tozeur', 'oasis',
       'sweet', 'translucent', 'best quality', 'export',
@@ -61,7 +61,7 @@ export const foodSearchData: SearchItem[] = [
     path: '/blog?category=food&dish=tea',
     category: 'blog',
     titleJP: 'ミントティー - 伝統的飲み物',
-    image: '/lovable-uploads/6cb11651-d5dc-47a3-ba8c-2b563eaa9b25.png',
+    image: '/uploads/6cb11651-d5dc-47a3-ba8c-2b563eaa9b25.png',
     keywords: [
       'mint tea', 'traditional', 'green tea', 'hospitality',
       'ceremony', 'sugar', 'social', 'refreshing',

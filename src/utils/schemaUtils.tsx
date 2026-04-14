@@ -111,7 +111,7 @@ export const BlogPostSchema = ({
       name: 'TunisiaTrip',
       logo: {
         '@type': 'ImageObject',
-        url: 'https://tunisiatrip.jp/lovable-uploads/93c21f45-85e6-4c0d-9726-d7648d48686d.png',
+        url: 'https://tunisiatrip.jp/uploads/93c21f45-85e6-4c0d-9726-d7648d48686d.png',
         width: 512,
         height: 512
       }
@@ -134,7 +134,7 @@ export const BlogPostSchema = ({
 export const OrganizationSchema = ({ 
   name = 'TunisiaTrip',
   url = 'https://tunisiatrip.jp',
-  logo = 'https://tunisiatrip.jp/lovable-uploads/93c21f45-85e6-4c0d-9726-d7648d48686d.png',
+  logo = 'https://tunisiatrip.jp/uploads/93c21f45-85e6-4c0d-9726-d7648d48686d.png',
   sameAs = [],
   contactEmail = 'atlantis@atlantis.tn'
 }: {

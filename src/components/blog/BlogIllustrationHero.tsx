@@ -10,7 +10,7 @@ export function BlogIllustrationHero() {
     <div className="w-full bg-[#FFFBF6]">
       <div className="w-full px-0 relative">
         <img
-          src="/lovable-uploads/64122175-5717-4890-b166-cc665ff1ea4b.png"
+          src="/uploads/64122175-5717-4890-b166-cc665ff1ea4b.png"
           alt="Travelers exploring Tunisia"
           className="w-full h-[400px] object-cover"
         />

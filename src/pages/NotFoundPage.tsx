@@ -46,7 +46,7 @@ export default function NotFoundPage(): JSX.Element {
     <MainLayout showTagBar={false}>
       <div className="min-h-[calc(100vh-200px)] flex flex-col items-center justify-center px-4 py-16 md:py-24">
         <OptimizedImage
-          src="/lovable-uploads/b8d3011d-f5cd-4edd-b34e-9ef0827ba186.png"
+          src="/uploads/b8d3011d-f5cd-4edd-b34e-9ef0827ba186.png"
           alt="Discover Tunisia Logo"
           width={200}
           height={80}

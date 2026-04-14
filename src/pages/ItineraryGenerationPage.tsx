@@ -19,10 +19,10 @@ const ItineraryGenerationPage = () => {
   const navigate = useNavigate();
   const location = useLocation();
   const { currentLanguage } = useTranslation();
-  
+
   // Get data from URL params (from TripPlannerSidebar) or state (fallback)
   const urlParams = new URLSearchParams(location.search);
-  const selectedActivities = urlParams.get('selectedActivities') 
+  const selectedActivities = urlParams.get('selectedActivities')
     ? JSON.parse(decodeURIComponent(urlParams.get('selectedActivities')!))
     : location.state?.selectedActivities;
   const selectedHotels = urlParams.get('selectedHotels')
@@ -34,7 +34,7 @@ const ItineraryGenerationPage = () => {
   const selectedAirport = urlParams.get('selectedAirport') || location.state?.selectedAirport;
   const checkIn = urlParams.get('checkIn') ? new Date(urlParams.get('checkIn')!) : location.state?.checkIn;
   const checkOut = urlParams.get('checkOut') ? new Date(urlParams.get('checkOut')!) : location.state?.checkOut;
-  
+
   console.log('📊 ItineraryGenerationPage received data:', {
     selectedActivities: selectedActivities?.length || 0,
     selectedHotels: selectedHotels?.length || 0,
@@ -43,7 +43,7 @@ const ItineraryGenerationPage = () => {
     checkIn,
     checkOut
   });
-  
+
   // Calculate actual number of days from calendar selection
   const calculateDays = () => {
     if (checkIn && checkOut) {
@@ -53,7 +53,7 @@ const ItineraryGenerationPage = () => {
     }
     return 7; // Default fallback
   };
-  
+
   const selectedDays = calculateDays();
   const [isGenerating, setIsGenerating] = useState(true);
   const [generatedItinerary, setGeneratedItinerary] = useState<EnhancedDayItinerary[]>([]);
@@ -78,18 +78,20 @@ const ItineraryGenerationPage = () => {
           description: "Creating a smart itinerary based on your selections and duration"
         });
 
-        // Import the new intelligent generator
-        const { generateIntelligentItinerary } = await import('../utils/intelligentItineraryGenerator');
-        
-        const generatedItinerary = await generateIntelligentItinerary(
+        // Use the consolidated itinerary service
+        const { generateItinerary } = await import('../services/itineraryService');
+
+        const generatedItinerary = await generateItinerary(
           selectedDays,
           selectedActivities,
           selectedHotels || [],
           selectedGuestHouses || [],
-          dbActivities,
-          dbHotels,
-          dbGuestHouses,
-          dbAirports,
+          {
+            activities: dbActivities,
+            hotels: dbHotels,
+            guestHouses: dbGuestHouses,
+            airports: dbAirports
+          },
           selectedAirport
         );
 
@@ -111,18 +113,20 @@ const ItineraryGenerationPage = () => {
       setIsGenerating(true);
       toast.info("Regenerating your itinerary...");
 
-      // Import the new intelligent generator
-      const { generateIntelligentItinerary } = await import('../utils/intelligentItineraryGenerator');
-      
-      const generatedItinerary = await generateIntelligentItinerary(
+      // Use the consolidated itinerary service
+      const { generateItinerary } = await import('../services/itineraryService');
+
+      const generatedItinerary = await generateItinerary(
         selectedDays,
         selectedActivities,
         selectedHotels || [],
         selectedGuestHouses || [],
-        dbActivities,
-        dbHotels,
-        dbGuestHouses,
-        dbAirports,
+        {
+          activities: dbActivities,
+          hotels: dbHotels,
+          guestHouses: dbGuestHouses,
+          airports: dbAirports
+        },
         selectedAirport
       );
 
@@ -137,7 +141,7 @@ const ItineraryGenerationPage = () => {
   };
 
   const handleBackToAccommodations = () => {
-    navigate('/accommodation-selection', { 
+    navigate('/accommodation-selection', {
       state: { selectedActivities }
     });
   };
@@ -152,15 +156,15 @@ const ItineraryGenerationPage = () => {
         <div className="w-full max-w-[1400px] mx-auto px-4 sm:px-6 md:px-8 py-6 sm:py-8 md:py-10">
           {/* Enhanced Header */}
           <div className="mb-8">
-            <Button 
-              variant="ghost" 
-              className="flex items-center gap-2 text-primary hover:bg-primary/10 mb-6" 
+            <Button
+              variant="ghost"
+              className="flex items-center gap-2 text-primary hover:bg-primary/10 mb-6"
               onClick={handleBackToAccommodations}
             >
               <ArrowLeft className="h-4 w-4" />
               <TranslateText text="Back to Selection" language={currentLanguage} />
             </Button>
-            
+
             <div className="text-center space-y-6">
               <div className="space-y-3">
                 <h1 className="text-4xl font-bold bg-gradient-to-r from-primary to-purple-600 bg-clip-text text-transparent">
@@ -170,7 +174,7 @@ const ItineraryGenerationPage = () => {
                   Expertly crafted itinerary with optimized routes and authentic cultural experiences
                 </p>
               </div>
-              
+
               <div className="flex flex-wrap justify-center gap-3">
                 <Badge variant="secondary" className="bg-gradient-to-r from-blue-100 to-blue-200 text-blue-800 border-0 px-4 py-2">
                   <Star className="h-4 w-4 mr-2" />
@@ -207,16 +211,16 @@ const ItineraryGenerationPage = () => {
             {/* Action Buttons */}
             {!isGenerating && generatedItinerary.length > 0 && (
               <div className="flex flex-col sm:flex-row justify-center gap-4 mt-8">
-                <Button 
-                  variant="outline" 
-                  onClick={handleRegenerateItinerary} 
+                <Button
+                  variant="outline"
+                  onClick={handleRegenerateItinerary}
                   disabled={isGenerating}
                   className="flex items-center gap-2 hover:bg-primary hover:text-primary-foreground"
                 >
                   <Clock className="h-4 w-4" />
                   Regenerate Adventure
                 </Button>
-                <Button 
+                <Button
                   onClick={() => toast.success("Itinerary saved successfully!", {
                     description: "Your personalized itinerary has been saved to your account."
                   })}

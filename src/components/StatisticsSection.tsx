@@ -84,12 +84,12 @@ export function StatisticsSection() {
 
   // Define illustrations with the population one first for priority
   const illustrations = {
-    population: "/lovable-uploads/44101cc8-fa72-4b3f-bd5f-aaf7b31185be.png",
-    tourists: "/lovable-uploads/6cb11651-d5dc-47a3-ba8c-2b563eaa9b25.png", // Colorful tourist illustration
-    historic: "/lovable-uploads/67395cf4-21f5-4090-8626-50a7e2d78022.png", // Historic sites illustration
-    university: "/lovable-uploads/2c67e89f-e389-4963-814d-d3176f543d56.png", // University image with books
-    unesco: "/lovable-uploads/58b21545-9c98-4989-a04e-7b8126cd4855.png", // New UNESCO image
-    landarea: "/lovable-uploads/0e39366d-1fa3-4b06-bf5a-79b16b3bc3b8.png"  // Updated Land area image with new upload
+    population: "/uploads/44101cc8-fa72-4b3f-bd5f-aaf7b31185be.png",
+    tourists: "/uploads/6cb11651-d5dc-47a3-ba8c-2b563eaa9b25.png", // Colorful tourist illustration
+    historic: "/uploads/67395cf4-21f5-4090-8626-50a7e2d78022.png", // Historic sites illustration
+    university: "/uploads/2c67e89f-e389-4963-814d-d3176f543d56.png", // University image with books
+    unesco: "/uploads/58b21545-9c98-4989-a04e-7b8126cd4855.png", // New UNESCO image
+    landarea: "/uploads/0e39366d-1fa3-4b06-bf5a-79b16b3bc3b8.png"  // Updated Land area image with new upload
   };
 
   // Explicitly preload all images when component mounts

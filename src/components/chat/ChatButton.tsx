@@ -22,7 +22,7 @@ export function ChatButton({ onClick, isOpen }: { onClick: () => void; isOpen: b
         <>
           <Avatar className="h-8 w-8 border-2 border-white">
             <AvatarImage 
-              src="/lovable-uploads/42ee9aec-52e6-40fb-a7f4-f4813e355e7c.png" 
+              src="/uploads/42ee9aec-52e6-40fb-a7f4-f4813e355e7c.png" 
               alt="Trip Assistant Avatar"
             />
             <AvatarFallback><UserRound className="h-5 w-5" /></AvatarFallback>

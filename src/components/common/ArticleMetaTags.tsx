@@ -22,8 +22,8 @@ export function ArticleMetaTags({ article }: ArticleMetaTagsProps) {
     else {
       // Fallback to default site image based on language
       baseImage = currentLanguage === 'EN' 
-        ? "https://tunisiatrip.jp/lovable-uploads/f4547708-3e81-4d1e-b626-844cc888dabd.png"
-        : "https://tunisiatrip.jp/lovable-uploads/0c1b3cad-b8c4-4e02-a789-e700a147f440.png";
+        ? "https://tunisiatrip.jp/uploads/f4547708-3e81-4d1e-b626-844cc888dabd.png"
+        : "https://tunisiatrip.jp/uploads/0c1b3cad-b8c4-4e02-a789-e700a147f440.png";
     }
     
     // Add cache-busting version parameter
@@ -156,7 +156,7 @@ export function ArticleMetaTags({ article }: ArticleMetaTagsProps) {
             "name": "Tunisia Trip",
             "logo": {
               "@type": "ImageObject",
-              "url": "https://tunisiatrip.jp/lovable-uploads/b8d3011d-f5cd-4edd-b34e-9ef0827ba186.png"
+              "url": "https://tunisiatrip.jp/uploads/b8d3011d-f5cd-4edd-b34e-9ef0827ba186.png"
             }
           },
           "mainEntityOfPage": {

@@ -6,7 +6,6 @@ import { Checkbox } from "@/components/ui/checkbox";
 import { TranslateText } from "@/components/translation/TranslateText";
 import { useTranslation } from "@/hooks/use-translation";
 import { ArrowLeft, MapPin, Building, Home } from "lucide-react";
-import { optimizeGeographicalRoute } from "@/utils/improvedGeographicalOptimizer";
 import { Activity } from "@/data/activities";
 import { getAccommodationImage } from "@/utils/themeUtils";
 import { InteractiveTripMap } from "@/components/start-my-trip/InteractiveTripMap";
@@ -106,7 +105,7 @@ export function ActivityGroupingPage({
     if (hotelsWithDistance.length > 0) {
       const closest = hotelsWithDistance[0];
       selectedHotels.push(closest);
-      
+
       if (hotelsWithDistance.length > 1 && closest.distance <= CLOSE_DISTANCE) {
         const second = hotelsWithDistance[1];
         if (second.distance <= CLOSE_DISTANCE) {
@@ -120,7 +119,7 @@ export function ActivityGroupingPage({
     if (guestHousesWithDistance.length > 0) {
       const closest = guestHousesWithDistance[0];
       selectedGuestHouses.push(closest);
-      
+
       if (guestHousesWithDistance.length > 1 && closest.distance <= CLOSE_DISTANCE) {
         const second = guestHousesWithDistance[1];
         if (second.distance <= CLOSE_DISTANCE) {
@@ -157,7 +156,7 @@ export function ActivityGroupingPage({
           <ArrowLeft className="h-4 w-4" />
           <TranslateText text="Back to Selection" language={currentLanguage} />
         </Button>
-        
+
         <div className="text-sm text-muted-foreground">
           {selectedActivities.length} activities • {totalSelectedAccommodations} accommodations
         </div>
@@ -190,8 +189,8 @@ export function ActivityGroupingPage({
                     />
                     <div className="flex items-start gap-4 flex-1">
                       {activity.image && (
-                        <img 
-                          src={activity.image} 
+                        <img
+                          src={activity.image}
                           alt={activity.name}
                           className="w-20 h-20 rounded-lg object-cover flex-shrink-0"
                         />
@@ -213,7 +212,7 @@ export function ActivityGroupingPage({
                       <h4 className="text-sm font-semibold text-foreground">
                         <TranslateText text="Recommended Accommodations nearby (within 50km for multiple, up to 100km for single):" language={currentLanguage} />
                       </h4>
-                      
+
                       <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
                         {/* Recommended Hotels */}
                         {activity.recommendations.hotels.map((hotel, index) => (
@@ -224,8 +223,8 @@ export function ActivityGroupingPage({
                                   checked={selectedHotels.includes(hotel.id)}
                                   onCheckedChange={() => onHotelToggle(hotel.id)}
                                 />
-                                <img 
-                                  src={getAccommodationImage(hotel)} 
+                                <img
+                                  src={getAccommodationImage(hotel)}
                                   alt={hotel.name}
                                   className="w-16 h-16 rounded-lg object-cover"
                                 />
@@ -263,8 +262,8 @@ export function ActivityGroupingPage({
                                   checked={selectedGuestHouses.includes(guestHouse.id)}
                                   onCheckedChange={() => onGuestHouseToggle(guestHouse.id)}
                                 />
-                                <img 
-                                  src={getAccommodationImage(guestHouse)} 
+                                <img
+                                  src={getAccommodationImage(guestHouse)}
                                   alt={guestHouse.name}
                                   className="w-16 h-16 rounded-lg object-cover"
                                 />
@@ -302,8 +301,8 @@ export function ActivityGroupingPage({
 
           {/* Generate Itinerary Button */}
           <div className="flex justify-center pt-6">
-            <Button 
-              size="lg" 
+            <Button
+              size="lg"
               onClick={onGenerateItinerary}
               disabled={totalSelectedAccommodations === 0}
               className="px-8"

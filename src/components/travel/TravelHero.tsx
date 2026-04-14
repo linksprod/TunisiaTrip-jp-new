@@ -7,19 +7,19 @@ import { useTranslation } from "@/hooks/use-translation";
 const slides = [
   {
     id: 1,
-    image: "/lovable-uploads/f66ee597-e8d7-44b5-834e-d0eb1266a0ba.png",
+    image: "/uploads/f66ee597-e8d7-44b5-834e-d0eb1266a0ba.png",
     title: "Travel Tunisia",
     subtitle: "Unforgettable Experiences Await"
   },
   {
     id: 2,
-    image: "/lovable-uploads/2714f2c3-4465-4a55-8369-5484aa8f3b28.png",
+    image: "/uploads/2714f2c3-4465-4a55-8369-5484aa8f3b28.png",
     title: "Discover Hidden Gems",
     subtitle: "Authentic Cultural Experiences"
   },
   {
     id: 3,
-    image: "/lovable-uploads/a2d95c89-23fc-48b3-b72b-742bdd9b0076.png",
+    image: "/uploads/a2d95c89-23fc-48b3-b72b-742bdd9b0076.png",
     title: "Desert Adventures",
     subtitle: "Journey Through the Sahara"
   }

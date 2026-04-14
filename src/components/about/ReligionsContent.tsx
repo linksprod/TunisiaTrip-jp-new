@@ -14,17 +14,17 @@ export function ReligionsContent() {
     {
       name: "Islam",
       description: "98.2% of the population are Muslims who believe in Sunni Islam. Freedom of religion is guaranteed under the 1988 National Charter, though proselytization and missionary work are subject to legal restrictions.",
-      imageUrl: "/lovable-uploads/f3b30eee-6fe7-4893-b523-772d88a92794.png"
+      imageUrl: "/uploads/f3b30eee-6fe7-4893-b523-772d88a92794.png"
     },
     {
       name: "Judaism",
       description: "There has been a Jewish minority in Tunisia for a very long time. Since 1967, most Jews have emigrated to France or Israel, with the majority of those remaining now living on the island of Djerba.",
-      imageUrl: "/lovable-uploads/2a5d4021-ac7b-4673-87d8-cc70469a97e1.png"
+      imageUrl: "/uploads/2a5d4021-ac7b-4673-87d8-cc70469a97e1.png"
     },
     {
       name: "Christianity",
       description: "A small Christian community exists in Tunisia, mostly comprised of foreigners who worship freely in churches and operate several schools throughout the country.",
-      imageUrl: "/lovable-uploads/4821f6c6-b0ba-468a-8584-133c8e804417.png"
+      imageUrl: "/uploads/4821f6c6-b0ba-468a-8584-133c8e804417.png"
     }
   ];
 

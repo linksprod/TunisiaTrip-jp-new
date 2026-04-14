@@ -5,7 +5,7 @@
 
 export const optimizeLCPImage = () => {
   // Create high-priority preload for LCP image
-  const lcpImageUrl = "/lovable-uploads/3caaa473-8150-4b29-88b4-e2e9c696bf1d.png";
+  const lcpImageUrl = "/uploads/3caaa473-8150-4b29-88b4-e2e9c696bf1d.png";
   
   // Check if preload already exists
   const existingPreload = document.querySelector(`link[rel="preload"][href="${lcpImageUrl}"]`);

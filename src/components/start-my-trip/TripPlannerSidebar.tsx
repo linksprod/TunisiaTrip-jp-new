@@ -8,8 +8,7 @@ import { Checkbox } from "@/components/ui/checkbox";
 import { Calendar } from "@/components/ui/calendar";
 import { Popover, PopoverContent, PopoverTrigger } from "@/components/ui/popover";
 import { Plus, X, MapPin, Clock, Star, Calendar as CalendarIcon, Compass, FileText, Plane, RotateCcw, Building, Home, Check, AlertTriangle } from "lucide-react";
-import { calculateDistance } from "@/utils/geographicalHelpers";
-import { getActivityRegion } from "@/utils/geographicalMatching";
+import { calculatePureDistance as calculateDistance, getActivityRegion } from "@/services/geographicalService";
 import { usePredefinedTrips } from "@/hooks/usePredefinedTrips";
 import { DaySelector } from "./DaySelector";
 import { cn } from "@/lib/utils";
@@ -125,7 +124,7 @@ export const TripPlannerSidebar: React.FC<TripPlannerSidebarProps> = ({
       image: activity.images && activity.images.length > 0 ? activity.images[0] : activity.image || '',
       duration: activity.duration || '2-3 hours',
       rating: activity.rating || 4.5,
-      coordinates: activity.latitude && activity.longitude 
+      coordinates: activity.latitude && activity.longitude
         ? { lat: Number(activity.latitude), lng: Number(activity.longitude) }
         : undefined
     }));
@@ -139,36 +138,36 @@ export const TripPlannerSidebar: React.FC<TripPlannerSidebarProps> = ({
   const getAvailableActivitiesForDay = (day: number) => {
     // Get all activities already assigned to any day
     const allAssignedActivityIds = Object.values(activitiesByDay).flat();
-    
+
     // Get all selected activities that are not yet assigned to any day
-    const availableActivities = convertedActivities.filter(activity => 
-      selectedActivities.includes(activity.id) && 
+    const availableActivities = convertedActivities.filter(activity =>
+      selectedActivities.includes(activity.id) &&
       !allAssignedActivityIds.includes(activity.id)
     );
-    
+
     // Get activities already assigned to this specific day
     const dayActivities = getDayActivities(day);
-    
+
     // If no activities are assigned to this day, show all available activities
     if (dayActivities.length === 0) {
       return availableActivities;
     }
-    
+
     // If activities are assigned to this day, filter by 60km proximity
     return availableActivities.filter(activity => {
       if (!activity.coordinates) return false;
-      
+
       // Check if within 60km of any activity already assigned to this day
       return dayActivities.some(dayActivity => {
         if (!dayActivity.coordinates) return false;
-        
+
         const distance = calculateDistance(
           activity.coordinates.lat,
           activity.coordinates.lng,
           dayActivity.coordinates.lat,
           dayActivity.coordinates.lng
         );
-        
+
         return distance <= 60;
       });
     });
@@ -200,70 +199,70 @@ export const TripPlannerSidebar: React.FC<TripPlannerSidebarProps> = ({
   // Get suggested activities within 60km radius for a given day
   const getSuggestedActivities = (day: number) => {
     if (day === 1) return []; // Day 1 doesn't need suggestions
-    
+
     const assignedActivities = getDayActivities(day);
     if (assignedActivities.length === 0) return [];
-    
+
     const allAssignedActivityIds = Object.values(activitiesByDay).flat();
-    
+
     const suggestions = convertedActivities.filter(activity => {
       // Skip if already selected or assigned
       if (selectedActivities.includes(activity.id) || allAssignedActivityIds.includes(activity.id)) {
         return false;
       }
-      
+
       // Check if within 60km of any assigned activity for this day
       return assignedActivities.some(assignedActivity => {
         if (!activity.coordinates || !assignedActivity.coordinates) return false;
-        
+
         const distance = calculateDistance(
           activity.coordinates.lat,
           activity.coordinates.lng,
           assignedActivity.coordinates.lat,
           assignedActivity.coordinates.lng
         );
-        
+
         return distance <= 60;
       });
     });
-    
+
     return suggestions.slice(0, 5); // Limit to 5 suggestions
   };
 
   // Get activities nearby (within 60km) of selected activities for suggestions
   const getNearbyActivitySuggestions = () => {
     if (itinerarySelectedActivities.length === 0) return [];
-    
+
     const selectedActivityCoords = convertedActivities
       .filter(activity => itinerarySelectedActivities.includes(activity.id))
       .map(activity => activity.coordinates)
       .filter(Boolean);
-    
+
     if (selectedActivityCoords.length === 0) return [];
-    
+
     const suggestions = convertedActivities.filter(activity => {
       // Skip if already selected in activities tab or itinerary
       if (selectedActivities.includes(activity.id) || itinerarySelectedActivities.includes(activity.id)) {
         return false;
       }
-      
+
       if (!activity.coordinates) return false;
-      
+
       // Check if within 60km of any selected activity
       return selectedActivityCoords.some(coords => {
         if (!coords) return false;
-        
+
         const distance = calculateDistance(
           activity.coordinates!.lat,
           activity.coordinates!.lng,
           coords.lat,
           coords.lng
         );
-        
+
         return distance <= 60;
       });
     });
-    
+
     return suggestions.slice(0, 8); // Limit to 8 suggestions
   };
 
@@ -287,22 +286,22 @@ export const TripPlannerSidebar: React.FC<TripPlannerSidebarProps> = ({
   // Get activities organized by recommended priority based on airport
   const getActivitiesByRecommendation = () => {
     if (!selectedAirport) return { recommended: [], others: convertedActivities };
-    
+
     const recommended = convertedActivities.filter(activity => {
       if (!activity.coordinates) return false;
       const region = getActivityRegion(activity);
-      
+
       if (selectedAirport === 'tunis') {
         return region === 'tunis' || region === 'center';
       } else {
         return region === 'south';
       }
     });
-    
-    const others = convertedActivities.filter(activity => 
+
+    const others = convertedActivities.filter(activity =>
       !recommended.some(rec => rec.id === activity.id)
     );
-    
+
     return { recommended, others };
   };
 
@@ -310,15 +309,15 @@ export const TripPlannerSidebar: React.FC<TripPlannerSidebarProps> = ({
   const getNearestAccommodationsForDay = (day: number) => {
     const dayActivities = getDayActivities(day);
     if (dayActivities.length === 0) return [];
-    
+
     const firstActivity = dayActivities[0];
     if (!firstActivity.coordinates) return [];
-    
+
     const allAccommodations = [
       ...hotels.map(h => ({ ...h, type: 'hotel' as const })),
       ...guestHouses.map(g => ({ ...g, type: 'guesthouse' as const }))
     ];
-    
+
     const accommodationsWithDistance = allAccommodations
       .filter(acc => acc.coordinates)
       .map(acc => ({
@@ -333,7 +332,7 @@ export const TripPlannerSidebar: React.FC<TripPlannerSidebarProps> = ({
       .filter(acc => acc.distance <= 100) // Within 100km
       .sort((a, b) => a.distance - b.distance)
       .slice(0, 5); // Top 5 closest
-    
+
     return accommodationsWithDistance;
   };
 
@@ -369,8 +368,8 @@ export const TripPlannerSidebar: React.FC<TripPlannerSidebarProps> = ({
   // Get current button text and action
   const getMainButtonConfig = () => {
     if (currentWorkflowStep === 'activities' && areAllDaysComplete()) {
-      return { 
-        text: 'Choose the Accommodations', 
+      return {
+        text: 'Choose the Accommodations',
         action: () => {
           setActiveTab('accommodations');
           // Scroll to top of the component
@@ -382,8 +381,8 @@ export const TripPlannerSidebar: React.FC<TripPlannerSidebarProps> = ({
       };
     }
     if (currentWorkflowStep === 'accommodations' && areAllAccommodationsSelected()) {
-      return { 
-        text: 'Select Arrival Date', 
+      return {
+        text: 'Select Arrival Date',
         action: () => {
           setActiveTab('details');
           // Scroll to top of the component
@@ -407,12 +406,12 @@ export const TripPlannerSidebar: React.FC<TripPlannerSidebarProps> = ({
         <div className="p-4 border-b border-border bg-gradient-to-r from-primary/10 to-accent/10">
           <h1 className="text-lg font-semibold text-foreground">Plan Your Trip</h1>
           <p className="text-sm text-muted-foreground">
-            {checkInDate && checkOutDate 
+            {checkInDate && checkOutDate
               ? `${numberOfDays} days • ${checkInDate.toLocaleDateString()} - ${checkOutDate.toLocaleDateString()}`
               : "Select dates and activities for your journey"
             }
           </p>
-          
+
           {/* Action Buttons */}
           <div className="flex gap-2 mt-3">
             {(checkInDate || checkOutDate) && (
@@ -467,7 +466,7 @@ export const TripPlannerSidebar: React.FC<TripPlannerSidebarProps> = ({
                   <Plane className="h-4 w-4" />
                   Choose Your Arrival Airport
                 </h3>
-                
+
                 {selectedAirport ? (
                   <div className="flex items-center justify-between p-3 bg-primary/10 rounded-lg border border-primary/20">
                     <div className="flex items-center gap-2">
@@ -493,18 +492,17 @@ export const TripPlannerSidebar: React.FC<TripPlannerSidebarProps> = ({
                     </span>
                   </div>
                 )}
-                
+
                 {/* Airport Cards */}
                 {(showAirportCards || !selectedAirport) && (
                   <div className="grid grid-cols-2 gap-3">
                     {airports.map((airport) => (
                       <Card
                         key={airport.id}
-                        className={`cursor-pointer transition-all hover:shadow-md group ${
-                          selectedAirport === airport.id 
-                            ? "border-primary bg-primary/5" 
+                        className={`cursor-pointer transition-all hover:shadow-md group ${selectedAirport === airport.id
+                            ? "border-primary bg-primary/5"
                             : "hover:border-primary/20"
-                        }`}
+                          }`}
                         onClick={() => {
                           onAirportSelect(airport.id);
                           setShowAirportCards(false);
@@ -526,7 +524,7 @@ export const TripPlannerSidebar: React.FC<TripPlannerSidebarProps> = ({
                           </div>
 
                           <div className="text-center mb-3">
-                            <Badge 
+                            <Badge
                               variant={airport.id === 'tunis' ? 'default' : 'outline'}
                               className="px-2 py-1 text-xs"
                             >
@@ -572,7 +570,7 @@ export const TripPlannerSidebar: React.FC<TripPlannerSidebarProps> = ({
               <div className="p-4 space-y-6">
                 {(() => {
                   const { recommended, others } = getActivitiesByRecommendation();
-                  
+
                   return (
                     <>
                       {/* Recommended Activities */}
@@ -586,30 +584,27 @@ export const TripPlannerSidebar: React.FC<TripPlannerSidebarProps> = ({
                               {recommended.length} activities
                             </Badge>
                           </div>
-                         <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-3">
+                          <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-3">
                             {recommended.map((activity) => (
-                               <Card 
-                                key={activity.id} 
-                                 className={`cursor-pointer transition-all duration-200 relative overflow-hidden border ${
-                                   selectedActivities.includes(activity.id) 
-                                     ? 'border-blue-200 bg-blue-50/10' 
-                                     : 'hover:shadow-sm hover:border-gray-300 border-gray-200'
-                                 }`}
+                              <Card
+                                key={activity.id}
+                                className={`cursor-pointer transition-all duration-200 relative overflow-hidden border ${selectedActivities.includes(activity.id)
+                                    ? 'border-blue-200 bg-blue-50/10'
+                                    : 'hover:shadow-sm hover:border-gray-300 border-gray-200'
+                                  }`}
                                 onClick={() => onActivityToggle(activity.id)}
                               >
                                 <CardContent className="p-3 relative">
                                   {/* Checkbox */}
-                                   <div className="absolute top-2 left-2 z-50">
-                                     <div className={`rounded-full p-0.5 shadow-sm border ${
-                                       selectedActivities.includes(activity.id) 
-                                         ? 'bg-blue-500 border-blue-500' 
-                                         : 'bg-white border-gray-300'
-                                     }`}>
-                                       <div className={`w-3 h-3 rounded-full flex items-center justify-center ${
-                                         selectedActivities.includes(activity.id)
-                                           ? 'bg-white text-blue-500'
-                                           : 'bg-transparent'
-                                       }`}>
+                                  <div className="absolute top-2 left-2 z-50">
+                                    <div className={`rounded-full p-0.5 shadow-sm border ${selectedActivities.includes(activity.id)
+                                        ? 'bg-blue-500 border-blue-500'
+                                        : 'bg-white border-gray-300'
+                                      }`}>
+                                      <div className={`w-3 h-3 rounded-full flex items-center justify-center ${selectedActivities.includes(activity.id)
+                                          ? 'bg-white text-blue-500'
+                                          : 'bg-transparent'
+                                        }`}>
                                         {selectedActivities.includes(activity.id) && (
                                           <Check className="h-3 w-3 font-bold" />
                                         )}
@@ -664,30 +659,27 @@ export const TripPlannerSidebar: React.FC<TripPlannerSidebarProps> = ({
                             {others.length} activities
                           </Badge>
                         </div>
-                         <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-3">
-                           {others.map((activity) => (
-                              <Card 
-                                key={activity.id} 
-                                className={`cursor-pointer transition-all duration-200 relative overflow-hidden ${
-                                  selectedActivities.includes(activity.id) 
-                                    ? 'border-blue-300 bg-blue-50/50 shadow-sm' 
-                                    : 'hover:shadow-md hover:border-blue-200 border-border'
+                        <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-3">
+                          {others.map((activity) => (
+                            <Card
+                              key={activity.id}
+                              className={`cursor-pointer transition-all duration-200 relative overflow-hidden ${selectedActivities.includes(activity.id)
+                                  ? 'border-blue-300 bg-blue-50/50 shadow-sm'
+                                  : 'hover:shadow-md hover:border-blue-200 border-border'
                                 }`}
                               onClick={() => onActivityToggle(activity.id)}
                             >
                               <CardContent className="p-3 relative">
                                 {/* Checkbox */}
                                 <div className="absolute top-2 left-2 z-50">
-                                  <div className={`rounded-full p-0.5 shadow-lg border ${
-                                    selectedActivities.includes(activity.id) 
-                                      ? 'bg-primary border-white' 
+                                  <div className={`rounded-full p-0.5 shadow-lg border ${selectedActivities.includes(activity.id)
+                                      ? 'bg-primary border-white'
                                       : 'bg-white border-gray-300'
-                                  }`}>
-                                    <div className={`w-3 h-3 rounded-full flex items-center justify-center ${
-                                      selectedActivities.includes(activity.id)
+                                    }`}>
+                                    <div className={`w-3 h-3 rounded-full flex items-center justify-center ${selectedActivities.includes(activity.id)
                                         ? 'bg-white text-primary'
                                         : 'bg-transparent'
-                                    }`}>
+                                      }`}>
                                       {selectedActivities.includes(activity.id) && (
                                         <Check className="h-2 w-2 font-bold" />
                                       )}
@@ -736,8 +728,8 @@ export const TripPlannerSidebar: React.FC<TripPlannerSidebarProps> = ({
               </div>
               {/* Continue Button */}
               <div className="p-4 mt-6">
-                <Button 
-                  className="w-full" 
+                <Button
+                  className="w-full"
                   onClick={() => setActiveTab('itinerary')}
                   disabled={selectedActivities.length === 0}
                 >
@@ -768,7 +760,7 @@ export const TripPlannerSidebar: React.FC<TripPlannerSidebarProps> = ({
                   {(() => {
                     const totalActivitiesAssigned = Object.values(activitiesByDay).flat().length;
                     const unassignedActivities = selectedActivities.length - totalActivitiesAssigned;
-                    
+
                     if (unassignedActivities > 0) {
                       return (
                         <Button
@@ -817,7 +809,7 @@ export const TripPlannerSidebar: React.FC<TripPlannerSidebarProps> = ({
                         {getDayActivities(selectedDay).length} assigned
                       </Badge>
                     </div>
-                    
+
                     <div className="space-y-3">
                       {getDayActivities(selectedDay).map((activity) => (
                         <Card key={activity.id} className="bg-primary/5 border-primary/20">
@@ -860,7 +852,7 @@ export const TripPlannerSidebar: React.FC<TripPlannerSidebarProps> = ({
                     </div>
                   </div>
                 )}
-                
+
                 {/* Available Activities to Assign */}
                 <div className="space-y-4">
                   <div className="flex items-center justify-between">
@@ -869,7 +861,7 @@ export const TripPlannerSidebar: React.FC<TripPlannerSidebarProps> = ({
                       {getAvailableActivitiesForDay(selectedDay).length} available
                     </Badge>
                   </div>
-                  
+
                   {selectedActivities.length === 0 ? (
                     <div className="text-center p-6 bg-muted/30 rounded-lg border-2 border-dashed border-muted-foreground/30">
                       <MapPin className="h-8 w-8 text-muted-foreground mx-auto mb-3" />
@@ -880,142 +872,142 @@ export const TripPlannerSidebar: React.FC<TripPlannerSidebarProps> = ({
                         Go to the Activities tab to select activities first
                       </p>
                     </div>
-                   ) : (
-                     <div className="space-y-3">
-                        {/* Show activities available for current day (with 60km proximity filter) */}
-                        {(() => {
-                          const availableActivities = getAvailableActivitiesForDay(selectedDay);
-                          
-                          return availableActivities.map((activity) => {
-                             const isAssigned = isActivityAssignedToDay(activity.id, selectedDay);
-                             
-                               return (
-                                <Card key={activity.id} className={`relative cursor-pointer hover:shadow-md transition-shadow ${isAssigned ? 'bg-blue-50/50 border-blue-300' : ''}`}>
-                                  <CardContent className="p-5">
+                  ) : (
+                    <div className="space-y-3">
+                      {/* Show activities available for current day (with 60km proximity filter) */}
+                      {(() => {
+                        const availableActivities = getAvailableActivitiesForDay(selectedDay);
+
+                        return availableActivities.map((activity) => {
+                          const isAssigned = isActivityAssignedToDay(activity.id, selectedDay);
+
+                          return (
+                            <Card key={activity.id} className={`relative cursor-pointer hover:shadow-md transition-shadow ${isAssigned ? 'bg-blue-50/50 border-blue-300' : ''}`}>
+                              <CardContent className="p-5">
+                                <div className="flex items-start gap-3">
+                                  {/* Checkbox */}
+                                  <div className="flex items-center pt-1">
+                                    <Checkbox
+                                      checked={isAssigned}
+                                      onCheckedChange={() => {
+                                        if (isAssigned) {
+                                          onActivityRemove(activity.id, selectedDay);
+                                        } else {
+                                          onActivitySelect(activity.id, selectedDay);
+                                        }
+                                      }}
+                                      className="h-4 w-4"
+                                    />
+                                  </div>
+
+                                  {/* Activity Image */}
+                                  <div className="w-16 h-16 flex-shrink-0">
+                                    {activity.image ? (
+                                      <img
+                                        src={activity.image}
+                                        alt={activity.name}
+                                        className="w-full h-full object-cover rounded"
+                                      />
+                                    ) : (
+                                      <div className="w-full h-full bg-muted rounded flex items-center justify-center">
+                                        <MapPin className="h-6 w-6 text-muted-foreground" />
+                                      </div>
+                                    )}
+                                  </div>
+
+                                  {/* Activity Details */}
+                                  <div className="flex-1 min-w-0">
+                                    <div className="flex items-start justify-between">
+                                      <div className="flex-1 min-w-0 pr-2">
+                                        <h5 className="font-medium text-sm line-clamp-2 mb-1">{activity.name}</h5>
+                                        <p className="text-xs text-muted-foreground mb-2">{activity.location}</p>
+                                        <div className="flex items-center gap-2 flex-wrap">
+                                          <Badge variant="outline" className="text-xs">
+                                            {activity.duration}
+                                          </Badge>
+                                          <div className="flex items-center gap-1">
+                                            <Star className="h-3 w-3 fill-yellow-400 text-yellow-400" />
+                                            <span className="text-xs">{activity.rating}</span>
+                                          </div>
+                                        </div>
+                                      </div>
+                                    </div>
+                                  </div>
+                                </div>
+                              </CardContent>
+                            </Card>
+                          );
+                        });
+                      })()}
+
+                      {/* Suggested Activities */}
+                      {(() => {
+                        const suggestedActivities = getSuggestedActivities(selectedDay);
+
+                        if (suggestedActivities.length === 0) return null;
+
+                        return (
+                          <div className="mt-6">
+                            <div className="flex items-center gap-2 mb-3">
+                              <h4 className="text-sm font-medium text-muted-foreground">Suggested activities nearby</h4>
+                              <Badge variant="outline" className="text-xs text-muted-foreground">Within 60km</Badge>
+                            </div>
+                            <div className="space-y-2">
+                              {suggestedActivities.map((activity) => (
+                                <Card key={activity.id} className="relative cursor-pointer hover:shadow-md transition-shadow border-dashed bg-muted/20">
+                                  <CardContent className="p-4">
                                     <div className="flex items-start gap-3">
-                                      {/* Checkbox */}
-                                      <div className="flex items-center pt-1">
-                                         <Checkbox
-                                           checked={isAssigned}
-                                           onCheckedChange={() => {
-                                             if (isAssigned) {
-                                               onActivityRemove(activity.id, selectedDay);
-                                             } else {
-                                               onActivitySelect(activity.id, selectedDay);
-                                             }
-                                           }}
-                                           className="h-4 w-4"
-                                         />
+                                      {/* Activity Image */}
+                                      <div className="w-12 h-12 flex-shrink-0">
+                                        {activity.image ? (
+                                          <img
+                                            src={activity.image}
+                                            alt={activity.name}
+                                            className="w-full h-full object-cover rounded opacity-80"
+                                          />
+                                        ) : (
+                                          <div className="w-full h-full bg-muted rounded flex items-center justify-center opacity-80">
+                                            <MapPin className="h-5 w-5 text-muted-foreground" />
+                                          </div>
+                                        )}
                                       </div>
 
-                                     {/* Activity Image */}
-                                     <div className="w-16 h-16 flex-shrink-0">
-                                       {activity.image ? (
-                                         <img
-                                           src={activity.image}
-                                           alt={activity.name}
-                                           className="w-full h-full object-cover rounded"
-                                         />
-                                       ) : (
-                                         <div className="w-full h-full bg-muted rounded flex items-center justify-center">
-                                           <MapPin className="h-6 w-6 text-muted-foreground" />
-                                         </div>
-                                       )}
-                                     </div>
+                                      {/* Activity Details */}
+                                      <div className="flex-1 min-w-0">
+                                        <h5 className="font-medium text-sm line-clamp-2 mb-1 text-muted-foreground">{activity.name}</h5>
+                                        <p className="text-xs text-muted-foreground mb-2">{activity.location}</p>
+                                        <div className="flex items-center gap-2 flex-wrap">
+                                          <Badge variant="outline" className="text-xs opacity-70">
+                                            {activity.duration}
+                                          </Badge>
+                                          <div className="flex items-center gap-1 opacity-70">
+                                            <Star className="h-3 w-3 fill-yellow-400 text-yellow-400" />
+                                            <span className="text-xs">{activity.rating}</span>
+                                          </div>
+                                        </div>
+                                      </div>
 
-                                     {/* Activity Details */}
-                                     <div className="flex-1 min-w-0">
-                                       <div className="flex items-start justify-between">
-                                         <div className="flex-1 min-w-0 pr-2">
-                                           <h5 className="font-medium text-sm line-clamp-2 mb-1">{activity.name}</h5>
-                                           <p className="text-xs text-muted-foreground mb-2">{activity.location}</p>
-                                            <div className="flex items-center gap-2 flex-wrap">
-                                              <Badge variant="outline" className="text-xs">
-                                                {activity.duration}
-                                              </Badge>
-                                              <div className="flex items-center gap-1">
-                                                <Star className="h-3 w-3 fill-yellow-400 text-yellow-400" />
-                                                <span className="text-xs">{activity.rating}</span>
-                                              </div>
-                                            </div>
-                                         </div>
-                                       </div>
-                                     </div>
-                                   </div>
-                                 </CardContent>
-                               </Card>
-                             );
-                            });
-                       })()}
-                       
-                       {/* Suggested Activities */}
-                       {(() => {
-                         const suggestedActivities = getSuggestedActivities(selectedDay);
-                         
-                         if (suggestedActivities.length === 0) return null;
-                         
-                         return (
-                           <div className="mt-6">
-                             <div className="flex items-center gap-2 mb-3">
-                               <h4 className="text-sm font-medium text-muted-foreground">Suggested activities nearby</h4>
-                               <Badge variant="outline" className="text-xs text-muted-foreground">Within 60km</Badge>
-                             </div>
-                             <div className="space-y-2">
-                               {suggestedActivities.map((activity) => (
-                                 <Card key={activity.id} className="relative cursor-pointer hover:shadow-md transition-shadow border-dashed bg-muted/20">
-                                   <CardContent className="p-4">
-                                     <div className="flex items-start gap-3">
-                                       {/* Activity Image */}
-                                       <div className="w-12 h-12 flex-shrink-0">
-                                         {activity.image ? (
-                                           <img
-                                             src={activity.image}
-                                             alt={activity.name}
-                                             className="w-full h-full object-cover rounded opacity-80"
-                                           />
-                                         ) : (
-                                           <div className="w-full h-full bg-muted rounded flex items-center justify-center opacity-80">
-                                             <MapPin className="h-5 w-5 text-muted-foreground" />
-                                           </div>
-                                         )}
-                                       </div>
-
-                                       {/* Activity Details */}
-                                       <div className="flex-1 min-w-0">
-                                         <h5 className="font-medium text-sm line-clamp-2 mb-1 text-muted-foreground">{activity.name}</h5>
-                                         <p className="text-xs text-muted-foreground mb-2">{activity.location}</p>
-                                         <div className="flex items-center gap-2 flex-wrap">
-                                           <Badge variant="outline" className="text-xs opacity-70">
-                                             {activity.duration}
-                                           </Badge>
-                                           <div className="flex items-center gap-1 opacity-70">
-                                             <Star className="h-3 w-3 fill-yellow-400 text-yellow-400" />
-                                             <span className="text-xs">{activity.rating}</span>
-                                           </div>
-                                         </div>
-                                       </div>
-                                       
-                                       {/* Add button */}
-                                       <Button
-                                         size="sm"
-                                         variant="outline"
-                                         onClick={() => {
-                                           onActivityToggle(activity.id);
-                                           setTimeout(() => onActivitySelect(activity.id, selectedDay), 100);
-                                         }}
-                                         className="h-8 w-8 p-0"
-                                       >
-                                         <Plus className="h-4 w-4" />
-                                       </Button>
-                                     </div>
-                                   </CardContent>
-                                 </Card>
-                               ))}
-                             </div>
-                           </div>
-                         );
-                       })()}
-                     </div>
+                                      {/* Add button */}
+                                      <Button
+                                        size="sm"
+                                        variant="outline"
+                                        onClick={() => {
+                                          onActivityToggle(activity.id);
+                                          setTimeout(() => onActivitySelect(activity.id, selectedDay), 100);
+                                        }}
+                                        className="h-8 w-8 p-0"
+                                      >
+                                        <Plus className="h-4 w-4" />
+                                      </Button>
+                                    </div>
+                                  </CardContent>
+                                </Card>
+                              ))}
+                            </div>
+                          </div>
+                        );
+                      })()}
+                    </div>
                   )}
                 </div>
 
@@ -1028,22 +1020,22 @@ export const TripPlannerSidebar: React.FC<TripPlannerSidebarProps> = ({
                         {itinerarySelectedActivities.length} activities
                       </Badge>
                     </div>
-                    
+
                     <div className="p-4 bg-primary/5 rounded-lg border border-primary/20">
                       <div className="space-y-2">
                         {convertedActivities
                           .filter(activity => itinerarySelectedActivities.includes(activity.id))
                           .map((activity, index) => (
-                          <div key={activity.id} className="flex items-center gap-2 text-sm">
-                            <span className="w-5 h-5 bg-primary text-primary-foreground rounded-full flex items-center justify-center text-xs font-bold">
-                              {index + 1}
-                            </span>
-                            <span className="font-medium">{activity.name}</span>
-                            <span className="text-muted-foreground">• {activity.location}</span>
-                          </div>
-                        ))}
+                            <div key={activity.id} className="flex items-center gap-2 text-sm">
+                              <span className="w-5 h-5 bg-primary text-primary-foreground rounded-full flex items-center justify-center text-xs font-bold">
+                                {index + 1}
+                              </span>
+                              <span className="font-medium">{activity.name}</span>
+                              <span className="text-muted-foreground">• {activity.location}</span>
+                            </div>
+                          ))}
                       </div>
-                      
+
                       <div className="mt-3 pt-3 border-t border-primary/20 flex items-center justify-between text-xs text-muted-foreground">
                         <span>Duration: {itineraryDays} days</span>
                         <span>Activities: {itinerarySelectedActivities.length}</span>
@@ -1063,7 +1055,7 @@ export const TripPlannerSidebar: React.FC<TripPlannerSidebarProps> = ({
                         Within 60km
                       </Badge>
                     </div>
-                    
+
                     <div className="grid grid-cols-1 gap-3">
                       {getNearbyActivitySuggestions().map((activity) => (
                         <Card key={activity.id} className="cursor-pointer hover:shadow-md transition-shadow border-dashed border-muted-foreground/30">
@@ -1082,7 +1074,7 @@ export const TripPlannerSidebar: React.FC<TripPlannerSidebarProps> = ({
                                   </div>
                                 )}
                               </div>
-                              
+
                               <div className="flex-1 min-w-0">
                                 <div className="flex items-start justify-between">
                                   <div className="flex-1 min-w-0 pr-2">
@@ -1124,20 +1116,20 @@ export const TripPlannerSidebar: React.FC<TripPlannerSidebarProps> = ({
               </div>
               {/* Main action button */}
               <div className="p-4 mt-6">
-                <Button 
-                  className="w-full bg-gradient-to-r from-primary to-accent hover:from-primary/90 hover:to-accent/90" 
+                <Button
+                  className="w-full bg-gradient-to-r from-primary to-accent hover:from-primary/90 hover:to-accent/90"
                   onClick={() => {
                     const buttonConfig = getMainButtonConfig();
                     buttonConfig.action();
                   }}
                   disabled={
-                    currentWorkflowStep === 'activities' 
+                    currentWorkflowStep === 'activities'
                       ? (itinerarySelectedActivities.length === 0 || !selectedAirport || !areAllDaysComplete())
                       : currentWorkflowStep === 'accommodations'
-                      ? !areAllAccommodationsSelected()
-                      : currentWorkflowStep === 'dates'
-                      ? !arrivalDate
-                      : false
+                        ? !areAllAccommodationsSelected()
+                        : currentWorkflowStep === 'dates'
+                          ? !arrivalDate
+                          : false
                   }
                 >
                   {getMainButtonConfig().text}
@@ -1153,7 +1145,7 @@ export const TripPlannerSidebar: React.FC<TripPlannerSidebarProps> = ({
             <ScrollArea className="flex-1 custom-scrollbar">
               <div className="p-4 space-y-4">
                 <h3 className="font-semibold">Select Accommodations by Day</h3>
-                
+
                 {areAllDaysComplete() ? (
                   <div className="space-y-6">
                     {Array.from({ length: numberOfDays }, (_, index) => {
@@ -1161,9 +1153,9 @@ export const TripPlannerSidebar: React.FC<TripPlannerSidebarProps> = ({
                       const dayActivities = getDayActivities(day);
                       const nearestAccommodations = getNearestAccommodationsForDay(day);
                       const selectedAccommodation = accommodationsByDay[day];
-                      
+
                       if (dayActivities.length === 0) return null;
-                      
+
                       return (
                         <div key={day} className="space-y-3">
                           <div className="flex items-center gap-2">
@@ -1172,7 +1164,7 @@ export const TripPlannerSidebar: React.FC<TripPlannerSidebarProps> = ({
                               {dayActivities.length} {dayActivities.length === 1 ? 'activity' : 'activities'}
                             </Badge>
                           </div>
-                          
+
                           {/* Day activities preview */}
                           <div className="p-3 bg-muted/30 rounded-lg">
                             <div className="text-xs text-muted-foreground mb-2">Activities for this day:</div>
@@ -1186,7 +1178,7 @@ export const TripPlannerSidebar: React.FC<TripPlannerSidebarProps> = ({
                               ))}
                             </div>
                           </div>
-                          
+
                           {/* Accommodation options */}
                           <div className="space-y-2">
                             <div className="text-xs text-muted-foreground">
@@ -1194,13 +1186,12 @@ export const TripPlannerSidebar: React.FC<TripPlannerSidebarProps> = ({
                             </div>
                             <div className="grid grid-cols-1 gap-2">
                               {nearestAccommodations.map((accommodation) => (
-                                <Card 
+                                <Card
                                   key={`${accommodation.type}-${accommodation.id}`}
-                                  className={`cursor-pointer transition-all duration-200 hover:shadow-md border-2 ${
-                                    selectedAccommodation === `${accommodation.type}-${accommodation.id}`
-                                      ? 'border-primary bg-primary/5' 
+                                  className={`cursor-pointer transition-all duration-200 hover:shadow-md border-2 ${selectedAccommodation === `${accommodation.type}-${accommodation.id}`
+                                      ? 'border-primary bg-primary/5'
                                       : 'border-transparent hover:border-primary/30'
-                                  }`}
+                                    }`}
                                   onClick={() => onAccommodationSelect(`${accommodation.type}-${accommodation.id}`, day)}
                                 >
                                   <CardContent className="p-3">
@@ -1235,11 +1226,10 @@ export const TripPlannerSidebar: React.FC<TripPlannerSidebarProps> = ({
                                               )}
                                             </div>
                                           </div>
-                                          <div className={`w-5 h-5 rounded-full flex items-center justify-center transition-all ${
-                                            selectedAccommodation === `${accommodation.type}-${accommodation.id}`
+                                          <div className={`w-5 h-5 rounded-full flex items-center justify-center transition-all ${selectedAccommodation === `${accommodation.type}-${accommodation.id}`
                                               ? "bg-primary text-primary-foreground"
                                               : "bg-muted text-muted-foreground"
-                                          }`}>
+                                            }`}>
                                             {selectedAccommodation === `${accommodation.type}-${accommodation.id}` ? (
                                               <Check className="h-3 w-3" />
                                             ) : (
@@ -1272,13 +1262,12 @@ export const TripPlannerSidebar: React.FC<TripPlannerSidebarProps> = ({
                   <h4 className="font-medium text-sm">Hotels</h4>
                   <div className="grid grid-cols-2 gap-2">
                     {hotels.map((hotel) => (
-                      <Card 
-                        key={hotel.id} 
-                        className={`cursor-pointer transition-all duration-200 hover:shadow-md border-2 ${
-                          selectedHotels.includes(hotel.id.toString()) 
-                            ? 'border-primary bg-primary/5' 
+                      <Card
+                        key={hotel.id}
+                        className={`cursor-pointer transition-all duration-200 hover:shadow-md border-2 ${selectedHotels.includes(hotel.id.toString())
+                            ? 'border-primary bg-primary/5'
                             : 'border-transparent hover:border-primary/30'
-                        }`}
+                          }`}
                         onClick={() => onHotelSelect(hotel.id.toString())}
                       >
                         <CardContent className="p-0">
@@ -1289,11 +1278,10 @@ export const TripPlannerSidebar: React.FC<TripPlannerSidebarProps> = ({
                               className="w-full h-24 object-cover rounded-t-lg"
                             />
                             <div className="absolute top-1 right-1">
-                              <div className={`w-5 h-5 rounded-full flex items-center justify-center transition-all ${
-                                selectedHotels.includes(hotel.id.toString())
+                              <div className={`w-5 h-5 rounded-full flex items-center justify-center transition-all ${selectedHotels.includes(hotel.id.toString())
                                   ? "bg-primary text-primary-foreground"
                                   : "bg-white/90 text-muted-foreground hover:bg-primary hover:text-primary-foreground"
-                              }`}>
+                                }`}>
                                 {selectedHotels.includes(hotel.id.toString()) ? (
                                   <Check className="h-2.5 w-2.5" />
                                 ) : (
@@ -1335,13 +1323,12 @@ export const TripPlannerSidebar: React.FC<TripPlannerSidebarProps> = ({
                   <h4 className="font-medium text-sm">Guest Houses</h4>
                   <div className="grid grid-cols-2 gap-2">
                     {guestHouses.map((guestHouse) => (
-                      <Card 
-                        key={guestHouse.id} 
-                        className={`cursor-pointer transition-all duration-200 hover:shadow-md border-2 ${
-                          selectedGuestHouses.includes(guestHouse.id.toString()) 
-                            ? 'border-primary bg-primary/5' 
+                      <Card
+                        key={guestHouse.id}
+                        className={`cursor-pointer transition-all duration-200 hover:shadow-md border-2 ${selectedGuestHouses.includes(guestHouse.id.toString())
+                            ? 'border-primary bg-primary/5'
                             : 'border-transparent hover:border-primary/30'
-                        }`}
+                          }`}
                         onClick={() => onGuestHouseSelect(guestHouse.id.toString())}
                       >
                         <CardContent className="p-0">
@@ -1352,11 +1339,10 @@ export const TripPlannerSidebar: React.FC<TripPlannerSidebarProps> = ({
                               className="w-full h-24 object-cover rounded-t-lg"
                             />
                             <div className="absolute top-1 right-1">
-                              <div className={`w-5 h-5 rounded-full flex items-center justify-center transition-all ${
-                                selectedGuestHouses.includes(guestHouse.id.toString())
+                              <div className={`w-5 h-5 rounded-full flex items-center justify-center transition-all ${selectedGuestHouses.includes(guestHouse.id.toString())
                                   ? "bg-primary text-primary-foreground"
                                   : "bg-white/90 text-muted-foreground hover:bg-primary hover:text-primary-foreground"
-                              }`}>
+                                }`}>
                                 {selectedGuestHouses.includes(guestHouse.id.toString()) ? (
                                   <Check className="h-2.5 w-2.5" />
                                 ) : (
@@ -1413,8 +1399,8 @@ export const TripPlannerSidebar: React.FC<TripPlannerSidebarProps> = ({
                         <CardContent className="p-4">
                           <div className="space-y-3">
                             {trip.images && trip.images.length > 0 && (
-                              <img 
-                                src={trip.images[0]} 
+                              <img
+                                src={trip.images[0]}
                                 alt={trip.name}
                                 className="w-full h-32 rounded-lg object-cover"
                               />
@@ -1456,20 +1442,20 @@ export const TripPlannerSidebar: React.FC<TripPlannerSidebarProps> = ({
 
                 {/* Main generation button for accommodations tab */}
                 <div className="p-4 mt-6">
-                  <Button 
-                    className="w-full bg-gradient-to-r from-primary to-accent hover:from-primary/90 hover:to-accent/90" 
+                  <Button
+                    className="w-full bg-gradient-to-r from-primary to-accent hover:from-primary/90 hover:to-accent/90"
                     onClick={() => {
                       const buttonConfig = getMainButtonConfig();
                       buttonConfig.action();
                     }}
                     disabled={
-                      currentWorkflowStep === 'activities' 
+                      currentWorkflowStep === 'activities'
                         ? !areAllDaysComplete()
                         : currentWorkflowStep === 'accommodations'
-                        ? !areAllAccommodationsSelected()
-                        : currentWorkflowStep === 'dates'
-                        ? !arrivalDate
-                        : false
+                          ? !areAllAccommodationsSelected()
+                          : currentWorkflowStep === 'dates'
+                            ? !arrivalDate
+                            : false
                     }
                   >
                     {getMainButtonConfig().text}
@@ -1484,7 +1470,7 @@ export const TripPlannerSidebar: React.FC<TripPlannerSidebarProps> = ({
             <ScrollArea className="flex-1 custom-scrollbar">
               <div className="p-4 space-y-6">
                 <h3 className="font-semibold">Trip Details</h3>
-                
+
                 {/* Selected Activities Section */}
                 <div className="space-y-4">
                   <h4 className="font-medium text-sm text-primary">Selected Activities</h4>
@@ -1503,14 +1489,14 @@ export const TripPlannerSidebar: React.FC<TripPlannerSidebarProps> = ({
                             <div className="grid grid-cols-1">
                               <div className="relative h-48 w-full">
                                 {activity.images && activity.images.length > 0 ? (
-                                  <img 
-                                    src={activity.images[0]} 
+                                  <img
+                                    src={activity.images[0]}
                                     alt={activity.title}
                                     className="w-full h-full object-cover"
                                   />
                                 ) : activity.image ? (
-                                  <img 
-                                    src={activity.image} 
+                                  <img
+                                    src={activity.image}
                                     alt={activity.title}
                                     className="w-full h-full object-cover"
                                   />
@@ -1534,7 +1520,7 @@ export const TripPlannerSidebar: React.FC<TripPlannerSidebarProps> = ({
                                     {activity.description}
                                   </p>
                                 )}
-                                
+
                                 <div className="flex items-center gap-2 flex-wrap">
                                   {activity.duration && (
                                     <Badge variant="secondary" className="text-xs">
@@ -1572,7 +1558,7 @@ export const TripPlannerSidebar: React.FC<TripPlannerSidebarProps> = ({
                 {(selectedHotels.length > 0 || selectedGuestHouses.length > 0) && (
                   <div className="space-y-4">
                     <h4 className="font-medium text-sm text-primary">Selected Accommodations</h4>
-                    
+
                     {/* Hotels */}
                     {hotels
                       .filter(hotel => selectedHotels.includes(hotel.id.toString()))
@@ -1703,7 +1689,7 @@ export const TripPlannerSidebar: React.FC<TripPlannerSidebarProps> = ({
             <ScrollArea className="flex-1">
               <div className="p-4 space-y-4">
                 <h3 className="font-semibold">Tunisia Travel Guide</h3>
-                
+
                 <div className="space-y-4">
                   <Card className="p-4">
                     <h4 className="font-medium mb-2 flex items-center gap-2">
@@ -1790,7 +1776,7 @@ export const TripPlannerSidebar: React.FC<TripPlannerSidebarProps> = ({
             <ScrollArea className="flex-1">
               <div className="p-4 space-y-4">
                 <h3 className="font-semibold">Travel Information</h3>
-                
+
                 <div className="space-y-4">
                   <Card className="p-4">
                     <h4 className="font-medium mb-2 flex items-center gap-2">

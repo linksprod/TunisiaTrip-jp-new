@@ -17,7 +17,7 @@ export function TunisianWeatherContent() {
   const cityWeatherData = [
     {
       name: "Tunis",
-      image: "/lovable-uploads/f9b5ed8a-f815-4286-b788-45136d3a80a7.png",
+      image: "/uploads/f9b5ed8a-f815-4286-b788-45136d3a80a7.png",
       summer: "30-36°C",
       winter: "7-15°C",
       rainfall: "450mm/year",
@@ -25,7 +25,7 @@ export function TunisianWeatherContent() {
     },
     {
       name: "Sousse",
-      image: "/lovable-uploads/671f7df5-ae19-43c2-b728-ca38ef5d56d0.png",
+      image: "/uploads/671f7df5-ae19-43c2-b728-ca38ef5d56d0.png",
       summer: "31-37°C",
       winter: "8-16°C",
       rainfall: "320mm/year",
@@ -33,7 +33,7 @@ export function TunisianWeatherContent() {
     },
     {
       name: "Djerba",
-      image: "/lovable-uploads/befe353a-7a26-48cd-8b49-4d468690964e.png",
+      image: "/uploads/befe353a-7a26-48cd-8b49-4d468690964e.png",
       summer: "32-38°C",
       winter: "10-18°C",
       rainfall: "200mm/year",
@@ -41,7 +41,7 @@ export function TunisianWeatherContent() {
     },
     {
       name: "Tozeur",
-      image: "/lovable-uploads/63ebe873-d7c7-4ed8-998c-acbd93df6f15.png",
+      image: "/uploads/63ebe873-d7c7-4ed8-998c-acbd93df6f15.png",
       summer: "36-45°C",
       winter: "6-19°C",
       rainfall: "100mm/year",

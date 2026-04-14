@@ -25,7 +25,7 @@ export function AtlantisServicesContent() {
       description:
         "Premium private car service offering personalized transportation solutions. Professional drivers ensure seamless transfers between airports, hotels, and business locations with precision and comfort.",
       capacity: "Accommodates 1-4 passengers",
-      image: "/lovable-uploads/c869feca-e9bf-46a9-af0b-ce79d63c5985.png",
+      image: "/uploads/c869feca-e9bf-46a9-af0b-ce79d63c5985.png",
     },
     {
       label: "Mini-Bus",
@@ -34,7 +34,7 @@ export function AtlantisServicesContent() {
       description:
         "Specialized mini-bus transportation designed for group mobility, offering efficient and comfortable travel solutions. Perfect for corporate workshops, family outings, and specialized tours with professional driver support.",
       capacity: "Accommodates up to 22 passengers",
-      image: "/lovable-uploads/3321b85a-2390-4dc9-a1c9-cc87dbe3d858.png",
+      image: "/uploads/3321b85a-2390-4dc9-a1c9-cc87dbe3d858.png",
     },
     {
       label: "Bus",
@@ -43,7 +43,7 @@ export function AtlantisServicesContent() {
       description:
         "Premium group travel experience with our medium-sized buses, providing spacious and comfortable transportation. Designed to deliver smooth, efficient transit for larger groups with a focus on passenger comfort.",
       capacity: "Accommodates up to 53 passengers",
-      image: "/lovable-uploads/3fb06924-f876-4ad3-a081-ed9b0aa893b7.png",
+      image: "/uploads/3fb06924-f876-4ad3-a081-ed9b0aa893b7.png",
     },
     {
       label: "Van",
@@ -52,7 +52,7 @@ export function AtlantisServicesContent() {
       description:
         "Luxury transportation for distinguished clients attending high-profile international events and corporate functions. Offering exceptional protocol, professional drivers, and tailored service for discerning travelers.",
       capacity: "Accommodates up to 8 passengers",
-      image: "/lovable-uploads/46d9154c-784b-4475-9d6b-2fa0b02f357f.png",
+      image: "/uploads/46d9154c-784b-4475-9d6b-2fa0b02f357f.png",
     },
   ];
 
@@ -70,7 +70,7 @@ export function AtlantisServicesContent() {
       </div>
 
       <img 
-        src="/lovable-uploads/1693354f-b1c4-411e-ad5c-2f34654b0b80.png" 
+        src="/uploads/1693354f-b1c4-411e-ad5c-2f34654b0b80.png" 
         alt="Mini-Bus Image" 
         className="w-full rounded-lg shadow-[0px_0px_15px_2px_rgba(0,0,0,0.05)] mb-10" 
       />

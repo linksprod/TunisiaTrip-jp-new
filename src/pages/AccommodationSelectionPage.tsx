@@ -12,7 +12,7 @@ import { toast } from "sonner";
 import { useActivities } from "@/hooks/useActivities";
 import { useHotels } from "@/hooks/useHotels";
 import { useGuestHouses } from "@/hooks/useGuestHouses";
-import { calculateDistance } from "@/utils/geographicalHelpers";
+import { calculatePureDistance as calculateDistance } from "@/services/geographicalService";
 import { hotels } from "@/data/hotels";
 import { guestHouses } from "@/data/guestHouses";
 
@@ -42,7 +42,7 @@ const AccommodationSelectionPage = () => {
   const navigate = useNavigate();
   const location = useLocation();
   const { currentLanguage } = useTranslation();
-  
+
   const selectedActivities = location.state?.selectedActivities || [];
   const checkInDate = location.state?.checkInDate;
   const checkOutDate = location.state?.checkOutDate;
@@ -67,7 +67,7 @@ const AccommodationSelectionPage = () => {
   useEffect(() => {
     if (selectedActivities.length > 0 && dbActivities.length > 0 && dbHotels.length > 0 && dbGuestHouses.length > 0) {
       const processedActivities = selectedActivities.map((activityId: string) => {
-          const activity = dbActivities.find(a => a.id === activityId);
+        const activity = dbActivities.find(a => a.id === activityId);
         if (!activity || !activity.latitude || !activity.longitude) return null;
 
         const activityCoords = { lat: Number(activity.latitude), lng: Number(activity.longitude) };
@@ -157,11 +157,11 @@ const AccommodationSelectionPage = () => {
     // Auto-select closest accommodations if none selected
     let finalHotels = selectedHotels;
     let finalGuestHouses = selectedGuestHouses;
-    
+
     if (selectedHotels.length + selectedGuestHouses.length === 0) {
       const autoSelectedHotels: string[] = [];
       const autoSelectedGuestHouses: string[] = [];
-      
+
       activitiesWithAccommodations.forEach(activity => {
         if (activity.nearbyHotels.length > 0 && !autoSelectedHotels.length) {
           autoSelectedHotels.push(activity.nearbyHotels[0].id);
@@ -170,14 +170,14 @@ const AccommodationSelectionPage = () => {
           autoSelectedGuestHouses.push(activity.nearbyGuestHouses[0].id);
         }
       });
-      
+
       if (autoSelectedHotels.length > 0 || autoSelectedGuestHouses.length > 0) {
         finalHotels = autoSelectedHotels;
         finalGuestHouses = autoSelectedGuestHouses;
         toast.info(<TranslateText text="We've selected the closest accommodations for you" language={currentLanguage} />);
       }
     }
-    
+
     // Navigate to airport selection page
     navigate('/airport-selection', {
       state: {
@@ -204,15 +204,15 @@ const AccommodationSelectionPage = () => {
         <div className="w-full max-w-[1400px] mx-auto px-4 sm:px-6 md:px-8 py-6 sm:py-8 md:py-10">
           {/* Header */}
           <div className="mb-8">
-            <Button 
-              variant="ghost" 
-              className="flex items-center gap-2 text-primary hover:bg-primary/10 mb-4" 
+            <Button
+              variant="ghost"
+              className="flex items-center gap-2 text-primary hover:bg-primary/10 mb-4"
               onClick={handleBackToActivities}
             >
               <ArrowLeft className="h-4 w-4" />
               <TranslateText text="Back to Activities" language={currentLanguage} />
             </Button>
-            
+
             <div className="text-center space-y-4">
               <h1 className="text-4xl font-bold text-foreground">
                 <TranslateText text="Choose Your Accommodations" language={currentLanguage} />
@@ -238,8 +238,8 @@ const AccommodationSelectionPage = () => {
                       {/* Activity Section - 30% on large screens */}
                       <div className="lg:col-span-1 relative">
                         {activity.image && (
-                          <img 
-                            src={activity.image} 
+                          <img
+                            src={activity.image}
                             alt={activity.name}
                             className="w-full h-32 lg:h-full object-cover"
                           />
@@ -269,24 +269,23 @@ const AccommodationSelectionPage = () => {
                               </h4>
                               <div className="grid grid-cols-1 sm:grid-cols-2 xl:grid-cols-3 gap-3">
                                 {activity.nearbyHotels.map((hotel) => (
-                                  <Card 
-                                    key={hotel.id} 
-                                    className={`cursor-pointer transition-all hover:shadow-sm border ${
-                                      selectedHotels.includes(hotel.id) ? 'ring-1 ring-primary bg-primary/5' : ''
-                                    }`}
+                                  <Card
+                                    key={hotel.id}
+                                    className={`cursor-pointer transition-all hover:shadow-sm border ${selectedHotels.includes(hotel.id) ? 'ring-1 ring-primary bg-primary/5' : ''
+                                      }`}
                                     onClick={() => handleAccommodationSelect(hotel.id, 'hotel')}
                                   >
                                     <CardContent className="p-3">
-                                      <img 
-                                        src={hotel.image} 
+                                      <img
+                                        src={hotel.image}
                                         alt={hotel.name}
                                         className="w-full h-16 object-cover rounded mb-2"
                                       />
                                       <h5 className="font-medium text-xs mb-1 leading-tight">{hotel.name}</h5>
                                       <p className="text-xs text-muted-foreground mb-2 truncate">{hotel.location}</p>
                                       <div className="flex items-center justify-between">
-                                        <Badge 
-                                          variant={hotel.distance <= 30 ? "default" : "outline"} 
+                                        <Badge
+                                          variant={hotel.distance <= 30 ? "default" : "outline"}
                                           className="text-xs px-2 py-0"
                                         >
                                           {hotel.distance.toFixed(1)} km
@@ -314,24 +313,23 @@ const AccommodationSelectionPage = () => {
                               </h4>
                               <div className="grid grid-cols-1 sm:grid-cols-2 xl:grid-cols-3 gap-3">
                                 {activity.nearbyGuestHouses.map((guestHouse) => (
-                                  <Card 
-                                    key={guestHouse.id} 
-                                    className={`cursor-pointer transition-all hover:shadow-sm border ${
-                                      selectedGuestHouses.includes(guestHouse.id) ? 'ring-1 ring-primary bg-primary/5' : ''
-                                    }`}
+                                  <Card
+                                    key={guestHouse.id}
+                                    className={`cursor-pointer transition-all hover:shadow-sm border ${selectedGuestHouses.includes(guestHouse.id) ? 'ring-1 ring-primary bg-primary/5' : ''
+                                      }`}
                                     onClick={() => handleAccommodationSelect(guestHouse.id, 'guesthouse')}
                                   >
                                     <CardContent className="p-3">
-                                      <img 
-                                        src={guestHouse.image} 
+                                      <img
+                                        src={guestHouse.image}
                                         alt={guestHouse.name}
                                         className="w-full h-16 object-cover rounded mb-2"
                                       />
                                       <h5 className="font-medium text-xs mb-1 leading-tight">{guestHouse.name}</h5>
                                       <p className="text-xs text-muted-foreground mb-2 truncate">{guestHouse.location}</p>
                                       <div className="flex items-center justify-between">
-                                        <Badge 
-                                          variant={guestHouse.distance <= 30 ? "default" : "outline"} 
+                                        <Badge
+                                          variant={guestHouse.distance <= 30 ? "default" : "outline"}
                                           className="text-xs px-2 py-0"
                                         >
                                           {guestHouse.distance.toFixed(1)} km
@@ -375,14 +373,14 @@ const AccommodationSelectionPage = () => {
                   </p>
                 </div>
                 <div className="h-96 rounded-b-lg overflow-hidden">
-                  <InteractiveTripMap 
-                    selectedActivities={selectedActivities} 
-                    setSelectedActivities={() => {}} // Read-only
-                    selectedHotels={selectedHotels} 
-                    selectedGuestHouses={selectedGuestHouses} 
+                  <InteractiveTripMap
+                    selectedActivities={selectedActivities}
+                    setSelectedActivities={() => { }} // Read-only
+                    selectedHotels={selectedHotels}
+                    selectedGuestHouses={selectedGuestHouses}
                     activeTab="activities"
-                    setSelectedHotels={setSelectedHotels} 
-                    setSelectedGuestHouses={setSelectedGuestHouses} 
+                    setSelectedHotels={setSelectedHotels}
+                    setSelectedGuestHouses={setSelectedGuestHouses}
                   />
                 </div>
               </Card>
@@ -406,16 +404,16 @@ const AccommodationSelectionPage = () => {
                   {selectedGuestHouses.length} guest houses
                 </Badge>
               </div>
-              
-               <Button 
-                size="lg" 
+
+              <Button
+                size="lg"
                 className="bg-gradient-to-r from-primary to-primary-dark hover:from-primary-dark hover:to-primary text-white px-8 py-3 rounded-lg text-lg font-semibold shadow-lg hover:shadow-xl transition-all duration-300"
                 onClick={handleContinue}
               >
                 <Calendar className="h-5 w-5 mr-2" />
                 <TranslateText text="Generate My Itinerary" language={currentLanguage} />
               </Button>
-              
+
               <p className="text-sm text-muted-foreground max-w-md">
                 <TranslateText text="Create a detailed itinerary based on your selections" language={currentLanguage} />
               </p>
