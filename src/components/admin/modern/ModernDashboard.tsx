@@ -2,12 +2,12 @@ import React from "react";
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
 import { Badge } from "@/components/ui/badge";
-import { 
-  BookOpen, 
-  Clock, 
-  Zap, 
-  TrendingUp, 
-  Eye, 
+import {
+  BookOpen,
+  Clock,
+  Zap,
+  TrendingUp,
+  Eye,
   Users,
   Calendar,
   BarChart3,
@@ -26,21 +26,24 @@ import { Skeleton } from "@/components/ui/skeleton";
 import { useToast } from "@/components/ui/use-toast";
 import { Link } from "react-router-dom";
 import { cn } from "@/lib/utils";
+import { useTranslation } from "@/hooks/use-translation";
+import { TranslateText } from "@/components/translation/TranslateText";
 
 export const ModernDashboard = () => {
   const { analytics, isLoading: loadingAnalytics, error: analyticsError } = useBlogAnalytics();
   const performanceMetrics = usePerformanceMetrics();
   const { toast } = useToast();
-  
+  const { currentLanguage, t } = useTranslation();
+
   React.useEffect(() => {
     if (analyticsError) {
       toast({
-        title: "Error loading analytics",
+        title: t("Error loading analytics"),
         description: analyticsError.message,
         variant: "destructive"
       });
     }
-  }, [analyticsError, toast]);
+  }, [analyticsError, toast, t]);
 
   if (loadingAnalytics) {
     return <DashboardSkeleton />;
@@ -48,10 +51,10 @@ export const ModernDashboard = () => {
 
   const metrics = [
     {
-      title: "Total Posts",
+      title: t("Total Posts"),
       value: analytics.totalPosts,
       change: analytics.postGrowthRate,
-      changeLabel: "from last month",
+      changeLabel: t("from last month"),
       icon: BookOpen,
       color: "text-blue-600",
       bgColor: "bg-blue-50 dark:bg-blue-950/20",
@@ -59,10 +62,10 @@ export const ModernDashboard = () => {
       trend: "up"
     },
     {
-      title: "Avg. Read Time",
+      title: t("Avg. Read Time"),
       value: `${analytics.averageReadTime}m`,
       change: analytics.readTimeGrowthRate,
-      changeLabel: "from last month",
+      changeLabel: t("from last month"),
       icon: Clock,
       color: "text-emerald-600",
       bgColor: "bg-emerald-50 dark:bg-emerald-950/20",
@@ -70,10 +73,10 @@ export const ModernDashboard = () => {
       trend: "up"
     },
     {
-      title: "Page Speed",
+      title: t("Page Speed"),
       value: `${performanceMetrics.pageLoadTime}ms`,
       change: -12,
-      changeLabel: "performance gain",
+      changeLabel: t("performance gain"),
       icon: Zap,
       color: "text-purple-600",
       bgColor: "bg-purple-50 dark:bg-purple-950/20",
@@ -81,10 +84,10 @@ export const ModernDashboard = () => {
       trend: "up"
     },
     {
-      title: "Monthly Views",
+      title: t("Monthly Views"),
       value: "12.4k",
       change: 15.8,
-      changeLabel: "from last month",
+      changeLabel: t("from last month"),
       icon: Eye,
       color: "text-orange-600",
       bgColor: "bg-orange-50 dark:bg-orange-950/20",
@@ -95,32 +98,32 @@ export const ModernDashboard = () => {
 
   const quickActions = [
     {
-      title: "Create Blog Post",
-      description: "Write a new article",
+      title: t("Create Blog Post"),
+      description: t("Write a new article"),
       icon: FileText,
       href: "/admin/blog",
       color: "bg-gradient-to-r from-blue-500 to-blue-600",
       hoverColor: "hover:from-blue-600 hover:to-blue-700"
     },
     {
-      title: "Upload Media",
-      description: "Add images and files",
+      title: t("Upload Media"),
+      description: t("Add images and files"),
       icon: Image,
       href: "/admin/media",
       color: "bg-gradient-to-r from-emerald-500 to-emerald-600",
       hoverColor: "hover:from-emerald-600 hover:to-emerald-700"
     },
     {
-      title: "View Analytics",
-      description: "Check performance data",
+      title: t("View Analytics"),
+      description: t("Check performance data"),
       icon: BarChart3,
       href: "/admin/analytics",
       color: "bg-gradient-to-r from-purple-500 to-purple-600",
       hoverColor: "hover:from-purple-600 hover:to-purple-700"
     },
     {
-      title: "Manage Users",
-      description: "User administration",
+      title: t("Manage Users"),
+      description: t("User administration"),
       icon: Users,
       href: "/admin/users",
       color: "bg-gradient-to-r from-orange-500 to-orange-600",
@@ -130,37 +133,37 @@ export const ModernDashboard = () => {
 
   const recentActivity = [
     {
-      action: "New blog post published",
-      title: "Complete Guide to Tunisia Travel",
-      time: "2 hours ago",
+      action: t("New blog post published"),
+      title: t("Sahara Expedition: Star Wars Sites, Luxury Stay & Desert Adventure"),
+      time: t("2 hours ago"),
       type: "publish",
       icon: FileText
     },
     {
-      action: "Article updated",
-      title: "Best Places to Visit in Tunis",
-      time: "4 hours ago",
+      action: t("Article updated"),
+      title: t("El Medina District"),
+      time: t("4 hours ago"),
       type: "update",
       icon: BookOpen
     },
     {
-      action: "New contact message",
-      title: "Travel inquiry from Sarah",
-      time: "6 hours ago",
+      action: t("New contact message"),
+      title: t("Travel inquiry from Sarah"),
+      time: t("6 hours ago"),
       type: "message",
       icon: MessageSquare
     },
     {
-      action: "SEO optimization completed",
-      title: "Atlantis Resort page",
-      time: "1 day ago",
+      action: t("SEO optimization completed"),
+      title: t("Atlantis"),
+      time: t("1 day ago"),
       type: "seo",
       icon: Globe
     },
     {
-      action: "Media files uploaded",
-      title: "10 new images added",
-      time: "2 days ago",
+      action: t("Media files uploaded"),
+      title: t("10 new images added"),
+      time: t("2 days ago"),
       type: "media",
       icon: Image
     }
@@ -173,16 +176,16 @@ export const ModernDashboard = () => {
         <div className="space-y-2">
           <div className="flex items-center gap-2">
             <Sparkles className="h-6 w-6" />
-            <h1 className="text-3xl font-bold">Welcome back!</h1>
+            <h1 className="text-3xl font-bold">{t("Welcome back!")}</h1>
           </div>
           <p className="text-blue-100 text-lg">
-            Here's what's happening with your content today.
+            {t("Here's what's happening with your content today.")}
           </p>
         </div>
         <Button asChild className="bg-white text-blue-600 hover:bg-blue-50 shadow-lg">
           <Link to="/admin/blog" className="gap-2">
             <Plus className="h-4 w-4" />
-            Create New Post
+            {t("Create New Post")}
           </Link>
         </Button>
       </div>
@@ -232,10 +235,10 @@ export const ModernDashboard = () => {
           <CardHeader className="pb-4">
             <CardTitle className="flex items-center gap-3 text-xl">
               <Activity className="h-6 w-6 text-blue-600" />
-              Quick Actions
+              <TranslateText text="Quick Actions" language={currentLanguage} />
             </CardTitle>
             <CardDescription className="text-base">
-              Access frequently used admin functions
+              <TranslateText text="Access frequently used admin functions" language={currentLanguage} />
             </CardDescription>
           </CardHeader>
           <CardContent>
@@ -277,10 +280,10 @@ export const ModernDashboard = () => {
           <CardHeader className="pb-4">
             <CardTitle className="flex items-center gap-3 text-xl">
               <Calendar className="h-6 w-6 text-purple-600" />
-              Recent Activity
+              <TranslateText text="Recent Activity" language={currentLanguage} />
             </CardTitle>
             <CardDescription className="text-base">
-              Latest updates and changes
+              <TranslateText text="Latest updates and changes" language={currentLanguage} />
             </CardDescription>
           </CardHeader>
           <CardContent>
@@ -321,32 +324,32 @@ export const ModernDashboard = () => {
           <CardHeader>
             <CardTitle className="flex items-center gap-3 text-xl">
               <BookOpen className="h-6 w-6 text-blue-600" />
-              Content Overview
+              <TranslateText text="Content Overview" language={currentLanguage} />
             </CardTitle>
             <CardDescription className="text-base">
-              Your content performance summary
+              <TranslateText text="Your content performance summary" language={currentLanguage} />
             </CardDescription>
           </CardHeader>
           <CardContent>
             <div className="space-y-6">
               <div className="flex items-center justify-between p-4 bg-blue-50 dark:bg-blue-950/20 rounded-lg">
-                <span className="font-medium">Published Articles</span>
+                <span className="font-medium">{t("Published Articles")}</span>
                 <Badge variant="default" className="bg-blue-600 text-white">
                   {analytics.totalPosts}
                 </Badge>
               </div>
               <div className="flex items-center justify-between p-4 bg-gray-50 dark:bg-gray-800 rounded-lg">
-                <span className="font-medium">Draft Articles</span>
+                <span className="font-medium">{t("Draft Articles")}</span>
                 <Badge variant="outline">3</Badge>
               </div>
               <div className="flex items-center justify-between p-4 bg-emerald-50 dark:bg-emerald-950/20 rounded-lg">
-                <span className="font-medium">Categories</span>
+                <span className="font-medium">{t("Categories")}</span>
                 <Badge variant="outline" className="border-emerald-300 text-emerald-700">
                   {Object.keys(analytics.categoryCounts || {}).length}
                 </Badge>
               </div>
               <div className="flex items-center justify-between p-4 bg-purple-50 dark:bg-purple-950/20 rounded-lg">
-                <span className="font-medium">Languages</span>
+                <span className="font-medium">{t("Languages")}</span>
                 <div className="flex gap-2">
                   <Badge variant="outline" className="text-xs">🇺🇸 EN</Badge>
                   <Badge variant="outline" className="text-xs">🇯🇵 JP</Badge>
@@ -360,35 +363,35 @@ export const ModernDashboard = () => {
           <CardHeader>
             <CardTitle className="flex items-center gap-3 text-xl">
               <Zap className="h-6 w-6 text-yellow-600" />
-              System Health
+              <TranslateText text="System Health" language={currentLanguage} />
             </CardTitle>
             <CardDescription className="text-base">
-              Performance and system metrics
+              <TranslateText text="Performance and system metrics" language={currentLanguage} />
             </CardDescription>
           </CardHeader>
           <CardContent>
             <div className="space-y-6">
               <div className="flex items-center justify-between p-4 bg-green-50 dark:bg-green-950/20 rounded-lg">
-                <span className="font-medium">Page Load Time</span>
-                <Badge variant={performanceMetrics.pageLoadTime < 1000 ? "default" : "destructive"} 
-                       className={performanceMetrics.pageLoadTime < 1000 ? "bg-emerald-600" : ""}>
+                <span className="font-medium">{t("Page Load Time")}</span>
+                <Badge variant={performanceMetrics.pageLoadTime < 1000 ? "default" : "destructive"}
+                  className={performanceMetrics.pageLoadTime < 1000 ? "bg-emerald-600" : ""}>
                   {performanceMetrics.pageLoadTime}ms
                 </Badge>
               </div>
               <div className="flex items-center justify-between p-4 bg-blue-50 dark:bg-blue-950/20 rounded-lg">
-                <span className="font-medium">Memory Usage</span>
+                <span className="font-medium">{t("Memory Usage")}</span>
                 <Badge variant="outline" className="border-blue-300 text-blue-700">
                   {performanceMetrics.memoryUsage.toFixed(1)}MB
                 </Badge>
               </div>
               <div className="flex items-center justify-between p-4 bg-emerald-50 dark:bg-emerald-950/20 rounded-lg">
-                <span className="font-medium">Database Status</span>
+                <span className="font-medium">{t("Database Status")}</span>
                 <Badge className="bg-emerald-600 text-white">
-                  Connected
+                  {t("Connected")}
                 </Badge>
               </div>
               <div className="flex items-center justify-between p-4 bg-orange-50 dark:bg-orange-950/20 rounded-lg">
-                <span className="font-medium">Last Backup</span>
+                <span className="font-medium">{t("Last Backup")}</span>
                 <Badge variant="outline" className="border-orange-300 text-orange-700">
                   2 hours ago
                 </Badge>
@@ -443,7 +446,7 @@ function DashboardSkeleton() {
             </div>
           </CardContent>
         </Card>
-        
+
         <Card className="border-0 shadow-lg">
           <CardHeader>
             <Skeleton className="h-6 w-32" />

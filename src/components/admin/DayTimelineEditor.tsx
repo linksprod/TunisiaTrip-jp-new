@@ -8,6 +8,8 @@ import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
 import { Plus, Trash2, Clock, MapPin, Car, Camera } from 'lucide-react';
 import MultiImageUploader from '@/components/admin/MultiImageUploader';
 import { TimelineActivity, DetailedDayPlan } from '@/types/predefinedTripTypes';
+import { useTranslation } from '@/hooks/use-translation';
+import { TranslateText } from '@/components/translation/TranslateText';
 
 interface DayTimelineEditorProps {
   dayPlan: DetailedDayPlan;
@@ -37,6 +39,7 @@ export const DayTimelineEditor: React.FC<DayTimelineEditorProps> = ({
   hotels,
   guestHouses
 }) => {
+  const { currentLanguage, t } = useTranslation();
   const [expandedActivity, setExpandedActivity] = useState<string | null>(null);
 
   const addTimelineActivity = () => {
@@ -57,7 +60,7 @@ export const DayTimelineEditor: React.FC<DayTimelineEditorProps> = ({
   };
 
   const updateTimelineActivity = (activityId: string, field: keyof TimelineActivity, value: any) => {
-    const updatedTimeline = dayPlan.timeline.map(item => 
+    const updatedTimeline = dayPlan.timeline.map(item =>
       item.id === activityId ? { ...item, [field]: value } : item
     );
 
@@ -82,7 +85,7 @@ export const DayTimelineEditor: React.FC<DayTimelineEditorProps> = ({
     });
   };
 
-  const sortedTimeline = [...dayPlan.timeline].sort((a, b) => 
+  const sortedTimeline = [...dayPlan.timeline].sort((a, b) =>
     a.time.localeCompare(b.time)
   );
 
@@ -91,18 +94,18 @@ export const DayTimelineEditor: React.FC<DayTimelineEditorProps> = ({
       <CardHeader className="flex flex-row items-center justify-between">
         <div className="flex-1">
           <div className="flex items-center gap-4">
-            <CardTitle className="text-xl">Jour {dayPlan.day}</CardTitle>
+            <CardTitle className="text-xl">{t("Day")} {dayPlan.day}</CardTitle>
             <Input
               value={dayPlan.title}
               onChange={(e) => updateDayField('title', e.target.value)}
-              placeholder="Titre du jour"
+              placeholder={t("Titre du jour")}
               className="max-w-xs"
             />
           </div>
         </div>
-        <Button 
-          variant="destructive" 
-          size="sm" 
+        <Button
+          variant="destructive"
+          size="sm"
           onClick={onRemove}
         >
           <Trash2 className="h-4 w-4" />
@@ -112,25 +115,25 @@ export const DayTimelineEditor: React.FC<DayTimelineEditorProps> = ({
       <CardContent className="space-y-6">
         {/* Description du jour */}
         <div>
-          <Label htmlFor={`day-${dayPlan.day}-description`}>Description</Label>
+          <Label htmlFor={`day-${dayPlan.day}-description`}>{t("Description")}</Label>
           <Textarea
             id={`day-${dayPlan.day}-description`}
             value={dayPlan.description || ''}
             onChange={(e) => updateDayField('description', e.target.value)}
-            placeholder="Description de la journée..."
+            placeholder={t("Description de la journée...")}
             className="min-h-[80px]"
           />
         </div>
 
         {/* Activité principale */}
         <div>
-          <Label htmlFor={`day-${dayPlan.day}-main-activity`}>Activité principale du jour</Label>
-          <Select 
-            value={dayPlan.mainActivityId || ''} 
+          <Label htmlFor={`day-${dayPlan.day}-main-activity`}>{t("Activité principale du jour")}</Label>
+          <Select
+            value={dayPlan.mainActivityId || ''}
             onValueChange={(value) => updateDayField('mainActivityId', value)}
           >
             <SelectTrigger>
-              <SelectValue placeholder="Sélectionner l'activité principale" />
+              <SelectValue placeholder={t("Sélectionner l'activité principale")} />
             </SelectTrigger>
             <SelectContent>
               {activities.map((activity) => (
@@ -147,24 +150,24 @@ export const DayTimelineEditor: React.FC<DayTimelineEditorProps> = ({
           <div className="flex items-center justify-between">
             <Label className="text-lg font-semibold flex items-center gap-2">
               <Clock className="h-5 w-5" />
-              Programme de la journée
+              <TranslateText text="Programme de la journée" language={currentLanguage} />
             </Label>
             <Button onClick={addTimelineActivity} variant="outline" size="sm">
               <Plus className="h-4 w-4 mr-2" />
-              Ajouter une activité
+              {t("Ajouter une activité")}
             </Button>
           </div>
 
           {sortedTimeline.length === 0 ? (
             <div className="text-center py-8 text-muted-foreground border-2 border-dashed rounded-lg">
-              Aucune activité programmée. Cliquez sur "Ajouter une activité" pour commencer.
+              {t("Aucune activité programmée. Cliquez sur \"Ajouter une activité\" pour commencer.")}
             </div>
           ) : (
             <div className="space-y-3">
               {sortedTimeline.map((timelineItem, index) => {
                 const activityType = activityTypes.find(type => type.value === timelineItem.type);
                 const isExpanded = expandedActivity === timelineItem.id;
-                
+
                 return (
                   <Card key={timelineItem.id} className="bg-muted/50">
                     <CardContent className="p-4">
@@ -189,8 +192,8 @@ export const DayTimelineEditor: React.FC<DayTimelineEditorProps> = ({
                               onChange={(e) => updateTimelineActivity(timelineItem.id, 'time', e.target.value)}
                               className="text-sm"
                             />
-                            <Select 
-                              value={timelineItem.type} 
+                            <Select
+                              value={timelineItem.type}
                               onValueChange={(value) => updateTimelineActivity(timelineItem.id, 'type', value)}
                             >
                               <SelectTrigger className="text-sm">
@@ -199,7 +202,7 @@ export const DayTimelineEditor: React.FC<DayTimelineEditorProps> = ({
                               <SelectContent>
                                 {activityTypes.map((type) => (
                                   <SelectItem key={type.value} value={type.value}>
-                                    {type.icon} {type.label}
+                                    {type.icon} {t(type.label)}
                                   </SelectItem>
                                 ))}
                               </SelectContent>
@@ -207,19 +210,19 @@ export const DayTimelineEditor: React.FC<DayTimelineEditorProps> = ({
                             <Input
                               value={timelineItem.activity}
                               onChange={(e) => updateTimelineActivity(timelineItem.id, 'activity', e.target.value)}
-                              placeholder="Nom de l'activité"
+                              placeholder={t("Nom de l'activité")}
                               className="text-sm"
                             />
                             <Input
                               value={timelineItem.location}
                               onChange={(e) => updateTimelineActivity(timelineItem.id, 'location', e.target.value)}
-                              placeholder="Lieu"
+                              placeholder={t("Lieu")}
                               className="text-sm"
                             />
                             <Input
                               value={timelineItem.duration}
                               onChange={(e) => updateTimelineActivity(timelineItem.id, 'duration', e.target.value)}
-                              placeholder="Durée"
+                              placeholder={t("Durée")}
                               className="text-sm"
                             />
                             <div className="flex gap-2">
@@ -244,11 +247,11 @@ export const DayTimelineEditor: React.FC<DayTimelineEditorProps> = ({
                           {isExpanded && (
                             <div className="grid grid-cols-2 gap-4 pt-3 border-t">
                               <div>
-                                <Label className="text-sm">Description</Label>
+                                <Label className="text-sm">{t("Description")}</Label>
                                 <Textarea
                                   value={timelineItem.description || ''}
                                   onChange={(e) => updateTimelineActivity(timelineItem.id, 'description', e.target.value)}
-                                  placeholder="Description détaillée..."
+                                  placeholder={t("Description détaillée...")}
                                   className="min-h-[60px] text-sm"
                                 />
                               </div>
@@ -256,30 +259,30 @@ export const DayTimelineEditor: React.FC<DayTimelineEditorProps> = ({
                                 <div>
                                   <Label className="text-sm flex items-center gap-1">
                                     <Car className="h-3 w-3" />
-                                    Transport
+                                    {t("Transport")}
                                   </Label>
                                   <Input
                                     value={timelineItem.transport || ''}
                                     onChange={(e) => updateTimelineActivity(timelineItem.id, 'transport', e.target.value)}
-                                    placeholder="Ex: À pied, en bus..."
+                                    placeholder={t("Ex: À pied, en bus...")}
                                     className="text-sm"
                                   />
                                 </div>
                                 <div>
                                   <Label className="text-sm flex items-center gap-1">
                                     <MapPin className="h-3 w-3" />
-                                    Distance
+                                    {t("Distance")}
                                   </Label>
                                   <Input
                                     value={timelineItem.distance || ''}
                                     onChange={(e) => updateTimelineActivity(timelineItem.id, 'distance', e.target.value)}
-                                    placeholder="Ex: 5 km, 30 min"
+                                    placeholder={t("Ex: 5 km, 30 min")}
                                     className="text-sm"
                                   />
                                 </div>
                               </div>
                               <div className="col-span-2">
-                                <Label className="text-sm">Images de l'activité</Label>
+                                <Label className="text-sm">{t("Images de l'activité")}</Label>
                                 <MultiImageUploader
                                   currentImages={timelineItem.images}
                                   onImagesUploaded={(images) => updateTimelineActivity(timelineItem.id, 'images', images)}
@@ -302,30 +305,30 @@ export const DayTimelineEditor: React.FC<DayTimelineEditorProps> = ({
         {/* Hébergement */}
         <div className="grid grid-cols-2 gap-4">
           <div>
-            <Label>Type d'hébergement</Label>
-            <Select 
-              value={dayPlan.accommodationType} 
+            <Label>{t("Type d'hébergement")}</Label>
+            <Select
+              value={dayPlan.accommodationType}
               onValueChange={(value) => updateDayField('accommodationType', value)}
             >
               <SelectTrigger>
                 <SelectValue />
               </SelectTrigger>
               <SelectContent>
-                <SelectItem value="none">Aucun hébergement</SelectItem>
-                <SelectItem value="hotel">Hôtel</SelectItem>
-                <SelectItem value="guesthouse">Maison d'hôte</SelectItem>
+                <SelectItem value="none">{t("Aucun hébergement")}</SelectItem>
+                <SelectItem value="hotel">{t("Hôtel")}</SelectItem>
+                <SelectItem value="guesthouse">{t("Maison d'hôte")}</SelectItem>
               </SelectContent>
             </Select>
           </div>
           {dayPlan.accommodationType !== 'none' && (
             <div>
-              <Label>Hébergement spécifique</Label>
-              <Select 
-                value={dayPlan.accommodationId || ''} 
+              <Label>{t("Hébergement spécifique")}</Label>
+              <Select
+                value={dayPlan.accommodationId || ''}
                 onValueChange={(value) => updateDayField('accommodationId', value)}
               >
                 <SelectTrigger>
-                  <SelectValue placeholder={`Sélectionner ${dayPlan.accommodationType === 'hotel' ? 'un hôtel' : 'une maison d\'hôte'}`} />
+                  <SelectValue placeholder={t(`Sélectionner ${dayPlan.accommodationType === 'hotel' ? 'un hôtel' : 'une maison d\'hôte'}`)} />
                 </SelectTrigger>
                 <SelectContent>
                   {(dayPlan.accommodationType === 'hotel' ? hotels : guestHouses).map((accommodation) => (

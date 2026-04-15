@@ -30,6 +30,7 @@ import { SEOFieldsSection } from "@/components/admin/SEOFieldsSection";
 import { ExternalLink } from "lucide-react";
 import { useToast } from "@/hooks/use-toast";
 import { supabase } from "@/integrations/supabase/client";
+import { useTranslation } from "@/hooks/use-translation";
 
 interface BlogEditorProps {
   isAddMode: boolean;
@@ -47,11 +48,12 @@ const BlogEditor: React.FC<BlogEditorProps> = ({
   onCancel
 }) => {
   const { toast } = useToast();
+  const { t } = useTranslation();
   const [isTranslating, setIsTranslating] = React.useState(false);
   const [isGeneratingSlug, setIsGeneratingSlug] = React.useState(false);
   const [isSlugManuallyEdited, setIsSlugManuallyEdited] = React.useState(false);
   const [titleDebounce, setTitleDebounce] = React.useState("");
-  
+
   const form = useForm<BlogFormValues>({
     defaultValues: {
       title: currentPost?.title || "",
@@ -90,7 +92,7 @@ const BlogEditor: React.FC<BlogEditorProps> = ({
     const timer = setTimeout(() => {
       setTitleDebounce(watchedTitle);
     }, 300);
-    
+
     return () => clearTimeout(timer);
   }, [watchedTitle]);
 
@@ -116,8 +118,8 @@ const BlogEditor: React.FC<BlogEditorProps> = ({
     const currentTitle = form.getValues('title');
     if (!currentTitle) {
       toast({
-        title: "No Title",
-        description: "Please enter a title first",
+        title: t("No Title"),
+        description: t("Please enter a title first"),
         variant: "destructive"
       });
       return;
@@ -135,17 +137,17 @@ const BlogEditor: React.FC<BlogEditorProps> = ({
         const { generateBasicSlug } = await import('@/lib/utils');
         slug = generateBasicSlug(currentTitle);
       }
-      
+
       form.setValue('slug', slug, { shouldDirty: true, shouldTouch: true, shouldValidate: true });
       toast({
-        title: "Slug Generated",
-        description: `${language === 'EN' ? 'English' : 'Japanese'} slug generated successfully`,
+        title: t("Slug Generated"),
+        description: t(`${language === 'EN' ? 'English' : 'Japanese'} slug generated successfully`),
       });
     } catch (error) {
       console.error('Slug generation error:', error);
       toast({
-        title: "Generation Failed",
-        description: "Failed to generate slug. Please try again.",
+        title: t("Generation Failed"),
+        description: t("Failed to generate slug. Please try again."),
         variant: "destructive"
       });
     } finally {
@@ -160,8 +162,8 @@ const BlogEditor: React.FC<BlogEditorProps> = ({
 
     if (!currentTitle || !currentDescription || !currentContent) {
       toast({
-        title: "Missing Content",
-        description: "Please fill in title, description, and content before translating",
+        title: t("Missing Content"),
+        description: t("Please fill in title, description, and content before translating"),
         variant: "destructive"
       });
       return;
@@ -207,17 +209,17 @@ const BlogEditor: React.FC<BlogEditorProps> = ({
         if (insertError) throw insertError;
 
         toast({
-          title: "Japanese draft created",
-          description: "A new Japanese version has been created.",
+          title: t("Japanese draft created"),
+          description: t("A new Japanese version has been created."),
         });
       }
     } catch (error: any) {
       console.error('Translation error:', error);
-      
+
       const errorMessage = error?.message || error?.error || "Failed to translate article. Please try again.";
-      
+
       toast({
-        title: "Translation Failed",
+        title: t("Translation Failed"),
         description: errorMessage,
         variant: "destructive"
       });
@@ -237,9 +239,9 @@ const BlogEditor: React.FC<BlogEditorProps> = ({
               name="title"
               render={({ field }) => (
                 <FormItem>
-                  <FormLabel>Title</FormLabel>
+                  <FormLabel>{t("Title")}</FormLabel>
                   <FormControl>
-                    <Input placeholder="Blog post title" {...field} required />
+                    <Input placeholder={t("Blog post title")} {...field} required />
                   </FormControl>
                   <FormMessage />
                 </FormItem>
@@ -257,14 +259,14 @@ const BlogEditor: React.FC<BlogEditorProps> = ({
                   </FormLabel>
                   <div className="space-y-2">
                     <FormControl>
-                      <Input 
-                        placeholder="article-url-slug" 
+                      <Input
+                        placeholder="article-url-slug"
                         {...field}
                         onChange={(e) => {
                           field.onChange(e);
                           setIsSlugManuallyEdited(true);
                         }}
-                        required 
+                        required
                       />
                     </FormControl>
                     <div className="flex gap-2">
@@ -319,13 +321,13 @@ const BlogEditor: React.FC<BlogEditorProps> = ({
             name="description"
             render={({ field }) => (
               <FormItem>
-                <FormLabel>Short Description</FormLabel>
+                <FormLabel>{t("Short Description")}</FormLabel>
                 <FormControl>
-                  <Textarea 
-                    placeholder="Enter a short description" 
-                    className="resize-none" 
-                    rows={3} 
-                    {...field} 
+                  <Textarea
+                    placeholder={t("Enter a short description")}
+                    className="resize-none"
+                    rows={3}
+                    {...field}
                     required
                   />
                 </FormControl>
@@ -340,7 +342,7 @@ const BlogEditor: React.FC<BlogEditorProps> = ({
             name="image"
             render={({ field }) => (
               <FormItem>
-                <FormLabel>Main Article Image</FormLabel>
+                <FormLabel>{t("Main Article Image")}</FormLabel>
                 <FormControl>
                   <ImageUploader
                     onImageUploaded={field.onChange}
@@ -349,7 +351,7 @@ const BlogEditor: React.FC<BlogEditorProps> = ({
                   />
                 </FormControl>
                 <FormDescription>
-                  Main image for the article. Will be used for social media sharing if no OG image is set.
+                  {t("Main image for the article. Will be used for social media sharing if no OG image is set.")}
                 </FormDescription>
                 <FormMessage />
               </FormItem>
@@ -362,12 +364,12 @@ const BlogEditor: React.FC<BlogEditorProps> = ({
             name="content"
             render={({ field }) => (
               <FormItem>
-                <FormLabel>Article Content</FormLabel>
+                <FormLabel>{t("Article Content")}</FormLabel>
                 <FormControl>
-                  <RichTextEditor 
+                  <RichTextEditor
                     value={field.value || ''}
                     onChange={field.onChange}
-                    placeholder="Start writing your article content. Use the toolbar for formatting options like bold, italic, links, and more."
+                    placeholder={t("Start writing your article content...")}
                   />
                 </FormControl>
                 <FormMessage />
@@ -385,9 +387,9 @@ const BlogEditor: React.FC<BlogEditorProps> = ({
               name="category"
               render={({ field }) => (
                 <FormItem>
-                  <FormLabel>Category</FormLabel>
+                  <FormLabel>{t("Category")}</FormLabel>
                   <FormControl>
-                    <Input placeholder="Category (e.g., Travel Guide, Tips)" {...field} required />
+                    <Input placeholder={t("Category (e.g., Travel Guide, Tips)")} {...field} required />
                   </FormControl>
                   <FormMessage />
                 </FormItem>
@@ -399,14 +401,14 @@ const BlogEditor: React.FC<BlogEditorProps> = ({
               name="language"
               render={({ field }) => (
                 <FormItem>
-                  <FormLabel>Language</FormLabel>
-                  <Select 
-                    onValueChange={field.onChange} 
+                  <FormLabel>{t("Language")}</FormLabel>
+                  <Select
+                    onValueChange={field.onChange}
                     defaultValue={field.value}
                   >
                     <FormControl>
                       <SelectTrigger>
-                        <SelectValue placeholder="Select language" />
+                        <SelectValue placeholder={t("Select language")} />
                       </SelectTrigger>
                     </FormControl>
                     <SelectContent>
@@ -424,27 +426,27 @@ const BlogEditor: React.FC<BlogEditorProps> = ({
               name="status"
               render={({ field }) => (
                 <FormItem>
-                  <FormLabel>Status</FormLabel>
-                  <Select 
-                    onValueChange={field.onChange} 
+                  <FormLabel>{t("Status")}</FormLabel>
+                  <Select
+                    onValueChange={field.onChange}
                     defaultValue={field.value}
                   >
                     <FormControl>
                       <SelectTrigger>
-                        <SelectValue placeholder="Select status" />
+                        <SelectValue placeholder={t("Select status")} />
                       </SelectTrigger>
                     </FormControl>
                     <SelectContent>
                       <SelectItem value="draft">
                         <div className="flex items-center">
                           <Save className="h-4 w-4 mr-2" />
-                          <span>Draft</span>
+                          <span>{t("Draft")}</span>
                         </div>
                       </SelectItem>
                       <SelectItem value="published">
                         <div className="flex items-center">
                           <Send className="h-4 w-4 mr-2" />
-                          <span>Published</span>
+                          <span>{t("Published")}</span>
                         </div>
                       </SelectItem>
                     </SelectContent>
@@ -465,12 +467,12 @@ const BlogEditor: React.FC<BlogEditorProps> = ({
                 {isTranslating ? (
                   <>
                     <Loader2 className="mr-2 h-4 w-4 animate-spin" />
-                    Translating...
+                    {t("Translating...")}
                   </>
                 ) : (
                   <>
                     <Languages className="mr-2 h-4 w-4" />
-                    Translate to Japanese
+                    {t("Translate to Japanese")}
                   </>
                 )}
               </Button>
@@ -478,33 +480,33 @@ const BlogEditor: React.FC<BlogEditorProps> = ({
           </div>
 
           <div className="flex justify-end space-x-2">
-            <Button 
-              type="button" 
-              variant="outline" 
+            <Button
+              type="button"
+              variant="outline"
               onClick={onCancel}
               disabled={isSubmitting}
             >
-              Cancel
+              {t("Cancel")}
             </Button>
-            <Button 
+            <Button
               type="submit"
-              className="bg-admin-primary hover:bg-admin-accent transition-colors" 
+              className="bg-admin-primary hover:bg-admin-accent transition-colors"
               disabled={isSubmitting}
             >
               {isSubmitting ? (
                 <>
                   <Loader2 className="mr-2 h-4 w-4 animate-spin" />
-                  Saving...
+                  {t("Saving...")}
                 </>
               ) : isAddMode ? (
                 <>
                   <Save className="mr-2 h-4 w-4" />
-                  Save
+                  {t("Save")}
                 </>
               ) : (
                 <>
                   <Save className="mr-2 h-4 w-4" />
-                  Update
+                  {t("Update")}
                 </>
               )}
             </Button>

@@ -1,13 +1,13 @@
 import React from 'react';
 import { Outlet, useLocation, Link } from 'react-router-dom';
-import { 
-  Sidebar, 
-  SidebarContent, 
-  SidebarGroup, 
-  SidebarGroupContent, 
-  SidebarMenu, 
-  SidebarMenuButton, 
-  SidebarMenuItem, 
+import {
+  Sidebar,
+  SidebarContent,
+  SidebarGroup,
+  SidebarGroupContent,
+  SidebarMenu,
+  SidebarMenuButton,
+  SidebarMenuItem,
   SidebarProvider,
   SidebarTrigger,
   useSidebar,
@@ -19,18 +19,20 @@ import { useAuth } from '@/contexts/AuthContext';
 import { Avatar, AvatarFallback } from '@/components/ui/avatar';
 import { Button } from '@/components/ui/button';
 import { Breadcrumb, BreadcrumbItem, BreadcrumbLink, BreadcrumbList, BreadcrumbPage, BreadcrumbSeparator } from '@/components/ui/breadcrumb';
-import { 
-  Home, 
-  BookOpen, 
-  Users, 
-  Search, 
-  Image, 
-  LogOut, 
+import {
+  Home,
+  BookOpen,
+  Users,
+  Search,
+  Image,
+  LogOut,
   ChevronRight,
   Shield,
   BarChart3,
   Settings
 } from 'lucide-react';
+import { useTranslation } from '@/hooks/use-translation';
+import { TranslateText } from '@/components/translation/TranslateText';
 
 interface EnhancedAdminLayoutProps {
   children: React.ReactNode;
@@ -39,60 +41,61 @@ interface EnhancedAdminLayoutProps {
 export function EnhancedAdminLayout({ children }: EnhancedAdminLayoutProps) {
   const location = useLocation();
   const { user, signOut } = useAuth();
-  
+  const { currentLanguage, t } = useTranslation();
+
   const navItems = [
-    { 
-      icon: Home, 
-      label: "Dashboard", 
+    {
+      icon: Home,
+      label: t("Dashboard"),
       href: "/admin"
     },
-    { 
-      icon: BookOpen, 
-      label: "Blog", 
+    {
+      icon: BookOpen,
+      label: t("Blog"),
       href: "/admin/blog"
     },
-    { 
-      icon: Image, 
-      label: "Media", 
+    {
+      icon: Image,
+      label: t("Media"),
       href: "/admin/media"
     },
-    { 
-      icon: Users, 
-      label: "Contacts", 
+    {
+      icon: Users,
+      label: t("Contacts"),
       href: "/admin/contacts"
     },
-    { 
-      icon: Search, 
-      label: "SEO", 
+    {
+      icon: Search,
+      label: t("SEO"),
       href: "/admin/seo"
     },
   ];
 
-  const userInitials = user?.email 
-    ? user.email.substring(0, 2).toUpperCase() 
+  const userInitials = user?.email
+    ? user.email.substring(0, 2).toUpperCase()
     : "AD";
 
   // Generate breadcrumbs based on current path
   const generateBreadcrumbs = () => {
     const pathSegments = location.pathname.split('/').filter(Boolean);
     const breadcrumbs = [];
-    
+
     if (pathSegments.length > 0 && pathSegments[0] === 'admin') {
-      breadcrumbs.push({ label: 'Admin', href: '/admin' });
-      
+      breadcrumbs.push({ label: t('Admin'), href: '/admin' });
+
       if (pathSegments.length > 1) {
-        const currentNavItem = navItems.find(item => 
+        const currentNavItem = navItems.find(item =>
           item.href === `/${pathSegments.slice(0, 2).join('/')}`
         );
         if (currentNavItem) {
-          breadcrumbs.push({ 
-            label: currentNavItem.label, 
-            href: currentNavItem.href 
+          breadcrumbs.push({
+            label: currentNavItem.label,
+            href: currentNavItem.href
           });
         }
       }
     }
-    
+
     return breadcrumbs;
   };
 
@@ -100,21 +103,21 @@ export function EnhancedAdminLayout({ children }: EnhancedAdminLayoutProps) {
 
   return (
     <div className="min-h-screen w-full bg-background">
-      <ErrorBoundary>        
+      <ErrorBoundary>
         <SidebarProvider defaultExpanded={true}>
           <div className="flex min-h-screen w-full">
-            <AdminSidebar 
+            <AdminSidebar
               navItems={navItems}
               user={user}
               userInitials={userInitials}
               onSignOut={signOut}
             />
-            
+
             <main className="flex-1 flex flex-col overflow-hidden">
               {/* Modern Header */}
               <header className="h-16 border-b bg-card shadow-sm flex items-center px-6 gap-4">
                 <SidebarTrigger />
-                
+
                 <div className="flex-1">
                   <Breadcrumb>
                     <BreadcrumbList>
@@ -127,8 +130,8 @@ export function EnhancedAdminLayout({ children }: EnhancedAdminLayoutProps) {
                               </BreadcrumbPage>
                             ) : (
                               <BreadcrumbLink asChild>
-                                <Link 
-                                  to={breadcrumb.href} 
+                                <Link
+                                  to={breadcrumb.href}
                                   className="text-muted-foreground hover:text-foreground transition-colors"
                                 >
                                   {breadcrumb.label}
@@ -142,7 +145,7 @@ export function EnhancedAdminLayout({ children }: EnhancedAdminLayoutProps) {
                     </BreadcrumbList>
                   </Breadcrumb>
                 </div>
-                
+
                 <div className="flex items-center gap-3">
                   <Avatar className="h-8 w-8">
                     <AvatarFallback className="bg-primary text-primary-foreground text-xs font-medium">
@@ -151,7 +154,7 @@ export function EnhancedAdminLayout({ children }: EnhancedAdminLayoutProps) {
                   </Avatar>
                 </div>
               </header>
-              
+
               {/* Main content */}
               <div className="flex-1 p-8 overflow-auto bg-muted/30">
                 <ErrorBoundary>
@@ -181,6 +184,7 @@ function AdminSidebar({ navItems, user, userInitials, onSignOut }: AdminSidebarP
   const { expanded } = useSidebar();
   const collapsed = !expanded;
   const location = useLocation();
+  const { currentLanguage, t } = useTranslation();
 
   return (
     <Sidebar className="border-r bg-card shadow-sm">
@@ -191,8 +195,12 @@ function AdminSidebar({ navItems, user, userInitials, onSignOut }: AdminSidebarP
           </div>
           {!collapsed && (
             <div>
-              <h2 className="text-xl font-bold text-foreground">Admin Panel</h2>
-              <p className="text-sm text-muted-foreground">Tunisia Tourism</p>
+              <h2 className="text-xl font-bold text-foreground">
+                <TranslateText text="Admin Panel" language={currentLanguage} />
+              </h2>
+              <p className="text-sm text-muted-foreground">
+                <TranslateText text="Tunisia Tourism" language={currentLanguage} />
+              </p>
             </div>
           )}
         </div>
@@ -203,17 +211,17 @@ function AdminSidebar({ navItems, user, userInitials, onSignOut }: AdminSidebarP
           <SidebarGroupContent>
             <SidebarMenu className="space-y-2">
               {navItems.map((item) => {
-                const isActive = location.pathname === item.href || 
+                const isActive = location.pathname === item.href ||
                   (item.href !== '/admin' && location.pathname.startsWith(item.href));
-                
+
                 return (
                   <SidebarMenuItem key={item.href}>
-                    <SidebarMenuButton 
-                      asChild 
+                    <SidebarMenuButton
+                      asChild
                       className={`
                         h-11 px-4 rounded-lg transition-all duration-200 font-medium
-                        ${isActive 
-                          ? "bg-primary text-primary-foreground shadow-md hover:bg-primary/90" 
+                        ${isActive
+                          ? "bg-primary text-primary-foreground shadow-md hover:bg-primary/90"
                           : "text-muted-foreground hover:text-foreground hover:bg-muted/60"
                         }
                       `}
@@ -244,22 +252,24 @@ function AdminSidebar({ navItems, user, userInitials, onSignOut }: AdminSidebarP
               </Avatar>
               <div className="overflow-hidden flex-1">
                 <p className="text-sm font-semibold truncate text-foreground">{user?.email}</p>
-                <p className="text-xs text-muted-foreground">Administrator</p>
+                <p className="text-xs text-muted-foreground">
+                  <TranslateText text="Administrator" language={currentLanguage} />
+                </p>
               </div>
             </div>
-            
-            <Button 
-              variant="ghost" 
-              size="sm" 
+
+            <Button
+              variant="ghost"
+              size="sm"
               onClick={onSignOut}
               className="w-full justify-start text-muted-foreground hover:text-foreground hover:bg-destructive/10 hover:text-destructive transition-colors"
             >
               <LogOut className="h-4 w-4 mr-3" />
-              Sign out
+              {t("Sign out")}
             </Button>
           </div>
         )}
-        
+
         {collapsed && (
           <div className="flex flex-col items-center gap-2">
             <Avatar className="h-8 w-8">
@@ -267,9 +277,9 @@ function AdminSidebar({ navItems, user, userInitials, onSignOut }: AdminSidebarP
                 {userInitials}
               </AvatarFallback>
             </Avatar>
-            <Button 
-              variant="ghost" 
-              size="sm" 
+            <Button
+              variant="ghost"
+              size="sm"
               onClick={onSignOut}
               className="p-2 text-muted-foreground hover:text-destructive hover:bg-destructive/10"
             >

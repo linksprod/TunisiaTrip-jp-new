@@ -6,16 +6,18 @@ import { Form, FormControl, FormDescription, FormField, FormItem, FormLabel, For
 import { Input } from "@/components/ui/input";
 import { Textarea } from "@/components/ui/textarea";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
-import { Badge } from "@/components/ui/badge";
-import { Checkbox } from "@/components/ui/checkbox";
 import { useForm } from "react-hook-form";
-import { useToast } from "@/components/ui/use-toast";
+import { useToast } from "@/hooks/use-toast";
+import { useTranslation } from "@/hooks/use-translation";
+import { TranslateText } from "@/components/translation/TranslateText";
 import { AspectRatio } from "@/components/ui/aspect-ratio";
 import { cn } from "@/lib/utils";
 import { PageSEOFormValues, GeneralSEOFormValues, SEOKeyword, LanguageSpecificSEO } from "@/types/seo";
 import { ScrollArea } from "@/components/ui/scroll-area";
 import { Globe, Flag, Plus, X, Tag, Map, ListFilter, RefreshCw } from "lucide-react";
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
+import { Checkbox } from "@/components/ui/checkbox";
+import { Badge } from "@/components/ui/badge";
 
 // Default Open Graph Image path
 const DEFAULT_OG_IMAGE = "/uploads/ff0d63a1-cc6c-4694-be17-2df916fd6334.png";
@@ -167,9 +169,10 @@ const japaneseKeywords = {
 };
 
 const AdminSEOPage = () => {
-  // Current language state - Default to 'JP' instead of 'EN'
-  const [currentLanguage, setCurrentLanguage] = useState<'EN' | 'JP'>('JP');
-  
+  const { currentLanguage: appLanguage, t } = useTranslation();
+  // Current language state for the editor - Default to 'JP' instead of 'EN'
+  const [editLanguage, setEditLanguage] = useState<'EN' | 'JP'>('JP');
+
   // Load data from localStorage on component mount - with proper initialization and error handling
   const [seoData, setSeoData] = useState<LanguageSpecificSEO>(() => {
     try {
@@ -181,11 +184,11 @@ const AdminSEOPage = () => {
           console.warn("SEO data structure incomplete, initializing with defaults");
           return initialSEOData;
         }
-        
+
         // Ensure each language has all required sections
         const keysToCheck = ['homepage', 'aboutPage', 'travelPage', 'blogPage', 'startMyTripPage', 'general'];
         let isValid = true;
-        
+
         // Check EN sections
         for (const key of keysToCheck) {
           if (!parsedData.EN[key]) {
@@ -194,7 +197,7 @@ const AdminSEOPage = () => {
             isValid = false;
           }
         }
-        
+
         // Check JP sections
         for (const key of keysToCheck) {
           if (!parsedData.JP[key]) {
@@ -203,12 +206,12 @@ const AdminSEOPage = () => {
             isValid = false;
           }
         }
-        
+
         if (!isValid) {
           // If we had to fix the data, save it back to localStorage
           localStorage.setItem(SEO_DATA_KEY, JSON.stringify(parsedData));
         }
-        
+
         return parsedData;
       }
       console.log("No saved SEO data found, using defaults");
@@ -236,11 +239,11 @@ const AdminSEOPage = () => {
             JP: japaneseKeywords
           };
         }
-        
+
         // Ensure all categories exist in both languages
         const categories = ['core', 'destination', 'long-tail'];
         let needsUpdate = false;
-        
+
         // Check EN categories
         for (const category of categories) {
           if (!parsedKeywords.EN[category] || !Array.isArray(parsedKeywords.EN[category])) {
@@ -249,7 +252,7 @@ const AdminSEOPage = () => {
             needsUpdate = true;
           }
         }
-        
+
         // Check JP categories
         for (const category of categories) {
           if (!parsedKeywords.JP[category] || !Array.isArray(parsedKeywords.JP[category])) {
@@ -258,12 +261,12 @@ const AdminSEOPage = () => {
             needsUpdate = true;
           }
         }
-        
+
         if (needsUpdate) {
           // If we had to fix the data, save it back to localStorage
           localStorage.setItem(KEYWORDS_DATA_KEY, JSON.stringify(parsedKeywords));
         }
-        
+
         return parsedKeywords;
       }
       console.log("No saved keywords data found, using defaults");
@@ -286,7 +289,7 @@ const AdminSEOPage = () => {
   const [selectedKeywords, setSelectedKeywords] = useState<string[]>([]);
   const [keywordCategory, setKeywordCategory] = useState<"core" | "destination" | "long-tail">("core");
   const { toast } = useToast();
-  
+
   // Save to localStorage when data changes
   useEffect(() => {
     if (seoData) {
@@ -299,7 +302,7 @@ const AdminSEOPage = () => {
       localStorage.setItem(KEYWORDS_DATA_KEY, JSON.stringify(allKeywords));
     }
   }, [allKeywords]);
-  
+
   // Form for the page-specific SEO settings
   const pageSeoForm = useForm<PageSEOFormValues>({
     defaultValues: {
@@ -309,7 +312,7 @@ const AdminSEOPage = () => {
       ogImage: DEFAULT_OG_IMAGE
     }
   });
-  
+
   // Form for general site-wide SEO settings
   const generalSeoForm = useForm<GeneralSEOFormValues>({
     defaultValues: {
@@ -321,11 +324,11 @@ const AdminSEOPage = () => {
 
   // Toggle between languages
   const handleLanguageChange = (lang: 'EN' | 'JP') => {
-    setCurrentLanguage(lang);
-    
+    setEditLanguage(lang);
+
     // Reset selected keywords when changing language
     setSelectedKeywords([]);
-    
+
     // Reset forms with the data from the selected language - with added safety checks
     if (activeTab === "general" && seoData && seoData[lang] && seoData[lang].general) {
       const genData = seoData[lang].general as GeneralSEOFormValues;
@@ -342,7 +345,7 @@ const AdminSEOPage = () => {
         keywords: pageData.keywords || "",
         ogImage: pageData.ogImage || DEFAULT_OG_IMAGE
       });
-      
+
       // Extract keywords from the comma-separated string
       const keywordsArray = (pageData.keywords || "").split(',').map(k => k.trim()).filter(Boolean);
       setSelectedKeywords(keywordsArray);
@@ -352,22 +355,22 @@ const AdminSEOPage = () => {
   // Update form values when tab changes - with added safety checks
   React.useEffect(() => {
     // Safety check to make sure seoData and language data exists
-    if (!seoData || !seoData[currentLanguage]) {
+    if (!seoData || !seoData[editLanguage]) {
       console.error("SEO data not properly initialized");
       return;
     }
-    
+
     if (activeTab === "general") {
-      if (seoData[currentLanguage].general) {
-        const genData = seoData[currentLanguage].general as GeneralSEOFormValues;
+      if (seoData[editLanguage].general) {
+        const genData = seoData[editLanguage].general as GeneralSEOFormValues;
         generalSeoForm.reset({
           title: genData.title || "",
           description: genData.description || "",
           ogImage: genData.ogImage || DEFAULT_OG_IMAGE
         });
       } else {
-        console.warn(`Missing general SEO data for ${currentLanguage}. Using defaults.`);
-        const defaultGeneral = initialSEOData[currentLanguage].general;
+        console.warn(`Missing general SEO data for ${editLanguage}. Using defaults.`);
+        const defaultGeneral = initialSEOData[editLanguage].general;
         generalSeoForm.reset({
           title: defaultGeneral?.title || "Tunisia Tourism",
           description: defaultGeneral?.description || "",
@@ -375,33 +378,33 @@ const AdminSEOPage = () => {
         });
       }
     } else {
-      if (seoData[currentLanguage][activeTab]) {
-        const pageData = seoData[currentLanguage][activeTab] as PageSEOFormValues;
+      if (seoData[editLanguage][activeTab]) {
+        const pageData = seoData[editLanguage][activeTab] as PageSEOFormValues;
         pageSeoForm.reset({
           title: pageData.title || "",
           description: pageData.description || "",
           keywords: pageData.keywords || "",
           ogImage: pageData.ogImage || DEFAULT_OG_IMAGE
         });
-        
+
         // Extract keywords from the comma-separated string
         const keywordsArray = (pageData.keywords || "").split(',').map(k => k.trim()).filter(Boolean);
         setSelectedKeywords(keywordsArray);
       } else {
-        console.warn(`Missing ${activeTab} SEO data for ${currentLanguage}. Using defaults.`);
-        const defaultPageData = initialSEOData[currentLanguage][activeTab] as PageSEOFormValues;
+        console.warn(`Missing ${activeTab} SEO data for ${editLanguage}. Using defaults.`);
+        const defaultPageData = initialSEOData[editLanguage][activeTab] as PageSEOFormValues;
         pageSeoForm.reset({
           title: defaultPageData?.title || "",
           description: defaultPageData?.description || "",
           keywords: defaultPageData?.keywords || "",
           ogImage: defaultPageData?.ogImage || DEFAULT_OG_IMAGE
         });
-        
+
         const keywordsArray = (defaultPageData?.keywords || "").split(',').map(k => k.trim()).filter(Boolean);
         setSelectedKeywords(keywordsArray);
       }
     }
-  }, [activeTab, pageSeoForm, generalSeoForm, seoData, currentLanguage]);
+  }, [activeTab, pageSeoForm, generalSeoForm, seoData, editLanguage]);
 
   const handleTabChange = (value: string) => {
     setActiveTab(value);
@@ -414,25 +417,23 @@ const AdminSEOPage = () => {
       keywords: selectedKeywords.join(', '),
       ogImage: data.ogImage || DEFAULT_OG_IMAGE // Ensure OG image always has a value
     };
-    
+
     setSeoData(prevData => {
       if (!prevData) return initialSEOData;
-      
+
       const newData = {
         ...prevData,
-        [currentLanguage]: {
-          ...prevData[currentLanguage],
+        [editLanguage]: {
+          ...prevData[editLanguage],
           [activeTab]: updatedData
         }
       };
       return newData;
     });
-    
+
     toast({
-      title: currentLanguage === 'JP' ? "SEO設定を保存しました" : "SEO settings saved",
-      description: currentLanguage === 'JP' 
-        ? `${activeTab}のSEO設定が正常に更新されました。`
-        : `Successfully updated SEO settings for ${activeTab}.`,
+      title: t("SEO settings saved"),
+      description: t("SEO settings for this page have been updated successfully."),
     });
   };
 
@@ -444,43 +445,41 @@ const AdminSEOPage = () => {
 
     setSeoData(prevData => {
       if (!prevData) return initialSEOData;
-      
+
       const newData = {
         ...prevData,
-        [currentLanguage]: {
-          ...prevData[currentLanguage],
+        [editLanguage]: {
+          ...prevData[editLanguage],
           general: updatedData
         }
       };
       return newData;
     });
-    
+
     toast({
-      title: currentLanguage === 'JP' ? "グローバルSEO設定を保存しました" : "Global SEO settings saved",
-      description: currentLanguage === 'JP'
-        ? "グローバルSEO設定が正常に更新されました。"
-        : "Successfully updated global SEO settings.",
+      title: t("Global SEO settings saved"),
+      description: t("Global SEO settings have been updated successfully."),
     });
   };
 
   const toggleKeywordActive = (keyword: string, category: "core" | "destination" | "long-tail") => {
     // Make sure the structure exists before trying to access it
-    if (allKeywords && 
-        allKeywords[currentLanguage] && 
-        allKeywords[currentLanguage][category] && 
-        Array.isArray(allKeywords[currentLanguage][category])) {
-      
+    if (allKeywords &&
+      allKeywords[editLanguage] &&
+      allKeywords[editLanguage][category] &&
+      Array.isArray(allKeywords[editLanguage][category])) {
+
       setAllKeywords(prev => {
         if (!prev) return {
           EN: initialKeywords,
           JP: japaneseKeywords
         };
-        
+
         const newKeywords = {
           ...prev,
-          [currentLanguage]: {
-            ...prev[currentLanguage],
-            [category]: prev[currentLanguage][category].map((k: SEOKeyword) => 
+          [editLanguage]: {
+            ...prev[editLanguage],
+            [category]: prev[editLanguage][category].map((k: SEOKeyword) =>
               k.text === keyword ? { ...k, isActive: !k.isActive } : k
             )
           }
@@ -489,13 +488,11 @@ const AdminSEOPage = () => {
       });
 
       // Safely get the active state for the toast message
-      const isCurrentlyActive = allKeywords[currentLanguage][category].find((k: SEOKeyword) => k.text === keyword)?.isActive;
+      const isCurrentlyActive = allKeywords[editLanguage][category].find((k: SEOKeyword) => k.text === keyword)?.isActive;
 
       toast({
-        title: currentLanguage === 'JP' ? "キーワードを更新しました" : "Keyword updated",
-        description: currentLanguage === 'JP'
-          ? `${keyword}が${isCurrentlyActive ? "無効" : "有効"}になりました。`
-          : `${keyword} has been ${isCurrentlyActive ? "deactivated" : "activated"}.`,
+        title: t("Keyword updated"),
+        description: `${keyword} ${isCurrentlyActive ? t("has been disabled") : t("has been enabled")}`,
       });
     }
   };
@@ -504,31 +501,31 @@ const AdminSEOPage = () => {
     if (!newKeyword.trim()) return;
 
     // Make sure the structure exists before trying to modify it
-    if (allKeywords && 
-        allKeywords[currentLanguage] && 
-        allKeywords[currentLanguage][keywordTab] && 
-        Array.isArray(allKeywords[currentLanguage][keywordTab])) {
-      
+    if (allKeywords &&
+      allKeywords[editLanguage] &&
+      allKeywords[editLanguage][keywordTab] &&
+      Array.isArray(allKeywords[editLanguage][keywordTab])) {
+
       setAllKeywords(prev => {
         if (!prev) return {
           EN: initialKeywords,
           JP: japaneseKeywords
         };
-        
-        const keywordsArray = prev[currentLanguage][keywordTab] || [];
+
+        const keywordsArray = prev[editLanguage][keywordTab] || [];
         const newKeywords = {
           ...prev,
-          [currentLanguage]: {
-            ...prev[currentLanguage],
+          [editLanguage]: {
+            ...prev[editLanguage],
             [keywordTab]: [
               ...keywordsArray,
-              { 
-                text: newKeyword.trim(), 
-                category: keywordTab, 
-                priority: keywordsArray.length > 0 ? 
-                  Math.min(...keywordsArray.map((k: SEOKeyword) => k.priority)) - 1 : 
+              {
+                text: newKeyword.trim(),
+                category: keywordTab,
+                priority: keywordsArray.length > 0 ?
+                  Math.min(...keywordsArray.map((k: SEOKeyword) => k.priority)) - 1 :
                   5,
-                isActive: true 
+                isActive: true
               }
             ]
           }
@@ -537,48 +534,44 @@ const AdminSEOPage = () => {
       });
 
       setNewKeyword("");
-      
+
       toast({
-        title: currentLanguage === 'JP' ? "キーワードを追加しました" : "Keyword added",
-        description: currentLanguage === 'JP'
-          ? `"${newKeyword}"が${keywordTab}キーワードに追加されました。`
-          : `"${newKeyword}" has been added to ${keywordTab} keywords.`,
+        title: t("Keyword added"),
+        description: `"${newKeyword}" ${t("has been added to")} ${keywordTab}`,
       });
     }
   };
 
   const removeKeyword = (keyword: string, category: "core" | "destination" | "long-tail") => {
     // Make sure the structure exists before trying to modify it
-    if (allKeywords && 
-        allKeywords[currentLanguage] && 
-        allKeywords[currentLanguage][category] && 
-        Array.isArray(allKeywords[currentLanguage][category])) {
-      
+    if (allKeywords &&
+      allKeywords[editLanguage] &&
+      allKeywords[editLanguage][category] &&
+      Array.isArray(allKeywords[editLanguage][category])) {
+
       setAllKeywords(prev => {
         if (!prev) return {
           EN: initialKeywords,
           JP: japaneseKeywords
         };
-        
+
         const newKeywords = {
           ...prev,
-          [currentLanguage]: {
-            ...prev[currentLanguage],
-            [category]: (prev[currentLanguage][category] || []).filter((k: SEOKeyword) => k.text !== keyword)
+          [editLanguage]: {
+            ...prev[editLanguage],
+            [category]: (prev[editLanguage][category] || []).filter((k: SEOKeyword) => k.text !== keyword)
           }
         };
         return newKeywords;
       });
 
       toast({
-        title: currentLanguage === 'JP' ? "キーワードを削除しました" : "Keyword removed",
-        description: currentLanguage === 'JP'
-          ? `"${keyword}"が${category}キーワードから削除されました。`
-          : `"${keyword}" has been removed from ${category} keywords.`,
+        title: t("Keyword removed"),
+        description: `"${keyword}" ${t("has been removed from")} ${category}`,
       });
     }
   };
-  
+
   const toggleSelectedKeyword = (keyword: string) => {
     if (selectedKeywords.includes(keyword)) {
       setSelectedKeywords(prev => prev.filter(k => k !== keyword));
@@ -586,40 +579,35 @@ const AdminSEOPage = () => {
       setSelectedKeywords(prev => [...prev, keyword]);
     }
   };
-  
+
   const addRecommendedKeywords = () => {
     // Make sure the structure exists before trying to access it
-    if (allKeywords && 
-        allKeywords[currentLanguage] && 
-        allKeywords[currentLanguage][keywordCategory] && 
-        Array.isArray(allKeywords[currentLanguage][keywordCategory])) {
-      
+    if (allKeywords &&
+      allKeywords[editLanguage] &&
+      allKeywords[editLanguage][keywordCategory] &&
+      Array.isArray(allKeywords[editLanguage][keywordCategory])) {
+
       // Get all active keywords from the selected category
-      const keywordsToAdd = allKeywords[currentLanguage][keywordCategory]
+      const keywordsToAdd = allKeywords[editLanguage][keywordCategory]
         .filter((k: SEOKeyword) => k.isActive)
         .map((k: SEOKeyword) => k.text)
         .filter(k => !selectedKeywords.includes(k));
-      
+
       // Add them to selected keywords (up to 5 or less)
       const newKeywords = [...selectedKeywords, ...keywordsToAdd.slice(0, 5)];
       setSelectedKeywords(newKeywords);
-      
+
       // Update the form field
       pageSeoForm.setValue("keywords", newKeywords.join(", "));
-      
+
       toast({
-        title: currentLanguage === 'JP' ? "キーワードを追加しました" : "Keywords added",
-        description: currentLanguage === 'JP'
-          ? `推奨${keywordCategory}キーワードをメタデータに追加しました。`
-          : `Added recommended ${keywordCategory} keywords to your metadata.`,
+        title: t("Recommended keywords added"),
+        description: t("Recommended keywords have been added to metadata."),
       });
     }
   };
-  
-  // Get language specific titles for UI components
-  const getUITitle = (enVersion: string, jpVersion: string) => {
-    return currentLanguage === 'JP' ? jpVersion : enVersion;
-  };
+
+  // UI titles are now handled via t() or TranslateText
 
   // Safety check: ensure allKeywords has both language keys with their category sub-keys
   useEffect(() => {
@@ -629,7 +617,7 @@ const AdminSEOPage = () => {
         EN: initialKeywords,
         JP: japaneseKeywords
       });
-    } 
+    }
     else if (!allKeywords.EN || !allKeywords.JP) {
       const updatedKeywords = { ...allKeywords };
       if (!updatedKeywords.EN) updatedKeywords.EN = initialKeywords;
@@ -637,18 +625,18 @@ const AdminSEOPage = () => {
       setAllKeywords(updatedKeywords);
     }
   }, [allKeywords]);
-  
+
   // Render function to safely display active keywords count
   const safeRenderKeywordCount = (language: 'EN' | 'JP', category: 'core' | 'destination' | 'long-tail') => {
     try {
-      if (allKeywords && 
-          allKeywords[language] && 
-          allKeywords[language][category] && 
-          Array.isArray(allKeywords[language][category])) {
-        
+      if (allKeywords &&
+        allKeywords[language] &&
+        allKeywords[language][category] &&
+        Array.isArray(allKeywords[language][category])) {
+
         const total = allKeywords[language][category].length;
         const active = allKeywords[language][category].filter((k: SEOKeyword) => k.isActive).length;
-        
+
         return `${active}/${total}`;
       }
       return "0/0";
@@ -657,31 +645,28 @@ const AdminSEOPage = () => {
       return "0/0";
     }
   };
-  
+
   return (
     <EnhancedAdminLayout>
       <div className="space-y-6">
         <div className="flex justify-between items-center">
           <div>
             <h1 className="text-3xl font-bold">
-              {getUITitle("SEO Management", "SEO管理")}
+              <TranslateText text="SEO Management" language={appLanguage} />
             </h1>
             <p className="text-gray-600 mt-2">
-              {getUITitle(
-                "Optimize your website's search engine visibility by managing meta tags, keywords, and SEO settings.",
-                "メタタグ、キーワード、SEO設定を管理して、ウェブサイトの検索エンジン表示を最適化します。"
-              )}
+              <TranslateText text="Optimize your website's search engine visibility by managing meta tags, keywords, and SEO settings." language={appLanguage} />
             </p>
           </div>
-          
+
           {/* Language switcher */}
           <div className="flex items-center gap-3">
             <span className="text-sm text-gray-500">
-              {getUITitle("Language:", "言語:")}
+              <TranslateText text="Language:" language={appLanguage} />
             </span>
-            <Select value={currentLanguage} onValueChange={(val: 'EN' | 'JP') => handleLanguageChange(val)}>
+            <Select value={editLanguage} onValueChange={(val: 'EN' | 'JP') => handleLanguageChange(val)}>
               <SelectTrigger className="w-[120px]">
-                <SelectValue placeholder="Language" />
+                <SelectValue placeholder={t("Language")} />
               </SelectTrigger>
               <SelectContent>
                 <SelectItem value="EN" className="flex items-center gap-2">
@@ -698,35 +683,32 @@ const AdminSEOPage = () => {
         <Tabs defaultValue="metadata" className="w-full">
           <TabsList className="mb-6">
             <TabsTrigger value="metadata">
-              {getUITitle("Page Metadata", "ページメタデータ")}
+              <TranslateText text="Page Metadata" language={appLanguage} />
             </TabsTrigger>
             <TabsTrigger value="keywords">
-              {getUITitle("Keyword Management", "キーワード管理")}
+              <TranslateText text="Keyword Management" language={appLanguage} />
             </TabsTrigger>
           </TabsList>
-          
+
           <TabsContent value="metadata">
             <Card>
               <CardHeader>
-                <CardTitle>{getUITitle("Page SEO Settings", "ページSEO設定")}</CardTitle>
+                <CardTitle><TranslateText text="Page SEO Settings" language={appLanguage} /></CardTitle>
                 <CardDescription>
-                  {getUITitle(
-                    "Manage the SEO settings for each page of your website.",
-                    "ウェブサイトの各ページのSEO設定を管理します。"
-                  )}
+                  <TranslateText text="Manage the SEO settings for each page of your website." language={appLanguage} />
                 </CardDescription>
               </CardHeader>
               <CardContent>
                 <Tabs defaultValue="general" onValueChange={handleTabChange}>
                   <TabsList className="mb-6">
-                    <TabsTrigger value="general">{getUITitle("Global Settings", "グローバル設定")}</TabsTrigger>
-                    <TabsTrigger value="homepage">{getUITitle("Homepage", "ホームページ")}</TabsTrigger>
-                    <TabsTrigger value="aboutPage">{getUITitle("About Page", "アバウトページ")}</TabsTrigger>
-                    <TabsTrigger value="travelPage">{getUITitle("Travel Info", "旅行情報")}</TabsTrigger>
-                    <TabsTrigger value="blogPage">{getUITitle("Blog Page", "ブログページ")}</TabsTrigger>
-                    <TabsTrigger value="startMyTripPage">{getUITitle("Trip Builder", "旅行プランナー")}</TabsTrigger>
+                    <TabsTrigger value="general"><TranslateText text="Global Settings" language={appLanguage} /></TabsTrigger>
+                    <TabsTrigger value="homepage"><TranslateText text="Homepage" language={appLanguage} /></TabsTrigger>
+                    <TabsTrigger value="aboutPage"><TranslateText text="About Page" language={appLanguage} /></TabsTrigger>
+                    <TabsTrigger value="travelPage"><TranslateText text="Travel Info" language={appLanguage} /></TabsTrigger>
+                    <TabsTrigger value="blogPage"><TranslateText text="Blog Page" language={appLanguage} /></TabsTrigger>
+                    <TabsTrigger value="startMyTripPage"><TranslateText text="Trip Builder" language={appLanguage} /></TabsTrigger>
                   </TabsList>
-                  
+
                   <TabsContent value={activeTab}>
                     {activeTab === "general" ? (
                       <Form {...generalSeoForm}>
@@ -737,10 +719,10 @@ const AdminSEOPage = () => {
                             render={({ field }) => (
                               <FormItem>
                                 <FormLabel>
-                                  {getUITitle("Site Title", "サイトタイトル")}
-                                  {currentLanguage === 'JP' && (
+                                  <TranslateText text="Site Title" language={appLanguage} />
+                                  {editLanguage === 'JP' && (
                                     <span className="ml-2 text-xs text-blue-500 font-normal">
-                                      (English title for internal reference)
+                                      <TranslateText text="(English title for internal reference)" language={appLanguage} />
                                     </span>
                                   )}
                                 </FormLabel>
@@ -748,74 +730,65 @@ const AdminSEOPage = () => {
                                   <Input {...field} />
                                 </FormControl>
                                 <FormDescription>
-                                  {getUITitle(
-                                    "The main title of your website that appears in search results and browser tabs.",
-                                    "検索結果やブラウザタブに表示されるウェブサイトのメインタイトル。"
-                                  )}
+                                  <TranslateText text="The main title of your website that appears in search results and browser tabs." language={appLanguage} />
                                 </FormDescription>
                                 <FormMessage />
                               </FormItem>
                             )}
                           />
-                          
+
                           <FormField
                             control={generalSeoForm.control}
                             name="description"
                             render={({ field }) => (
                               <FormItem>
-                                <FormLabel>{getUITitle("Site Description", "サイト説明")}</FormLabel>
+                                <FormLabel><TranslateText text="Site Description" language={appLanguage} /></FormLabel>
                                 <FormControl>
                                   <Textarea {...field} />
                                 </FormControl>
                                 <FormDescription>
-                                  {getUITitle(
-                                    "The primary description of your website used for SEO.",
-                                    "SEOに使用されるウェブサイトの主要な説明。"
-                                  )}
+                                  <TranslateText text="The primary description of your website used for SEO." language={appLanguage} />
                                 </FormDescription>
                                 <FormMessage />
                               </FormItem>
                             )}
                           />
-                          
+
                           <FormField
                             control={generalSeoForm.control}
                             name="ogImage"
                             render={({ field }) => (
                               <FormItem>
-                                <FormLabel>{getUITitle("Default Open Graph Image", "デフォルトのOG画像")}</FormLabel>
+                                <FormLabel><TranslateText text="Default Open Graph Image" language={appLanguage} /></FormLabel>
                                 <FormControl>
                                   <div className="space-y-4">
                                     <Input {...field} placeholder={DEFAULT_OG_IMAGE} />
                                     <div className="border rounded-md p-2">
-                                      <p className="text-sm text-muted-foreground mb-2">{getUITitle("Preview:", "プレビュー:")}</p>
+                                      <p className="text-sm text-muted-foreground mb-2"><TranslateText text="Preview:" language={appLanguage} /></p>
                                       <div className="w-full max-w-md mx-auto overflow-hidden rounded-md">
-                                        <AspectRatio ratio={1200/630} className={cn("bg-muted")}>
-                                          <img 
-                                            src={field.value || DEFAULT_OG_IMAGE} 
+                                        <AspectRatio ratio={1200 / 630} className={cn("bg-muted")}>
+                                          <img
+                                            src={field.value || DEFAULT_OG_IMAGE}
                                             alt="Open Graph Preview"
                                             className="object-cover w-full h-full"
                                           />
                                         </AspectRatio>
                                       </div>
                                       <p className="text-xs text-muted-foreground mt-2 text-center">
-                                        {getUITitle("Recommended size: 1200×630 pixels", "推奨サイズ：1200×630ピクセル")}
+                                        <TranslateText text="Recommended size: 1200×630 pixels" language={appLanguage} />
                                       </p>
                                     </div>
                                   </div>
                                 </FormControl>
                                 <FormDescription>
-                                  {getUITitle(
-                                    "The default image that appears when your website is shared on social media. Recommended size: 1200×630 pixels.",
-                                    "ウェブサイトがソーシャルメディアで共有されるときに表示されるデフォルト画像。推奨サイズ：1200×630ピクセル。"
-                                  )}
+                                  <TranslateText text="The default image that appears when your website is shared on social media. Recommended size: 1200×630 pixels." language={appLanguage} />
                                 </FormDescription>
                                 <FormMessage />
                               </FormItem>
                             )}
                           />
-                          
-                          <Button type="submit">{getUITitle("Save SEO Settings", "SEO設定を保存")}</Button>
+
+                          <Button type="submit"><TranslateText text="Save SEO Settings" language={appLanguage} /></Button>
                         </form>
                       </Form>
                     ) : (
@@ -827,10 +800,10 @@ const AdminSEOPage = () => {
                             render={({ field }) => (
                               <FormItem>
                                 <FormLabel>
-                                  {getUITitle("Page Title", "ページタイトル")} 
-                                  {currentLanguage === 'JP' && (
+                                  <TranslateText text="Page Title" language={appLanguage} />
+                                  {editLanguage === 'JP' && (
                                     <span className="ml-2 text-xs text-blue-500 font-normal">
-                                      (English title for internal reference)
+                                      <TranslateText text="(English title for internal reference)" language={appLanguage} />
                                     </span>
                                   )}
                                 </FormLabel>
@@ -838,83 +811,77 @@ const AdminSEOPage = () => {
                                   <Input {...field} />
                                 </FormControl>
                                 <FormDescription>
-                                  {getUITitle(
-                                    "The title tag that appears in search engine results (50-60 characters recommended).",
-                                    "検索エンジンの結果に表示されるタイトルタグ（50〜60文字推奨）。"
-                                  )}
+                                  <TranslateText text="The title tag that appears in search engine results (50-60 characters recommended)." language={appLanguage} />
                                 </FormDescription>
                                 <FormMessage />
                               </FormItem>
                             )}
                           />
-                          
+
                           <FormField
                             control={pageSeoForm.control}
                             name="description"
                             render={({ field }) => (
                               <FormItem>
-                                <FormLabel>{getUITitle("Meta Description", "メタ説明")}</FormLabel>
+                                <FormLabel><TranslateText text="Meta Description" language={appLanguage} /></FormLabel>
                                 <FormControl>
                                   <Textarea {...field} />
                                 </FormControl>
                                 <FormDescription>
-                                  {getUITitle(
-                                    "The description that appears in search engine results (150-160 characters recommended).",
-                                    "検索エンジンの結果に表示される説明（150〜160文字推奨）。"
-                                  )}
+                                  <TranslateText text="The description that appears in search engine results (150-160 characters recommended)." language={appLanguage} />
                                 </FormDescription>
                                 <FormMessage />
                               </FormItem>
                             )}
                           />
-                          
+
                           <FormField
                             control={pageSeoForm.control}
                             name="keywords"
                             render={({ field }) => (
                               <FormItem>
-                                <FormLabel>{getUITitle("Meta Keywords", "メタキーワード")}</FormLabel>
+                                <FormLabel><TranslateText text="Meta Keywords" language={appLanguage} /></FormLabel>
                                 <div className="space-y-4">
                                   <div className="flex items-center gap-2 mb-2">
                                     <Select value={keywordCategory} onValueChange={(value: "core" | "destination" | "long-tail") => setKeywordCategory(value)}>
                                       <SelectTrigger className="w-[180px]">
-                                        <SelectValue placeholder={getUITitle("Keyword category", "キーワードカテゴリ")} />
+                                        <SelectValue placeholder={t("Keyword category")} />
                                       </SelectTrigger>
                                       <SelectContent>
-                                        <SelectItem value="core">{getUITitle("Core Keywords", "コアキーワード")}</SelectItem>
-                                        <SelectItem value="destination">{getUITitle("Destination Keywords", "目的地キーワード")}</SelectItem>
-                                        <SelectItem value="long-tail">{getUITitle("Long Tail Keywords", "ロングテールキーワード")}</SelectItem>
+                                        <SelectItem value="core"><TranslateText text="Core Keywords" language={appLanguage} /></SelectItem>
+                                        <SelectItem value="destination"><TranslateText text="Destination Keywords" language={appLanguage} /></SelectItem>
+                                        <SelectItem value="long-tail"><TranslateText text="Long Tail Keywords" language={appLanguage} /></SelectItem>
                                       </SelectContent>
                                     </Select>
-                                    <Button 
-                                      type="button" 
-                                      variant="outline" 
-                                      size="sm" 
+                                    <Button
+                                      type="button"
+                                      variant="outline"
+                                      size="sm"
                                       onClick={addRecommendedKeywords}
                                       className="flex items-center gap-1"
                                     >
                                       <RefreshCw size={14} />
-                                      {getUITitle("Add Recommended", "おすすめを追加")}
+                                      <TranslateText text="Add Recommended" language={appLanguage} />
                                     </Button>
                                   </div>
-                                  
+
                                   <FormControl>
                                     <div className="space-y-3">
-                                      <Textarea 
-                                        {...field} 
+                                      <Textarea
+                                        {...field}
                                         value={selectedKeywords.join(', ')}
                                         onChange={(e) => {
                                           field.onChange(e);
                                           setSelectedKeywords(e.target.value.split(',').map(k => k.trim()).filter(k => k));
                                         }}
                                       />
-                                      
+
                                       <div className="border rounded-lg p-3 bg-muted/30">
-                                        <p className="text-sm font-medium mb-2">{getUITitle("Selected Keywords:", "選択されたキーワード:")}</p>
+                                        <p className="text-sm font-medium mb-2"><TranslateText text="Selected Keywords:" language={appLanguage} /></p>
                                         <div className="flex flex-wrap gap-2">
                                           {selectedKeywords.map((keyword, index) => (
-                                            <Badge 
-                                              key={index} 
+                                            <Badge
+                                              key={index}
                                               variant="secondary"
                                               className="flex items-center gap-1 cursor-pointer"
                                               onClick={() => toggleSelectedKeyword(keyword)}
@@ -925,21 +892,21 @@ const AdminSEOPage = () => {
                                           ))}
                                           {selectedKeywords.length === 0 && (
                                             <p className="text-sm text-muted-foreground">
-                                              {getUITitle("No keywords selected.", "キーワードが選択されていません。")}
+                                              <TranslateText text="No keywords selected." language={appLanguage} />
                                             </p>
                                           )}
                                         </div>
                                       </div>
-                                      
+
                                       <div className="rounded-lg border p-3">
-                                        <p className="text-sm font-medium mb-2">{getUITitle("Suggested Keywords:", "推奨キーワード:")}</p>
+                                        <p className="text-sm font-medium mb-2"><TranslateText text="Suggested Keywords:" language={appLanguage} /></p>
                                         <div className="flex flex-wrap gap-2">
-                                          {allKeywords[currentLanguage][keywordCategory]
+                                          {allKeywords[editLanguage][keywordCategory]
                                             .filter((k: SEOKeyword) => k.isActive)
                                             .slice(0, 10)
                                             .map((keyword: SEOKeyword, index: number) => (
-                                              <Badge 
-                                                key={index} 
+                                              <Badge
+                                                key={index}
                                                 variant={selectedKeywords.includes(keyword.text) ? "default" : "outline"}
                                                 className="cursor-pointer"
                                                 onClick={() => toggleSelectedKeyword(keyword.text)}
@@ -953,54 +920,48 @@ const AdminSEOPage = () => {
                                   </FormControl>
                                 </div>
                                 <FormDescription>
-                                  {getUITitle(
-                                    "Choose keywords relevant to the page content. Mix core, destination, and long-tail keywords for better SEO results.",
-                                    "ページの内容に関連するキーワードを選択してください。より良いSEO結果を得るために、コア、目的地、およびロングテールキーワードを組み合わせてください。"
-                                  )}
+                                  <TranslateText text="Choose keywords relevant to the page content. Mix core, destination, and long-tail keywords for better SEO results." language={appLanguage} />
                                 </FormDescription>
                                 <FormMessage />
                               </FormItem>
                             )}
                           />
-                          
+
                           <FormField
                             control={pageSeoForm.control}
                             name="ogImage"
                             render={({ field }) => (
                               <FormItem>
-                                <FormLabel>{getUITitle("Open Graph Image", "OG画像")}</FormLabel>
+                                <FormLabel><TranslateText text="Open Graph Image" language={appLanguage} /></FormLabel>
                                 <FormControl>
                                   <div className="space-y-4">
                                     <Input {...field} placeholder={DEFAULT_OG_IMAGE} />
                                     <div className="border rounded-md p-2">
-                                      <p className="text-sm text-muted-foreground mb-2">{getUITitle("Preview:", "プレビュー:")}</p>
+                                      <p className="text-sm text-muted-foreground mb-2"><TranslateText text="Preview:" language={appLanguage} /></p>
                                       <div className="w-full max-w-md mx-auto overflow-hidden rounded-md">
-                                        <AspectRatio ratio={1200/630} className={cn("bg-muted")}>
-                                          <img 
-                                            src={field.value || DEFAULT_OG_IMAGE} 
+                                        <AspectRatio ratio={1200 / 630} className={cn("bg-muted")}>
+                                          <img
+                                            src={field.value || DEFAULT_OG_IMAGE}
                                             alt="Open Graph Preview"
                                             className="object-cover w-full h-full"
                                           />
                                         </AspectRatio>
                                       </div>
                                       <p className="text-xs text-muted-foreground mt-2 text-center">
-                                        {getUITitle("Recommended size: 1200×630 pixels", "推奨サイズ：1200×630ピクセル")}
+                                        <TranslateText text="Recommended size: 1200×630 pixels" language={appLanguage} />
                                       </p>
                                     </div>
                                   </div>
                                 </FormControl>
                                 <FormDescription>
-                                  {getUITitle(
-                                    "The image that appears when the page is shared on social media (1200×630 pixels recommended).",
-                                    "ページがソーシャルメディアで共有されるときに表示される画像（1200×630ピクセル推奨）。"
-                                  )}
+                                  <TranslateText text="The image that appears when the page is shared on social media (1200×630 pixels recommended)." language={appLanguage} />
                                 </FormDescription>
                                 <FormMessage />
                               </FormItem>
                             )}
                           />
-                          
-                          <Button type="submit">{getUITitle("Save SEO Settings", "SEO設定を保存")}</Button>
+
+                          <Button type="submit"><TranslateText text="Save SEO Settings" language={appLanguage} /></Button>
                         </form>
                       </Form>
                     )}
@@ -1009,16 +970,13 @@ const AdminSEOPage = () => {
               </CardContent>
             </Card>
           </TabsContent>
-          
+
           <TabsContent value="keywords">
             <Card>
               <CardHeader>
-                <CardTitle>{getUITitle("Keyword Management", "キーワード管理")}</CardTitle>
+                <CardTitle><TranslateText text="Keyword Management" language={appLanguage} /></CardTitle>
                 <CardDescription>
-                  {getUITitle(
-                    "Manage your SEO keywords by category to improve search visibility.",
-                    "検索の可視性を向上させるために、カテゴリ別にSEOキーワードを管理します。"
-                  )}
+                  <TranslateText text="Manage your SEO keywords by category to improve search visibility." language={appLanguage} />
                 </CardDescription>
               </CardHeader>
               <CardContent>
@@ -1026,56 +984,53 @@ const AdminSEOPage = () => {
                   <div className="flex justify-between items-center mb-6">
                     <TabsList>
                       <TabsTrigger value="core" className="flex items-center gap-1">
-                        <Tag size={16} /> {getUITitle("Core", "コア")}
+                        <Tag size={16} /> <TranslateText text="Core" language={appLanguage} />
                       </TabsTrigger>
                       <TabsTrigger value="destination" className="flex items-center gap-1">
-                        <Map size={16} /> {getUITitle("Destination", "目的地")}
+                        <Map size={16} /> <TranslateText text="Destination" language={appLanguage} />
                       </TabsTrigger>
                       <TabsTrigger value="long-tail" className="flex items-center gap-1">
-                        <ListFilter size={16} /> {getUITitle("Long Tail", "ロングテール")}
+                        <ListFilter size={16} /> <TranslateText text="Long Tail" language={appLanguage} />
                       </TabsTrigger>
                     </TabsList>
                   </div>
 
                   <div className="mb-6 flex gap-2">
-                    <Input 
-                      placeholder={getUITitle(`Add new ${keywordTab} keyword...`, `新しい${keywordTab === 'core' ? 'コア' : keywordTab === 'destination' ? '目的地' : 'ロングテール'}キーワードを追加...`)}
+                    <Input
+                      placeholder={t(`Add new ${keywordTab} keyword...`)}
                       value={newKeyword}
                       onChange={(e) => setNewKeyword(e.target.value)}
                       onKeyPress={(e) => e.key === 'Enter' && addNewKeyword()}
                       className="flex-1"
                     />
                     <Button onClick={addNewKeyword} size="sm">
-                      <Plus size={16} className="mr-1" /> {getUITitle("Add", "追加")}
+                      <Plus size={16} className="mr-1" /> <TranslateText text="Add" language={appLanguage} />
                     </Button>
                   </div>
 
                   <div className="border rounded-lg p-3">
                     <ScrollArea className="h-[420px] pr-4">
                       <div className="space-y-2">
-                        {!allKeywords || 
-                         !allKeywords[currentLanguage] || 
-                         !allKeywords[currentLanguage][keywordTab] ||
-                         allKeywords[currentLanguage][keywordTab].length === 0 ? (
+                        {!allKeywords ||
+                          !allKeywords[editLanguage] ||
+                          !allKeywords[editLanguage][keywordTab] ||
+                          allKeywords[editLanguage][keywordTab].length === 0 ? (
                           <p className="text-center text-muted-foreground py-8">
-                            {getUITitle(
-                              `No ${keywordTab} keywords found. Add some keywords to get started.`,
-                              `${keywordTab === 'core' ? 'コア' : keywordTab === 'destination' ? '目的地' : 'ロングテール'}キーワードが見つかりません。始めるにはキーワードを追加してください。`
-                            )}
+                            <TranslateText text="No keywords found. Add some keywords to get started." language={appLanguage} />
                           </p>
                         ) : (
-                          allKeywords[currentLanguage][keywordTab].map((keyword: SEOKeyword) => (
-                            <div 
+                          allKeywords[editLanguage][keywordTab].map((keyword: SEOKeyword) => (
+                            <div
                               key={keyword.text}
                               className="flex items-center justify-between p-2 border rounded-md bg-card"
                             >
                               <div className="flex items-center gap-3">
-                                <Checkbox 
+                                <Checkbox
                                   id={`keyword-${keyword.text}`}
                                   checked={keyword.isActive}
                                   onCheckedChange={() => toggleKeywordActive(keyword.text, keywordTab)}
                                 />
-                                <label 
+                                <label
                                   htmlFor={`keyword-${keyword.text}`}
                                   className={cn(
                                     "text-sm font-medium leading-none peer-disabled:cursor-not-allowed peer-disabled:opacity-70",
@@ -1085,12 +1040,12 @@ const AdminSEOPage = () => {
                                   {keyword.text}
                                 </label>
                                 <Badge variant={keyword.isActive ? "default" : "outline"} className="ml-2">
-                                  {getUITitle(`Priority ${keyword.priority}`, `優先度 ${keyword.priority}`)}
+                                  <TranslateText text="Priority" language={appLanguage} /> {keyword.priority}
                                 </Badge>
                               </div>
                               <Button
-                                variant="ghost" 
-                                size="sm" 
+                                variant="ghost"
+                                size="sm"
                                 onClick={() => removeKeyword(keyword.text, keywordTab)}
                               >
                                 <X size={16} className="text-muted-foreground hover:text-destructive" />
@@ -1103,31 +1058,19 @@ const AdminSEOPage = () => {
                   </div>
 
                   <div className="mt-6 bg-muted/50 p-3 rounded-lg">
-                    <h3 className="text-sm font-semibold mb-2">{getUITitle("Keyword Tips", "キーワードのヒント")}</h3>
+                    <h3 className="text-sm font-semibold mb-2"><TranslateText text="Keyword Tips" language={appLanguage} /></h3>
                     <ul className="text-xs text-muted-foreground space-y-1 ml-4 list-disc">
                       <li>
-                        {getUITitle(
-                          "Core keywords should be used across the site in headings and important content.",
-                          "コアキーワードは、見出しや重要なコンテンツなど、サイト全体で使用する必要があります。"
-                        )}
+                        <TranslateText text="Core keywords should be used across the site in headings and important content." language={appLanguage} />
                       </li>
                       <li>
-                        {getUITitle(
-                          "Destination keywords are best for landing pages focused on specific locations.",
-                          "目的地キーワードは、特定の場所に焦点を当てたランディングページに最適です。"
-                        )}
+                        <TranslateText text="Destination keywords are best for landing pages focused on specific locations." language={appLanguage} />
                       </li>
                       <li>
-                        {getUITitle(
-                          "Long-tail keywords work well for blog posts and detailed service descriptions.",
-                          "ロングテールキーワードは、ブログ投稿や詳細なサービス説明に適しています。"
-                        )}
+                        <TranslateText text="Long-tail keywords work well for blog posts and detailed service descriptions." language={appLanguage} />
                       </li>
                       <li>
-                        {getUITitle(
-                          "Active keywords will be automatically included in site recommendations.",
-                          "アクティブなキーワードは、サイトの推奨事項に自動的に含まれます。"
-                        )}
+                        <TranslateText text="Active keywords will be automatically included in site recommendations." language={appLanguage} />
                       </li>
                     </ul>
                   </div>
@@ -1139,66 +1082,51 @@ const AdminSEOPage = () => {
 
         <Card className="bg-muted/30 border-dashed">
           <CardHeader>
-            <CardTitle className="text-lg">{getUITitle("SEO Performance Overview", "SEOパフォーマンス概要")}</CardTitle>
+            <CardTitle className="text-lg"><TranslateText text="SEO Performance Overview" language={appLanguage} /></CardTitle>
             <CardDescription>
-              {getUITitle(
-                "Monitor how your SEO efforts are performing over time.",
-                "SEO活動のパフォーマンスを経時的に監視します。"
-              )}
+              <TranslateText text="Monitor how your SEO efforts are performing over time." language={appLanguage} />
             </CardDescription>
           </CardHeader>
           <CardContent>
             <div className="grid md:grid-cols-2 gap-4">
               <div className="p-4 bg-card rounded-lg border">
-                <h3 className="font-medium mb-2">{getUITitle("Keyword Usage", "キーワードの使用")}</h3>
+                <h3 className="font-medium mb-2"><TranslateText text="Keyword Usage" language={appLanguage} /></h3>
                 <div className="space-y-1">
                   <div className="flex justify-between text-sm">
-                    <span>{getUITitle("Active Core Keywords:", "アクティブなコアキーワード:")}</span>
+                    <span><TranslateText text="Active Core Keywords:" language={appLanguage} /></span>
                     <span className="font-medium">
-                      {safeRenderKeywordCount(currentLanguage, 'core')}
+                      {safeRenderKeywordCount(editLanguage, 'core')}
                     </span>
                   </div>
                   <div className="flex justify-between text-sm">
-                    <span>{getUITitle("Active Destination Keywords:", "アクティブな目的地キーワード:")}</span>
+                    <span><TranslateText text="Active Destination Keywords:" language={appLanguage} /></span>
                     <span className="font-medium">
-                      {safeRenderKeywordCount(currentLanguage, 'destination')}
+                      {safeRenderKeywordCount(editLanguage, 'destination')}
                     </span>
                   </div>
                   <div className="flex justify-between text-sm">
-                    <span>{getUITitle("Active Long-tail Keywords:", "アクティブなロングテールキーワード:")}</span>
+                    <span><TranslateText text="Active Long-tail Keywords:" language={appLanguage} /></span>
                     <span className="font-medium">
-                      {safeRenderKeywordCount(currentLanguage, 'long-tail')}
+                      {safeRenderKeywordCount(editLanguage, 'long-tail')}
                     </span>
                   </div>
                 </div>
               </div>
-              
+
               <div className="p-4 bg-card rounded-lg border">
-                <h3 className="font-medium mb-2">{getUITitle("SEO Recommendations", "SEOの推奨事項")}</h3>
+                <h3 className="font-medium mb-2"><TranslateText text="SEO Recommendations" language={appLanguage} /></h3>
                 <ul className="text-sm space-y-1.5 ml-5 list-disc">
                   <li>
-                    {getUITitle(
-                      "Add more destination-specific keywords for better local targeting",
-                      "より良いローカルターゲティングのために、より多くの目的地固有のキーワードを追加する"
-                    )}
+                    <TranslateText text="Add more destination-specific keywords for better local targeting" language={appLanguage} />
                   </li>
                   <li>
-                    {getUITitle(
-                      "Ensure all page titles include at least one core keyword",
-                      "すべてのページタイトルに少なくとも1つのコアキーワードが含まれていることを確認する"
-                    )}
+                    <TranslateText text="Ensure all page titles include at least one core keyword" language={appLanguage} />
                   </li>
                   <li>
-                    {getUITitle(
-                      "Use more long-tail keywords in blog content for improved ranking",
-                      "ランキング向上のためにブログコンテンツでより多くのロングテールキーワードを使用する"
-                    )}
+                    <TranslateText text="Use more long-tail keywords in blog content for improved ranking" language={appLanguage} />
                   </li>
                   <li>
-                    {getUITitle(
-                      "Update meta descriptions to be between 150-160 characters",
-                      "メタ説明を150〜160文字の間に更新する"
-                    )}
+                    <TranslateText text="Update meta descriptions to be between 150-160 characters" language={appLanguage} />
                   </li>
                 </ul>
               </div>
@@ -1206,7 +1134,7 @@ const AdminSEOPage = () => {
 
             <div className="mt-4 flex justify-end">
               <Button variant="outline">
-                {getUITitle("View Full SEO Report", "完全なSEOレポートを表示")}
+                <TranslateText text="View Full SEO Report" language={appLanguage} />
               </Button>
             </div>
           </CardContent>

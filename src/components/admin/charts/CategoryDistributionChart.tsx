@@ -1,8 +1,8 @@
 
 import React from "react";
-import { 
-  BarChart, 
-  Bar, 
+import {
+  BarChart,
+  Bar,
   XAxis,
   YAxis,
   CartesianGrid,
@@ -17,6 +17,7 @@ import {
 } from "@/components/ui/chart";
 import { AdminChartSection } from "../AdminChartSection";
 import { useDeviceSize } from "@/hooks/use-mobile";
+import { useTranslation } from "@/hooks/use-translation";
 
 interface CategoryItem {
   category: string;
@@ -30,15 +31,16 @@ interface CategoryDistributionChartProps {
   height?: number;
 }
 
-export const CategoryDistributionChart = ({ 
-  categoryData, 
-  height = 250 
+export const CategoryDistributionChart = ({
+  categoryData,
+  height = 250
 }: CategoryDistributionChartProps) => {
   const { isMobile } = useDeviceSize();
+  const { t } = useTranslation();
 
   return (
-    <AdminChartSection 
-      title="Blog Category Distribution"
+    <AdminChartSection
+      title={t("Blog Category Distribution")}
       data={categoryData}
       height={height}
       showLegend={isMobile ? false : true}
@@ -48,7 +50,7 @@ export const CategoryDistributionChart = ({
       }))}
     >
       <ResponsiveContainer width="100%" height="100%">
-        <ChartContainer 
+        <ChartContainer
           config={
             Object.fromEntries(
               categoryData.map((item) => [
@@ -57,15 +59,15 @@ export const CategoryDistributionChart = ({
             )
           }
         >
-          <BarChart 
+          <BarChart
             data={categoryData}
             margin={{ top: 5, right: 5, left: 0, bottom: 5 }}
           >
             <CartesianGrid vertical={false} stroke="#f5f5f5" strokeDasharray="3 3" />
-            <XAxis 
-              dataKey="category" 
-              tickLine={false} 
-              axisLine={false} 
+            <XAxis
+              dataKey="category"
+              tickLine={false}
+              axisLine={false}
               tick={{ fontSize: isMobile ? 10 : 12 }}
               tickMargin={8}
               interval={0}
@@ -82,15 +84,15 @@ export const CategoryDistributionChart = ({
                 <Cell key={`cell-${index}`} fill={entry.color} />
               ))}
             </Bar>
-            <ChartTooltip 
+            <ChartTooltip
               content={
-                <ChartTooltipContent 
+                <ChartTooltipContent
                   labelFormatter={(label) => {
                     const item = categoryData.find(c => c.category === label);
                     return item?.fullCategory || label;
                   }}
                 />
-              } 
+              }
             />
           </BarChart>
         </ChartContainer>

@@ -18,6 +18,7 @@ export interface EnhancedSearchItem {
   relevanceScore?: number;
   titleJP?: string;
   descriptionJP?: string;
+  sectionJP?: string;
 }
 
 // Enhanced fuzzy search with better multilingual matching and contextual understanding
@@ -26,15 +27,15 @@ function calculateRelevance(item: EnhancedSearchItem, query: string, enhancedTer
   const titleLower = item.title.toLowerCase();
   const descriptionLower = item.description.toLowerCase();
   const sectionLower = item.section?.toLowerCase() || '';
-  
+
   // Include enhanced terms in search
   const allSearchTerms = [queryLower];
   if (enhancedTerms) {
     allSearchTerms.push(...enhancedTerms.map(term => term.toLowerCase()));
   }
-  
+
   let bestScore = 0;
-  
+
   // Test each search term
   allSearchTerms.forEach(searchTerm => {
     let titleScore = 0;
@@ -42,7 +43,7 @@ function calculateRelevance(item: EnhancedSearchItem, query: string, enhancedTer
     let sectionScore = 0;
     let tagsScore = 0;
     let categoryScore = 0;
-    
+
     // Enhanced exact phrase matching
     if (titleLower.includes(searchTerm)) {
       titleScore = Math.min(1, searchTerm.length / titleLower.length * 2);
@@ -53,21 +54,21 @@ function calculateRelevance(item: EnhancedSearchItem, query: string, enhancedTer
         titleScore = 1;
       }
     }
-    
+
     if (descriptionLower.includes(searchTerm)) {
       descriptionScore = Math.min(0.8, searchTerm.length / descriptionLower.length * 1.5);
     }
-    
+
     // Section matching (important for contextual results)
     if (sectionLower.includes(searchTerm)) {
       sectionScore = 0.7;
     }
-    
+
     // Category matching with context awareness
     if (item.category.toLowerCase().includes(searchTerm)) {
       categoryScore = 0.6;
     }
-    
+
     // Enhanced tag matching
     if (item.tags) {
       const tagMatches = item.tags.filter(tag => {
@@ -76,15 +77,15 @@ function calculateRelevance(item: EnhancedSearchItem, query: string, enhancedTer
       });
       tagsScore = Math.min(0.5, tagMatches.length * 0.2);
     }
-    
+
     // Word-based matching for partial queries with better scoring
     const searchWords = searchTerm.split(' ').filter(word => word.length > 1);
     let wordMatchScore = 0;
-    
+
     if (searchWords.length > 0) {
       const titleWords = titleLower.split(' ');
       const descWords = descriptionLower.split(' ');
-      
+
       searchWords.forEach(sWord => {
         // Title word matches with position weighting
         titleWords.forEach((tWord, index) => {
@@ -92,12 +93,12 @@ function calculateRelevance(item: EnhancedSearchItem, query: string, enhancedTer
           if (tWord.includes(sWord) || sWord.includes(tWord)) {
             wordMatchScore += 0.4 * positionWeight;
           }
-          if (sWord.length > 2 && tWord.length > 2 && 
-              (tWord.startsWith(sWord.substring(0, 3)) || sWord.startsWith(tWord.substring(0, 3)))) {
+          if (sWord.length > 2 && tWord.length > 2 &&
+            (tWord.startsWith(sWord.substring(0, 3)) || sWord.startsWith(tWord.substring(0, 3)))) {
             wordMatchScore += 0.3 * positionWeight;
           }
         });
-        
+
         // Description word matches
         descWords.forEach(dWord => {
           if (dWord.includes(sWord) || sWord.includes(dWord)) {
@@ -106,7 +107,7 @@ function calculateRelevance(item: EnhancedSearchItem, query: string, enhancedTer
         });
       });
     }
-    
+
     // Context-specific phrase matching
     const contextPhrases = {
       'travel': ['travel', 'trip', 'journey', 'tour', 'visit', 'explore'],
@@ -116,33 +117,33 @@ function calculateRelevance(item: EnhancedSearchItem, query: string, enhancedTer
       'nature': ['beach', 'desert', 'mountain', 'sea', 'nature', 'landscape'],
       'entertainment': ['entertainment', 'movie', 'filming', 'star wars', 'attraction']
     };
-    
+
     let contextScore = 0;
     Object.entries(contextPhrases).forEach(([context, phrases]) => {
       if (phrases.some(phrase => searchTerm.includes(phrase))) {
-        if (item.section?.includes(context) || 
-            item.category.includes(context) ||
-            titleLower.includes(context) ||
-            item.tags?.some(tag => tag.toLowerCase().includes(context))) {
+        if (item.section?.includes(context) ||
+          item.category.includes(context) ||
+          titleLower.includes(context) ||
+          item.tags?.some(tag => tag.toLowerCase().includes(context))) {
           contextScore = 0.4;
         }
       }
     });
-    
+
     const termScore = Math.max(
       titleScore * 1.0,
       descriptionScore * 0.8,
       sectionScore * 0.9,
       wordMatchScore * 0.7
     ) + tagsScore + categoryScore + contextScore;
-    
+
     bestScore = Math.max(bestScore, termScore);
   });
-  
+
   // Enhanced context-aware boosting
   let contextBoost = 0;
   const lowerQuery = query.toLowerCase();
-  
+
   // Tourism/Travel intent boosting
   const travelKeywords = ['visit', 'travel', 'trip', 'tour', 'tourism', 'destination', 'explore', '観光', '旅行', '訪問'];
   if (travelKeywords.some(keyword => lowerQuery.includes(keyword))) {
@@ -150,7 +151,7 @@ function calculateRelevance(item: EnhancedSearchItem, query: string, enhancedTer
       contextBoost += 0.3;
     }
   }
-  
+
   // Location-based boosting
   const locationKeywords = ['city', 'place', 'where', 'location', '都市', '場所'];
   if (locationKeywords.some(keyword => lowerQuery.includes(keyword))) {
@@ -158,7 +159,7 @@ function calculateRelevance(item: EnhancedSearchItem, query: string, enhancedTer
       contextBoost += 0.4;
     }
   }
-  
+
   // Service-based boosting
   const serviceKeywords = ['hotel', 'accommodation', 'service', 'company', 'booking'];
   if (serviceKeywords.some(keyword => lowerQuery.includes(keyword))) {
@@ -166,7 +167,7 @@ function calculateRelevance(item: EnhancedSearchItem, query: string, enhancedTer
       contextBoost += 0.5;
     }
   }
-  
+
   // Information-seeking boosting
   const infoKeywords = ['about', 'information', 'what is', 'learn', 'culture'];
   if (infoKeywords.some(keyword => lowerQuery.includes(keyword))) {
@@ -174,7 +175,7 @@ function calculateRelevance(item: EnhancedSearchItem, query: string, enhancedTer
       contextBoost += 0.4;
     }
   }
-  
+
   return Math.max(0, Math.min(1, bestScore + contextBoost));
 }
 
@@ -185,12 +186,12 @@ async function getBlogSearchData(): Promise<EnhancedSearchItem[]> {
       .from('blog_articles')
       .select('id, title, slug, description, category, image')
       .eq('status', 'published');
-      
+
     if (error) {
       console.error("Error fetching blog articles:", error);
       return [];
     }
-    
+
     return (articles || []).map((article) => ({
       id: `blog-${article.id}`,
       title: article.title,
@@ -265,7 +266,9 @@ function getStaticContentSearchData(): EnhancedSearchItem[] {
       category: 'home' as const,
       section: 'navigation',
       tags: ['home', 'main', 'tunisia', 'travel guide', 'discover', 'welcome', 'start'],
-      titleJP: 'チュニジア旅行ガイド - チュニジアを発見'
+      titleJP: 'チュニジア旅行ガイド - チュニジアを発見',
+      descriptionJP: 'チュニジア旅行の完全なガイド。素晴らしい目的地、アクティビティ、旅行情報を発見してください。',
+      sectionJP: 'メイン'
     },
     {
       id: 'about-tunisia-main',
@@ -275,7 +278,9 @@ function getStaticContentSearchData(): EnhancedSearchItem[] {
       category: 'about' as const,
       section: 'information',
       tags: ['about', 'tunisia', 'culture', 'history', 'information', 'country', 'overview', 'learn'],
-      titleJP: 'チュニジアについて - 文化、歴史、情報'
+      titleJP: 'チュニジアについて - 文化、歴史、情報',
+      descriptionJP: 'チュニジアの豊かな文化、魅力的な歴史、地理、人々について学びましょう。完全な国情報。',
+      sectionJP: '情報'
     },
     {
       id: 'travel-information-main',
@@ -285,7 +290,9 @@ function getStaticContentSearchData(): EnhancedSearchItem[] {
       category: 'travel' as const,
       section: 'planning',
       tags: ['travel', 'information', 'tour', 'packages', 'itinerary', 'activities', 'cities', 'guide'],
-      titleJP: '旅行情報・ツアーパッケージ'
+      titleJP: '旅行情報・ツアーパッケージ',
+      descriptionJP: 'チュニジア旅行のための旅程、アクティビティ、都市、旅行のヒントを含む完全な旅行ガイド。',
+      sectionJP: 'プランニング'
     },
     {
       id: 'atlantis-company',
@@ -295,9 +302,11 @@ function getStaticContentSearchData(): EnhancedSearchItem[] {
       category: 'atlantis' as const,
       section: 'services',
       tags: ['atlantis', 'voyages', 'company', 'services', 'travel agency', 'professional', 'booking'],
-      titleJP: 'アトランティス航海 - プロフェッショナル旅行サービス'
+      titleJP: 'アトランティス航海 - プロフェッショナル旅行サービス',
+      descriptionJP: 'ツアー、宿泊予約、交通機関、パーソナライズされた旅行サービスを提供するプロフェッショナルな旅行代理店。',
+      sectionJP: 'サービス'
     },
-    
+
     // Specific content sections
     {
       id: 'tunisia-culture',
@@ -308,7 +317,9 @@ function getStaticContentSearchData(): EnhancedSearchItem[] {
       subcategory: 'culture',
       section: 'culture',
       tags: ['culture', 'traditions', 'customs', 'heritage', 'tunisia', 'arab', 'berber', 'lifestyle'],
-      titleJP: 'チュニジア文化・伝統'
+      titleJP: 'チュニジア文化・伝統',
+      descriptionJP: 'チュニジアの豊かな文化的遺産、伝統、習慣、生活様式を発見してください。',
+      sectionJP: '文化'
     },
     {
       id: 'accommodation-services',
@@ -319,7 +330,9 @@ function getStaticContentSearchData(): EnhancedSearchItem[] {
       subcategory: 'hotels',
       section: 'hotels',
       tags: ['hotels', 'accommodation', 'stay', 'lodging', 'guest houses', 'booking', 'rooms', 'luxury'],
-      titleJP: 'ホテル・宿泊サービス'
+      titleJP: 'ホテル・宿泊サービス',
+      descriptionJP: '専門家の推奨事項と予約サービスで、チュニジアの完璧な宿泊施設を見つけましょう。',
+      sectionJP: '宿泊'
     },
     {
       id: 'tunisia-weather-climate',
@@ -330,7 +343,9 @@ function getStaticContentSearchData(): EnhancedSearchItem[] {
       subcategory: 'weather',
       section: 'weather',
       tags: ['weather', 'climate', 'temperature', 'seasons', 'planning', 'tunisia', 'best time'],
-      titleJP: '天気・気候ガイド'
+      titleJP: '天気・気候ガイド',
+      descriptionJP: 'チュニジアを訪れるのに最適な時期、季節ごとのパターン、完全な天気情報。',
+      sectionJP: '天気'
     },
     {
       id: 'tunisia-languages',
@@ -341,7 +356,9 @@ function getStaticContentSearchData(): EnhancedSearchItem[] {
       subcategory: 'languages',
       section: 'language',
       tags: ['language', 'arabic', 'french', 'communication', 'speaking', 'tunisia', 'travel tips'],
-      titleJP: '言語ガイド'
+      titleJP: '言語ガイド',
+      descriptionJP: 'アラビア語、フランス語、およびチュニジアで話されている他の言語について学びましょう。旅行者のためのコミュニケーションガイド。',
+      sectionJP: '言語'
     },
     {
       id: 'travel-tips-preparation',
@@ -352,7 +369,9 @@ function getStaticContentSearchData(): EnhancedSearchItem[] {
       subcategory: 'tips',
       section: 'preparation',
       tags: ['tips', 'advice', 'preparation', 'travel', 'guide', 'tunisia', 'planning'],
-      titleJP: '旅行のコツ・準備'
+      titleJP: '旅行のコツ・準備',
+      descriptionJP: 'チュニジア旅行のための必須のヒント、アドバイス、準備ガイド。',
+      sectionJP: '準備'
     },
     {
       id: 'transportation-guide',
@@ -363,7 +382,9 @@ function getStaticContentSearchData(): EnhancedSearchItem[] {
       subcategory: 'transportation',
       section: 'transportation',
       tags: ['transportation', 'travel', 'taxi', 'bus', 'train', 'car', 'getting around', 'metro'],
-      titleJP: '交通ガイド'
+      titleJP: '交通ガイド',
+      descriptionJP: 'タクシー、バス、電車、地下鉄、レンタカーなど、チュニジア国内の移動に関する完全ガイド。',
+      sectionJP: '交通手段'
     }
   ];
 }
@@ -419,7 +440,7 @@ export async function enhancedSearch(query: string, limit: number = 8, enhancedT
   try {
     console.log('Enhanced search called with query:', query);
     console.log('Enhanced terms:', enhancedTerms);
-    
+
     // Get search data with priority to static content and comprehensive indexing
     const [staticData, blogData, activitiesData, itineraryData, citiesData] = await Promise.all([
       getStaticContentSearchData(),
@@ -451,15 +472,15 @@ export async function enhancedSearch(query: string, limit: number = 8, enhancedT
       .slice(0, limit);
 
     console.log('Filtered search results:', results.length);
-    console.log('Top search results:', results.slice(0, 5).map(r => ({ 
-      title: r.title, 
-      score: r.relevanceScore, 
+    console.log('Top search results:', results.slice(0, 5).map(r => ({
+      title: r.title,
+      score: r.relevanceScore,
       category: r.category,
-      section: r.section 
+      section: r.section
     })));
 
     // Ensure unique results by ID
-    const uniqueResults = results.filter((item, index, self) => 
+    const uniqueResults = results.filter((item, index, self) =>
       index === self.findIndex(t => t.id === item.id)
     );
 

@@ -1,18 +1,18 @@
 
-import { 
-  MapPin, 
-  Calendar, 
-  Image, 
-  FileText, 
-  Home, 
-  Info, 
-  Plane, 
-  Building2, 
-  Camera, 
-  Waves, 
-  Mountain, 
-  Utensils, 
-  Car, 
+import {
+  MapPin,
+  Calendar,
+  Image,
+  FileText,
+  Home,
+  Info,
+  Plane,
+  Building2,
+  Camera,
+  Waves,
+  Mountain,
+  Utensils,
+  Car,
   Bed,
   Users,
   BookOpen,
@@ -58,19 +58,23 @@ export const getResultIcon = (item: any) => {
   }
 
   // Check keywords for context-specific icons
-  const title = item.title.toLowerCase();
+  const title = (item.title || '').toLowerCase();
+  const titleJP = (item.titleJP || '').toLowerCase();
   const keywords = item.keywords?.join(' ').toLowerCase() || '';
-  const searchText = `${title} ${keywords}`;
+  const description = (item.description || '').toLowerCase();
+  const descriptionJP = (item.descriptionJP || '').toLowerCase();
 
-  if (searchText.includes('beach') || searchText.includes('coast')) return Waves;
-  if (searchText.includes('desert') || searchText.includes('sahara')) return Mountain;
-  if (searchText.includes('star wars') || searchText.includes('filming')) return Camera;
-  if (searchText.includes('food') || searchText.includes('restaurant')) return Utensils;
-  if (searchText.includes('transport') || searchText.includes('taxi') || searchText.includes('bus')) return Car;
-  if (searchText.includes('hotel') || searchText.includes('accommodation')) return Bed;
-  if (searchText.includes('company') || searchText.includes('service')) return Users;
-  if (searchText.includes('event') || searchText.includes('festival')) return Calendar;
-  if (searchText.includes('weather') || searchText.includes('climate')) return Calendar;
+  const searchText = `${title} ${titleJP} ${keywords} ${description} ${descriptionJP}`;
+
+  if (searchText.includes('beach') || searchText.includes('coast') || searchText.includes('ビーチ') || searchText.includes('海岸')) return Waves;
+  if (searchText.includes('desert') || searchText.includes('sahara') || searchText.includes('砂漠') || searchText.includes('サハラ')) return Mountain;
+  if (searchText.includes('star wars') || searchText.includes('filming') || searchText.includes('スターウォーズ') || searchText.includes('撮影')) return Camera;
+  if (searchText.includes('food') || searchText.includes('restaurant') || searchText.includes('料理') || searchText.includes('レストラン') || searchText.includes('食事')) return Utensils;
+  if (searchText.includes('transport') || searchText.includes('taxi') || searchText.includes('bus') || searchText.includes('交通') || searchText.includes('タクシー') || searchText.includes('バス')) return Car;
+  if (searchText.includes('hotel') || searchText.includes('accommodation') || searchText.includes('ホテル') || searchText.includes('宿泊')) return Bed;
+  if (searchText.includes('company') || searchText.includes('service') || searchText.includes('企業') || searchText.includes('サービス')) return Users;
+  if (searchText.includes('event') || searchText.includes('festival') || searchText.includes('イベント') || searchText.includes('祭り')) return Calendar;
+  if (searchText.includes('weather') || searchText.includes('climate') || searchText.includes('天気') || searchText.includes('気候')) return Calendar;
 
   // Default icons by type
   switch (item.type) {
@@ -79,20 +83,6 @@ export const getResultIcon = (item: any) => {
     case 'image': return Image;
     default: return FileText;
   }
-};
-
-export const getCategoryBadge = (category: string) => {
-  const badges = {
-    'home': 'Home',
-    'about': 'About',
-    'travel': 'Travel',
-    'atlantis': 'Services',
-    'accommodation': 'Hotels',
-    'blog': 'Blog',
-    'city': 'City',
-    'activity': 'Activity'
-  };
-  return badges[category as keyof typeof badges] || category;
 };
 
 export const getCategoryColor = (category: string) => {

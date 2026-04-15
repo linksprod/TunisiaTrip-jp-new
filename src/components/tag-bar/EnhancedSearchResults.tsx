@@ -1,25 +1,26 @@
 
 import React from "react";
-import { 
-  MapPin, 
-  Calendar, 
-  Image, 
-  FileText, 
-  Home, 
-  Info, 
-  Plane, 
-  Building2, 
-  Camera, 
-  Waves, 
-  Mountain, 
-  Utensils, 
-  Car, 
+import {
+  MapPin,
+  Calendar,
+  Image,
+  FileText,
+  Home,
+  Info,
+  Plane,
+  Building2,
+  Camera,
+  Waves,
+  Mountain,
+  Utensils,
+  Car,
   Bed,
   Users,
   BookOpen,
   Clock
 } from "lucide-react";
 import { TranslateText } from "@/components/translation/TranslateText";
+import { useTranslation } from "@/hooks/use-translation";
 
 interface EnhancedSearchResultsProps {
   results: any[];
@@ -32,6 +33,8 @@ export const EnhancedSearchResults: React.FC<EnhancedSearchResultsProps> = ({
   onResultClick,
   currentLanguage
 }) => {
+  const { t } = useTranslation();
+
   if (results.length === 0) return null;
 
   const getResultIcon = (item: any) => {
@@ -84,16 +87,8 @@ export const EnhancedSearchResults: React.FC<EnhancedSearchResultsProps> = ({
   };
 
   const getCategoryBadge = (category: string) => {
-    const badges = {
-      'home': 'Home',
-      'about': 'About',
-      'travel': 'Travel',
-      'atlantis': 'Services',
-      'accommodation': 'Hotels',
-      'blog': 'Blog',
-      'city': 'City'
-    };
-    return badges[category as keyof typeof badges] || category;
+    // Use translated category name if available
+    return t(category);
   };
 
   const getCategoryColor = (category: string) => {
@@ -119,12 +114,18 @@ export const EnhancedSearchResults: React.FC<EnhancedSearchResultsProps> = ({
         />
         <span className="text-gray-400">({results.length})</span>
       </div>
-      
+
       {results.map((result, index) => {
         const IconComponent = getResultIcon(result);
         const categoryBadge = getCategoryBadge(result.category);
         const categoryColor = getCategoryColor(result.category);
-        
+
+        // Use localized fields if available and in Japanese mode
+        const isJP = currentLanguage === 'JP';
+        const displayTitle = (isJP && result.titleJP) ? result.titleJP : result.title;
+        const displayDescription = (isJP && result.descriptionJP) ? result.descriptionJP : result.description;
+        const displaySection = (isJP && result.sectionJP) ? result.sectionJP : result.section;
+
         return (
           <button
             key={`result-${result.id || index}`}
@@ -135,22 +136,22 @@ export const EnhancedSearchResults: React.FC<EnhancedSearchResultsProps> = ({
             <div className="flex-1 min-w-0">
               <div className="flex items-start justify-between gap-2 mb-1">
                 <h4 className="text-xs xs:text-sm font-medium text-gray-900 truncate group-hover:text-gray-700 transition-colors flex-1">
-                  {currentLanguage === 'JP' && result.titleJP ? result.titleJP : result.title}
+                  {displayTitle}
                 </h4>
                 <span className={`px-2 py-0.5 text-xs rounded-full font-medium flex-shrink-0 ${categoryColor}`}>
                   {categoryBadge}
                 </span>
               </div>
-              
-              {result.description && (
+
+              {displayDescription && (
                 <p className="text-xs text-gray-500 line-clamp-2 mb-1">
-                  {result.description}
+                  {displayDescription}
                 </p>
               )}
-              
+
               <div className="flex items-center gap-3 text-xs text-gray-400">
-                {result.section && (
-                  <span className="capitalize">{result.section}</span>
+                {displaySection && (
+                  <span className="capitalize">{displaySection}</span>
                 )}
               </div>
             </div>

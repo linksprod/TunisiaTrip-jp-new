@@ -7,6 +7,8 @@ import { useAuth } from '@/contexts/AuthContext';
 import { Navigate, useNavigate, useLocation } from 'react-router-dom';
 import { Loader2 } from 'lucide-react';
 import { useToast } from '@/components/ui/use-toast';
+import { TranslateText } from '@/components/translation/TranslateText';
+import { useTranslation } from '@/hooks/use-translation';
 
 const AuthPage = () => {
   const { user, isAdmin, isLoading, signIn } = useAuth();
@@ -17,6 +19,7 @@ const AuthPage = () => {
   const navigate = useNavigate();
   const location = useLocation();
   const { toast } = useToast();
+  const { currentLanguage, t } = useTranslation();
 
   // Log when component mounts for debugging
   useEffect(() => {
@@ -26,9 +29,9 @@ const AuthPage = () => {
 
   // For debugging purposes
   useEffect(() => {
-    console.log('AuthPage: User state changed:', { 
-      isLoggedIn: !!user, 
-      isAdmin, 
+    console.log('AuthPage: User state changed:', {
+      isLoggedIn: !!user,
+      isAdmin,
       isLoading,
       path: window.location.pathname,
       locationPathname: location.pathname,
@@ -65,7 +68,9 @@ const AuthPage = () => {
       <div className="flex min-h-screen items-center justify-center bg-gray-50">
         <div className="text-center">
           <Loader2 className="mx-auto h-8 w-8 animate-spin text-admin-primary" />
-          <p className="mt-2">Checking authentication...</p>
+          <p className="mt-2 text-muted-foreground">
+            <TranslateText text="Checking authentication..." language={currentLanguage} />
+          </p>
         </div>
       </div>
     );
@@ -76,19 +81,21 @@ const AuthPage = () => {
       <div className="w-full max-w-md space-y-8">
         <div className="text-center">
           <h1 className="mt-6 text-3xl font-bold tracking-tight text-gray-900">
-            Admin Dashboard
+            <TranslateText text="Admin Dashboard" language={currentLanguage} />
           </h1>
           <p className="mt-2 text-sm text-gray-600">
-            Sign in to access the admin features
+            <TranslateText text="Sign in to access the admin features" language={currentLanguage} />
           </p>
         </div>
 
         <Card>
           <form onSubmit={handleSignIn}>
             <CardHeader>
-              <CardTitle>Sign In</CardTitle>
+              <CardTitle>
+                <TranslateText text="Sign In" language={currentLanguage} />
+              </CardTitle>
               <CardDescription>
-                Enter your credentials to access the admin dashboard.
+                <TranslateText text="Enter your credentials to access the admin dashboard." language={currentLanguage} />
               </CardDescription>
             </CardHeader>
             <CardContent className="space-y-4">
@@ -98,40 +105,45 @@ const AuthPage = () => {
                 </div>
               )}
               <div className="space-y-2">
-                <label htmlFor="email" className="text-sm font-medium">Email</label>
-                <Input 
-                  id="email" 
-                  type="email" 
+                <label htmlFor="email" className="text-sm font-medium">
+                  <TranslateText text="Email" language={currentLanguage} />
+                </label>
+                <Input
+                  id="email"
+                  type="email"
                   value={email}
                   onChange={(e) => setEmail(e.target.value)}
-                  placeholder="you@example.com" 
-                  required 
+                  placeholder={t("you@example.com")}
+                  required
                 />
               </div>
               <div className="space-y-2">
-                <label htmlFor="password" className="text-sm font-medium">Password</label>
-                <Input 
-                  id="password" 
+                <label htmlFor="password" className="text-sm font-medium">
+                  <TranslateText text="Password" language={currentLanguage} />
+                </label>
+                <Input
+                  id="password"
                   type="password"
                   value={password}
                   onChange={(e) => setPassword(e.target.value)}
-                  placeholder="••••••••" 
-                  required 
+                  placeholder="••••••••"
+                  required
                 />
               </div>
             </CardContent>
             <CardFooter>
-              <Button 
-                className="w-full bg-admin-primary hover:bg-admin-accent" 
+              <Button
+                className="w-full bg-admin-primary hover:bg-admin-accent"
                 type="submit"
                 disabled={submitting}
               >
                 {submitting ? (
                   <>
-                    <Loader2 className="mr-2 h-4 w-4 animate-spin" /> Please wait
+                    <Loader2 className="mr-2 h-4 w-4 animate-spin" />
+                    <TranslateText text="Please wait" language={currentLanguage} />
                   </>
                 ) : (
-                  "Sign In"
+                  <TranslateText text="Sign In" language={currentLanguage} />
                 )}
               </Button>
             </CardFooter>

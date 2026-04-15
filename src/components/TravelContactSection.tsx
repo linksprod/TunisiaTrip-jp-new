@@ -10,14 +10,14 @@ import { MapPin, Mail, Plane } from "lucide-react";
 export function TravelContactSection(): JSX.Element {
   const [email, setEmail] = useState("");
   const [question, setQuestion] = useState("");
-  const { currentLanguage } = useTranslation();
+  const { currentLanguage, t } = useTranslation();
 
   const handleSubmit = (e: React.FormEvent) => {
     e.preventDefault();
-    
+
     if (!email) {
       toast({
-        title: currentLanguage === "JP" ? "メールアドレスを入力してください" : "Please enter your email",
+        title: t("Please enter your email"),
         variant: "destructive"
       });
       return;
@@ -27,7 +27,7 @@ export function TravelContactSection(): JSX.Element {
     const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
     if (!emailRegex.test(email)) {
       toast({
-        title: currentLanguage === "JP" ? "有効なメールアドレスを入力してください" : "Please enter a valid email",
+        title: t("Please enter a valid email"),
         variant: "destructive"
       });
       return;
@@ -35,7 +35,7 @@ export function TravelContactSection(): JSX.Element {
 
     if (!question) {
       toast({
-        title: currentLanguage === "JP" ? "質問を入力してください" : "Please enter your question",
+        title: t("Please enter your question"),
         variant: "destructive"
       });
       return;
@@ -49,8 +49,8 @@ export function TravelContactSection(): JSX.Element {
 
     // Show success message
     toast({
-      title: currentLanguage === "JP" ? "お問い合わせありがとうございます！" : "Thank you for your travel inquiry!",
-      description: currentLanguage === "JP" ? "24時間以内にご連絡いたします。" : "We'll get back to you within 24 hours with travel recommendations."
+      title: t("Thank you for your travel inquiry!"),
+      description: t("We'll get back to you within 24 hours with travel recommendations.")
     });
 
     // Reset form
@@ -83,24 +83,24 @@ export function TravelContactSection(): JSX.Element {
                   <Mail className="w-6 h-6 text-white" />
                 </div>
               </div>
-              
+
               <div>
                 <h2 className="text-3xl md:text-4xl font-bold mb-4 leading-tight">
-                  <TranslateText 
-                    text="Ready to Experience Tunisia?" 
-                    language={currentLanguage} 
+                  <TranslateText
+                    text="Ready to Experience Tunisia?"
+                    language={currentLanguage}
                   />
                 </h2>
                 <p className="text-lg md:text-xl text-white/90 mb-2">
-                  <TranslateText 
-                    text="Get personalized travel advice from our local experts" 
-                    language={currentLanguage} 
+                  <TranslateText
+                    text="Get personalized travel advice from our local experts"
+                    language={currentLanguage}
                   />
                 </p>
                 <p className="text-white/80">
-                  <TranslateText 
-                    text="Let us help you plan your perfect Tunisia adventure based on our featured destinations and insider knowledge." 
-                    language={currentLanguage} 
+                  <TranslateText
+                    text="Let us help you plan your perfect Tunisia adventure based on our featured destinations and insider knowledge."
+                    language={currentLanguage}
                   />
                 </p>
               </div>
@@ -110,27 +110,27 @@ export function TravelContactSection(): JSX.Element {
                 <div className="flex items-center gap-3 text-white/90">
                   <div className="w-2 h-2 bg-white rounded-full"></div>
                   <span className="text-sm">
-                    <TranslateText 
-                      text="Personalized itinerary planning" 
-                      language={currentLanguage} 
+                    <TranslateText
+                      text="Personalized itinerary planning"
+                      language={currentLanguage}
                     />
                   </span>
                 </div>
                 <div className="flex items-center gap-3 text-white/90">
                   <div className="w-2 h-2 bg-white rounded-full"></div>
                   <span className="text-sm">
-                    <TranslateText 
-                      text="Local insider recommendations" 
-                      language={currentLanguage} 
+                    <TranslateText
+                      text="Local insider recommendations"
+                      language={currentLanguage}
                     />
                   </span>
                 </div>
                 <div className="flex items-center gap-3 text-white/90">
                   <div className="w-2 h-2 bg-white rounded-full"></div>
                   <span className="text-sm">
-                    <TranslateText 
-                      text="24/7 travel support" 
-                      language={currentLanguage} 
+                    <TranslateText
+                      text="24/7 travel support"
+                      language={currentLanguage}
                     />
                   </span>
                 </div>
@@ -144,29 +144,29 @@ export function TravelContactSection(): JSX.Element {
                   <label className="block text-gray-900 text-sm font-medium mb-2">
                     <TranslateText text="Email Address" language={currentLanguage} />
                   </label>
-                  <Input 
-                    type="email" 
-                    placeholder={currentLanguage === "JP" ? "あなたのメールアドレス" : "your@email.com"}
-                    className="bg-white text-gray-900 border-gray-300 placeholder-gray-500 focus:border-primary focus:ring-primary/50" 
-                    value={email} 
-                    onChange={(e) => setEmail(e.target.value)} 
+                  <Input
+                    type="email"
+                    placeholder={t("your@email.com")}
+                    className="bg-white text-gray-900 border-gray-300 placeholder-gray-500 focus:border-primary focus:ring-primary/50"
+                    value={email}
+                    onChange={(e) => setEmail(e.target.value)}
                   />
                 </div>
-                
+
                 <div>
                   <label className="block text-gray-900 text-sm font-medium mb-2">
                     <TranslateText text="Your Travel Questions" language={currentLanguage} />
                   </label>
-                  <Textarea 
-                    placeholder={currentLanguage === "JP" ? "チュニジアについて何を知りたいですか？どの場所に最も興味がありますか？" : "What would you like to know about Tunisia? Which places interest you most?"}
-                    className="bg-white text-gray-900 border-gray-300 placeholder-gray-500 focus:border-primary focus:ring-primary/50 min-h-[100px] resize-none" 
-                    value={question} 
-                    onChange={(e) => setQuestion(e.target.value)} 
+                  <Textarea
+                    placeholder={t("What would you like to know about Tunisia? Which places interest you most?")}
+                    className="bg-white text-gray-900 border-gray-300 placeholder-gray-500 focus:border-primary focus:ring-primary/50 min-h-[100px] resize-none"
+                    value={question}
+                    onChange={(e) => setQuestion(e.target.value)}
                   />
                 </div>
-                
-                <Button 
-                  type="submit" 
+
+                <Button
+                  type="submit"
                   className="w-full bg-white text-primary hover:bg-white/90 transition-all duration-300 font-semibold py-3"
                 >
                   <TranslateText text="Get Travel Advice" language={currentLanguage} />

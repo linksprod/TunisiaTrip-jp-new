@@ -21,6 +21,8 @@ import { useAllPredefinedTrips, useCreatePredefinedTrip, useUpdatePredefinedTrip
 import { DetailedDayPlan, TimelineActivity } from "@/types/predefinedTripTypes";
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
 import { Checkbox } from "@/components/ui/checkbox";
+import { TranslateText } from "@/components/translation/TranslateText";
+import { useTranslation } from "@/hooks/use-translation";
 
 const AdminTripPage = () => {
   const { activities, createActivity, updateActivity, deleteActivity, isLoading: activitiesLoading } = useActivities();
@@ -31,20 +33,21 @@ const AdminTripPage = () => {
   const createTrip = useCreatePredefinedTrip();
   const updateTrip = useUpdatePredefinedTrip();
   const deleteTrip = useDeletePredefinedTrip();
+  const { currentLanguage, t } = useTranslation();
 
   // Dialog states
   const [editDialogOpen, setEditDialogOpen] = useState(false);
   const [addDialogOpen, setAddDialogOpen] = useState(false);
   const [deleteDialogOpen, setDeleteDialogOpen] = useState(false);
-  
+
   // Current tab and editing states
   const [currentTab, setCurrentTab] = useState("activities");
   const [editingItem, setEditingItem] = useState<Activity | Hotel | GuestHouse | Airport | PredefinedTrip | null>(null);
   const [itemToDelete, setItemToDelete] = useState<string | null>(null);
-  
+
   // Form states
   const [newItem, setNewItem] = useState<Partial<Activity | Hotel | GuestHouse | Airport | PredefinedTrip>>({});
-  
+
   // Day-by-day trip planning state - modified to support multiple activities per day
   const [daySelections, setDaySelections] = useState<{
     [day: number]: {
@@ -72,17 +75,17 @@ const AdminTripPage = () => {
     // Load trip data for editing
     if (currentTab === "predefined-trips") {
       const trip = item as PredefinedTrip;
-      
+
       // Try to extract detailed planning data first
       extractDetailedDataFromTrip(trip);
-      
+
       // Set up simple planning data as fallback
       const selections: typeof daySelections = {};
       for (let day = 1; day <= trip.duration_days; day++) {
         const activityId = trip.activity_ids?.[day - 1] || '';
         const hotelId = trip.hotel_ids?.[day - 1] || '';
         const guesthouseId = trip.guesthouse_ids?.[day - 1] || '';
-        
+
         selections[day] = {
           activities: activityId ? [activityId] : [],
           accommodationId: hotelId || guesthouseId,
@@ -118,7 +121,7 @@ const AdminTripPage = () => {
       const tripData = convertDetailedDaysToTrip(editingItem as PredefinedTrip);
       updateTrip.mutate({ ...tripData, id: editingItem.id } as Partial<PredefinedTrip> & { id: string });
     }
-    
+
     setEditDialogOpen(false);
     setEditingItem(null);
     setDaySelections({});
@@ -149,7 +152,7 @@ const AdminTripPage = () => {
         ...tripData
       } as Omit<PredefinedTrip, 'id' | 'created_at' | 'updated_at'>);
     }
-    
+
     setAddDialogOpen(false);
     setNewItem({});
     setDaySelections({});
@@ -174,7 +177,7 @@ const AdminTripPage = () => {
     } else if (currentTab === "predefined-trips") {
       deleteTrip.mutate(itemToDelete);
     }
-    
+
     setDeleteDialogOpen(false);
     setItemToDelete(null);
   };
@@ -202,7 +205,7 @@ const AdminTripPage = () => {
       if (dayData) {
         // Add all activities from this day
         activityIds.push(...dayData.activities);
-        
+
         if (dayData.accommodationType === 'hotel') {
           hotelIds.push(dayData.accommodationId || '');
           guesthouseIds.push('');
@@ -260,7 +263,7 @@ const AdminTripPage = () => {
         console.error('Error parsing detailed planning data:', e);
       }
     }
-    
+
     // Fallback to simple planning
     setUseDetailedPlanning(false);
     setDetailedDays([]);
@@ -303,67 +306,89 @@ const AdminTripPage = () => {
 
   const renderActivityFields = (item: Partial<Activity>, isEditing: boolean = false) => {
     const updateField = isEditing ? updateEditingField : updateNewItemField;
-    
+
     return (
       <>
         <div className="grid grid-cols-2 gap-4">
           <div>
-            <Label htmlFor="title">Titre *</Label>
+            <Label htmlFor="title">
+              <TranslateText text="Title" language={currentLanguage} /> *
+            </Label>
             <Input
               id="title"
               value={item.title || ""}
               onChange={(e) => updateField("title", e.target.value)}
-              placeholder="Nom de l'activité"
+              placeholder={t("Activity Name")}
             />
           </div>
           <div>
-            <Label htmlFor="location">Lieu *</Label>
+            <Label htmlFor="location">
+              <TranslateText text="Location" language={currentLanguage} /> *
+            </Label>
             <Input
               id="location"
               value={item.location || ""}
               onChange={(e) => updateField("location", e.target.value)}
-              placeholder="Lieu de l'activité"
+              placeholder={t("Location")}
             />
           </div>
         </div>
         <div className="grid grid-cols-2 gap-4">
           <div>
-            <Label htmlFor="duration">Durée</Label>
+            <Label htmlFor="duration">
+              <TranslateText text="Duration" language={currentLanguage} />
+            </Label>
             <Input
               id="duration"
               value={item.duration || ""}
               onChange={(e) => updateField("duration", e.target.value)}
-              placeholder="Ex: 2 heures"
+              placeholder={t("Ex: 2 hours")}
             />
           </div>
           <div>
-            <Label htmlFor="price">Prix</Label>
+            <Label htmlFor="price">
+              <TranslateText text="Price" language={currentLanguage} />
+            </Label>
             <Input
               id="price"
               value={item.price || ""}
               onChange={(e) => updateField("price", e.target.value)}
-              placeholder="Ex: 50€ par personne"
+              placeholder={t("Ex: 50€ per person")}
             />
           </div>
         </div>
         <div className="grid grid-cols-2 gap-4">
           <div>
-            <Label htmlFor="category">Catégorie</Label>
+            <Label htmlFor="category">
+              <TranslateText text="Category" language={currentLanguage} />
+            </Label>
             <Select value={item.category || "activity"} onValueChange={(value) => updateField("category", value)}>
               <SelectTrigger>
-                <SelectValue placeholder="Sélectionner une catégorie" />
+                <SelectValue placeholder={t("Select a category")} />
               </SelectTrigger>
               <SelectContent>
-                <SelectItem value="activity">Activité</SelectItem>
-                <SelectItem value="cultural">Culturel</SelectItem>
-                <SelectItem value="adventure">Aventure</SelectItem>
-                <SelectItem value="relaxation">Relaxation</SelectItem>
-                <SelectItem value="gastronomy">Gastronomie</SelectItem>
+                <SelectItem value="activity">
+                  <TranslateText text="Activity" language={currentLanguage} />
+                </SelectItem>
+                <SelectItem value="cultural">
+                  <TranslateText text="Cultural" language={currentLanguage} />
+                </SelectItem>
+                <SelectItem value="adventure">
+                  <TranslateText text="Adventure" language={currentLanguage} />
+                </SelectItem>
+                <SelectItem value="relaxation">
+                  <TranslateText text="Relaxation" language={currentLanguage} />
+                </SelectItem>
+                <SelectItem value="gastronomy">
+                  <TranslateText text="Gastronomy" language={currentLanguage} />
+                </SelectItem>
               </SelectContent>
             </Select>
           </div>
           <div>
-            <Label htmlFor="rating">Note</Label>
+            <Label htmlFor="rating">
+              <TranslateText text="Rating" language={currentLanguage} />
+            </Label>
             <Input
               id="rating"
               type="number"
@@ -372,62 +397,74 @@ const AdminTripPage = () => {
               step="0.1"
               value={item.rating || ""}
               onChange={(e) => updateField("rating", parseFloat(e.target.value) || 0)}
-              placeholder="Note sur 5"
+              placeholder={t("Rating out of 5")}
             />
           </div>
         </div>
         <div>
-          <Label htmlFor="description">Description</Label>
+          <Label htmlFor="description">
+            <TranslateText text="Description" language={currentLanguage} />
+          </Label>
           <Textarea
             id="description"
             value={item.description || ""}
             onChange={(e) => updateField("description", e.target.value)}
-            placeholder="Description de l'activité"
+            placeholder={t("Activity Description")}
             className="min-h-[100px]"
           />
         </div>
         <div>
-          <Label htmlFor="tags">Tags (séparés par des virgules)</Label>
+          <Label htmlFor="tags">
+            <TranslateText text="Tags (comma separated)" language={currentLanguage} />
+          </Label>
           <Input
             id="tags"
             value={Array.isArray(item.tags) ? item.tags.join(", ") : ""}
             onChange={(e) => updateField("tags", e.target.value.split(",").map(tag => tag.trim()).filter(Boolean))}
-            placeholder="nature, aventure, famille"
+            placeholder={t("nature, adventure, family")}
           />
         </div>
         <div className="grid grid-cols-2 gap-4">
           <div>
-            <Label htmlFor="latitude">Latitude</Label>
+            <Label htmlFor="latitude">
+              <TranslateText text="Latitude" language={currentLanguage} />
+            </Label>
             <Input
               id="latitude"
               type="number"
               step="any"
               value={item.latitude || ""}
               onChange={(e) => updateField("latitude", parseFloat(e.target.value) || null)}
-              placeholder="Ex: 35.8245"
+              placeholder={t("Ex: 35.8245")}
             />
           </div>
           <div>
-            <Label htmlFor="longitude">Longitude</Label>
+            <Label htmlFor="longitude">
+              <TranslateText text="Longitude" language={currentLanguage} />
+            </Label>
             <Input
               id="longitude"
               type="number"
               step="any"
               value={item.longitude || ""}
               onChange={(e) => updateField("longitude", parseFloat(e.target.value) || null)}
-              placeholder="Ex: 10.6447"
+              placeholder={t("Ex: 10.6447")}
             />
           </div>
         </div>
         <div className="space-y-4">
-          <Label>Options de visibilité</Label>
+          <Label>
+            <TranslateText text="Visibility Options" language={currentLanguage} />
+          </Label>
           <div className="flex items-center space-x-2">
             <Checkbox
               id="show_in_travel"
               checked={item.show_in_travel || false}
               onCheckedChange={(checked) => updateField("show_in_travel", checked)}
             />
-            <Label htmlFor="show_in_travel">Afficher dans la page Travel</Label>
+            <Label htmlFor="show_in_travel">
+              <TranslateText text="Show in Travel page" language={currentLanguage} />
+            </Label>
           </div>
           <div className="flex items-center space-x-2">
             <Checkbox
@@ -435,7 +472,9 @@ const AdminTripPage = () => {
               checked={item.show_in_start_my_trip || false}
               onCheckedChange={(checked) => updateField("show_in_start_my_trip", checked)}
             />
-            <Label htmlFor="show_in_start_my_trip">Afficher dans la page Start My Trip</Label>
+            <Label htmlFor="show_in_start_my_trip">
+              <TranslateText text="Show in Start My Trip page" language={currentLanguage} />
+            </Label>
           </div>
         </div>
         <div>
@@ -453,41 +492,49 @@ const AdminTripPage = () => {
 
   const renderHotelFields = (item: Partial<Hotel>, isEditing: boolean = false) => {
     const updateField = isEditing ? updateEditingField : updateNewItemField;
-    
+
     return (
       <>
         <div className="grid grid-cols-2 gap-4">
           <div>
-            <Label htmlFor="name">Nom *</Label>
+            <Label htmlFor="name">
+              <TranslateText text="Name" language={currentLanguage} /> *
+            </Label>
             <Input
               id="name"
               value={item.name || ""}
               onChange={(e) => updateField("name", e.target.value)}
-              placeholder="Nom de l'hôtel"
+              placeholder={t("Hotel Name")}
             />
           </div>
           <div>
-            <Label htmlFor="location">Lieu *</Label>
+            <Label htmlFor="location">
+              <TranslateText text="Location" language={currentLanguage} /> *
+            </Label>
             <Input
               id="location"
               value={item.location || ""}
               onChange={(e) => updateField("location", e.target.value)}
-              placeholder="Lieu de l'hôtel"
+              placeholder={t("Location")}
             />
           </div>
         </div>
         <div className="grid grid-cols-2 gap-4">
           <div>
-            <Label htmlFor="price_per_night">Prix par nuit</Label>
+            <Label htmlFor="price_per_night">
+              <TranslateText text="Price per night" language={currentLanguage} />
+            </Label>
             <Input
               id="price_per_night"
               value={item.price_per_night || ""}
               onChange={(e) => updateField("price_per_night", e.target.value)}
-              placeholder="Ex: 120€ par nuit"
+              placeholder={t("Ex: 120€ per night")}
             />
           </div>
           <div>
-            <Label htmlFor="rating">Note</Label>
+            <Label htmlFor="rating">
+              <TranslateText text="Rating" language={currentLanguage} />
+            </Label>
             <Input
               id="rating"
               type="number"
@@ -496,50 +543,58 @@ const AdminTripPage = () => {
               step="0.1"
               value={item.rating || ""}
               onChange={(e) => updateField("rating", parseFloat(e.target.value) || 0)}
-              placeholder="Note sur 5"
+              placeholder={t("Rating out of 5")}
             />
           </div>
         </div>
         <div>
-          <Label htmlFor="description">Description</Label>
+          <Label htmlFor="description">
+            <TranslateText text="Description" language={currentLanguage} />
+          </Label>
           <Textarea
             id="description"
             value={item.description || ""}
             onChange={(e) => updateField("description", e.target.value)}
-            placeholder="Description de l'hôtel"
+            placeholder={t("Hotel Description")}
             className="min-h-[100px]"
           />
         </div>
         <div>
-          <Label htmlFor="amenities">Équipements (séparés par des virgules)</Label>
+          <Label htmlFor="amenities">
+            <TranslateText text="Amenities (comma separated)" language={currentLanguage} />
+          </Label>
           <Input
             id="amenities"
             value={Array.isArray(item.amenities) ? item.amenities.join(", ") : ""}
             onChange={(e) => updateField("amenities", e.target.value.split(",").map(amenity => amenity.trim()).filter(Boolean))}
-            placeholder="wifi, piscine, restaurant"
+            placeholder={t("wifi, pool, restaurant")}
           />
         </div>
         <div className="grid grid-cols-2 gap-4">
           <div>
-            <Label htmlFor="latitude">Latitude</Label>
+            <Label htmlFor="latitude">
+              <TranslateText text="Latitude" language={currentLanguage} />
+            </Label>
             <Input
               id="latitude"
               type="number"
               step="any"
               value={item.latitude || ""}
               onChange={(e) => updateField("latitude", parseFloat(e.target.value) || null)}
-              placeholder="Ex: 35.8245"
+              placeholder={t("Ex: 35.8245")}
             />
           </div>
           <div>
-            <Label htmlFor="longitude">Longitude</Label>
+            <Label htmlFor="longitude">
+              <TranslateText text="Longitude" language={currentLanguage} />
+            </Label>
             <Input
               id="longitude"
               type="number"
               step="any"
               value={item.longitude || ""}
               onChange={(e) => updateField("longitude", parseFloat(e.target.value) || null)}
-              placeholder="Ex: 10.6447"
+              placeholder={t("Ex: 10.6447")}
             />
           </div>
         </div>
@@ -549,7 +604,9 @@ const AdminTripPage = () => {
             checked={item.breakfast || false}
             onCheckedChange={(checked) => updateField("breakfast", checked)}
           />
-          <Label htmlFor="breakfast">Petit-déjeuner inclus</Label>
+          <Label htmlFor="breakfast">
+            <TranslateText text="Breakfast included" language={currentLanguage} />
+          </Label>
         </div>
         <div>
           <Label>Images</Label>
@@ -566,41 +623,49 @@ const AdminTripPage = () => {
 
   const renderGuestHouseFields = (item: Partial<GuestHouse>, isEditing: boolean = false) => {
     const updateField = isEditing ? updateEditingField : updateNewItemField;
-    
+
     return (
       <>
         <div className="grid grid-cols-2 gap-4">
           <div>
-            <Label htmlFor="name">Nom *</Label>
+            <Label htmlFor="name">
+              <TranslateText text="Name" language={currentLanguage} /> *
+            </Label>
             <Input
               id="name"
               value={item.name || ""}
               onChange={(e) => updateField("name", e.target.value)}
-              placeholder="Nom de la maison d'hôte"
+              placeholder={t("Guest House Name")}
             />
           </div>
           <div>
-            <Label htmlFor="location">Lieu *</Label>
+            <Label htmlFor="location">
+              <TranslateText text="Location" language={currentLanguage} /> *
+            </Label>
             <Input
               id="location"
               value={item.location || ""}
               onChange={(e) => updateField("location", e.target.value)}
-              placeholder="Lieu de la maison d'hôte"
+              placeholder={t("Location")}
             />
           </div>
         </div>
         <div className="grid grid-cols-2 gap-4">
           <div>
-            <Label htmlFor="price_per_night">Prix par nuit</Label>
+            <Label htmlFor="price_per_night">
+              <TranslateText text="Price per night" language={currentLanguage} />
+            </Label>
             <Input
               id="price_per_night"
               value={item.price_per_night || ""}
               onChange={(e) => updateField("price_per_night", e.target.value)}
-              placeholder="Ex: 80€ par nuit"
+              placeholder={t("Ex: 80€ per night")}
             />
           </div>
           <div>
-            <Label htmlFor="rating">Note</Label>
+            <Label htmlFor="rating">
+              <TranslateText text="Rating" language={currentLanguage} />
+            </Label>
             <Input
               id="rating"
               type="number"
@@ -609,50 +674,58 @@ const AdminTripPage = () => {
               step="0.1"
               value={item.rating || ""}
               onChange={(e) => updateField("rating", parseFloat(e.target.value) || 0)}
-              placeholder="Note sur 5"
+              placeholder={t("Rating out of 5")}
             />
           </div>
         </div>
         <div>
-          <Label htmlFor="description">Description</Label>
+          <Label htmlFor="description">
+            <TranslateText text="Description" language={currentLanguage} />
+          </Label>
           <Textarea
             id="description"
             value={item.description || ""}
             onChange={(e) => updateField("description", e.target.value)}
-            placeholder="Description de la maison d'hôte"
+            placeholder={t("Guest House Description")}
             className="min-h-[100px]"
           />
         </div>
         <div>
-          <Label htmlFor="amenities">Équipements (séparés par des virgules)</Label>
+          <Label htmlFor="amenities">
+            <TranslateText text="Amenities (comma separated)" language={currentLanguage} />
+          </Label>
           <Input
             id="amenities"
             value={Array.isArray(item.amenities) ? item.amenities.join(", ") : ""}
             onChange={(e) => updateField("amenities", e.target.value.split(",").map(amenity => amenity.trim()).filter(Boolean))}
-            placeholder="wifi, jardin, cuisine"
+            placeholder={t("wifi, garden, kitchen")}
           />
         </div>
         <div className="grid grid-cols-2 gap-4">
           <div>
-            <Label htmlFor="latitude">Latitude</Label>
+            <Label htmlFor="latitude">
+              <TranslateText text="Latitude" language={currentLanguage} />
+            </Label>
             <Input
               id="latitude"
               type="number"
               step="any"
               value={item.latitude || ""}
               onChange={(e) => updateField("latitude", parseFloat(e.target.value) || null)}
-              placeholder="Ex: 35.8245"
+              placeholder={t("Ex: 35.8245")}
             />
           </div>
           <div>
-            <Label htmlFor="longitude">Longitude</Label>
+            <Label htmlFor="longitude">
+              <TranslateText text="Longitude" language={currentLanguage} />
+            </Label>
             <Input
               id="longitude"
               type="number"
               step="any"
               value={item.longitude || ""}
               onChange={(e) => updateField("longitude", parseFloat(e.target.value) || null)}
-              placeholder="Ex: 10.6447"
+              placeholder={t("Ex: 10.6447")}
             />
           </div>
         </div>
@@ -662,7 +735,9 @@ const AdminTripPage = () => {
             checked={item.breakfast || false}
             onCheckedChange={(checked) => updateField("breakfast", checked)}
           />
-          <Label htmlFor="breakfast">Petit-déjeuner inclus</Label>
+          <Label htmlFor="breakfast">
+            <TranslateText text="Breakfast included" language={currentLanguage} />
+          </Label>
         </div>
         <div>
           <Label>Images</Label>
@@ -679,17 +754,19 @@ const AdminTripPage = () => {
 
   const renderAirportFields = (item: Partial<Airport>, isEditing: boolean = false) => {
     const updateField = isEditing ? updateEditingField : updateNewItemField;
-    
+
     return (
       <>
         <div className="grid grid-cols-2 gap-4">
           <div>
-            <Label htmlFor="name">Nom *</Label>
+            <Label htmlFor="name">
+              <TranslateText text="Name" language={currentLanguage} /> *
+            </Label>
             <Input
               id="name"
               value={item.name || ""}
               onChange={(e) => updateField("name", e.target.value)}
-              placeholder="Nom de l'aéroport"
+              placeholder={t("Airport Name")}
             />
           </div>
           <div>
@@ -698,78 +775,100 @@ const AdminTripPage = () => {
               id="code"
               value={item.code || ""}
               onChange={(e) => updateField("code", e.target.value.toUpperCase())}
-              placeholder="Ex: TUN"
+              placeholder={t("Ex: TUN")}
               maxLength={3}
             />
           </div>
         </div>
         <div className="grid grid-cols-2 gap-4">
           <div>
-            <Label htmlFor="location">Lieu *</Label>
+            <Label htmlFor="location">
+              <TranslateText text="Location" language={currentLanguage} /> *
+            </Label>
             <Input
               id="location"
               value={item.location || ""}
               onChange={(e) => updateField("location", e.target.value)}
-              placeholder="Ville de l'aéroport"
+              placeholder={t("Location")}
             />
           </div>
           <div>
-            <Label htmlFor="region">Région</Label>
+            <Label htmlFor="region">
+              <TranslateText text="Region" language={currentLanguage} />
+            </Label>
             <Select value={item.region || ""} onValueChange={(value) => updateField("region", value)}>
               <SelectTrigger>
-                <SelectValue placeholder="Sélectionner une région" />
+                <SelectValue placeholder={t("Select a region")} />
               </SelectTrigger>
               <SelectContent>
-                <SelectItem value="North">Nord</SelectItem>
-                <SelectItem value="South">Sud</SelectItem>
-                <SelectItem value="Center">Centre</SelectItem>
-                <SelectItem value="East">Est</SelectItem>
-                <SelectItem value="West">Ouest</SelectItem>
+                <SelectItem value="North">
+                  <TranslateText text="North" language={currentLanguage} />
+                </SelectItem>
+                <SelectItem value="South">
+                  <TranslateText text="South" language={currentLanguage} />
+                </SelectItem>
+                <SelectItem value="Center">
+                  <TranslateText text="Center" language={currentLanguage} />
+                </SelectItem>
+                <SelectItem value="East">
+                  <TranslateText text="East" language={currentLanguage} />
+                </SelectItem>
+                <SelectItem value="West">
+                  <TranslateText text="West" language={currentLanguage} />
+                </SelectItem>
               </SelectContent>
             </Select>
           </div>
         </div>
         <div>
-          <Label htmlFor="description">Description</Label>
+          <Label htmlFor="description">
+            <TranslateText text="Description" language={currentLanguage} />
+          </Label>
           <Textarea
             id="description"
             value={item.description || ""}
             onChange={(e) => updateField("description", e.target.value)}
-            placeholder="Description de l'aéroport"
+            placeholder={t("Description")}
             className="min-h-[100px]"
           />
         </div>
         <div className="grid grid-cols-2 gap-4">
           <div>
-            <Label htmlFor="latitude">Latitude *</Label>
+            <Label htmlFor="latitude">
+              <TranslateText text="Latitude" language={currentLanguage} /> *
+            </Label>
             <Input
               id="latitude"
               type="number"
               step="any"
               value={item.latitude || ""}
               onChange={(e) => updateField("latitude", parseFloat(e.target.value) || null)}
-              placeholder="Ex: 36.851033"
+              placeholder={t("Ex: 36.851033")}
             />
           </div>
           <div>
-            <Label htmlFor="longitude">Longitude *</Label>
+            <Label htmlFor="longitude">
+              <TranslateText text="Longitude" language={currentLanguage} /> *
+            </Label>
             <Input
               id="longitude"
               type="number"
               step="any"
               value={item.longitude || ""}
               onChange={(e) => updateField("longitude", parseFloat(e.target.value) || null)}
-              placeholder="Ex: 10.227217"
+              placeholder={t("Ex: 10.227217")}
             />
           </div>
         </div>
         <div>
-          <Label htmlFor="advantages">Avantages (séparés par des virgules)</Label>
+          <Label htmlFor="advantages">
+            <TranslateText text="Advantages (comma separated)" language={currentLanguage} />
+          </Label>
           <Input
             id="advantages"
             value={Array.isArray(item.advantages) ? item.advantages.join(", ") : ""}
             onChange={(e) => updateField("advantages", e.target.value.split(",").map(advantage => advantage.trim()).filter(Boolean))}
-            placeholder="Accès direct à la capitale, Installations modernes"
+            placeholder={t("Advantages (comma separated)")}
           />
         </div>
         <div className="flex items-center space-x-2">
@@ -778,7 +877,9 @@ const AdminTripPage = () => {
             checked={item.is_active !== false}
             onCheckedChange={(checked) => updateField("is_active", checked)}
           />
-          <Label htmlFor="is_active">Aéroport actif</Label>
+          <Label htmlFor="is_active">
+            <TranslateText text="Active Airport" language={currentLanguage} />
+          </Label>
         </div>
         <div>
           <Label>Images</Label>
@@ -795,21 +896,25 @@ const AdminTripPage = () => {
 
   const renderPredefinedTripFields = (item: Partial<PredefinedTrip>, isEditing: boolean = false) => {
     const updateField = isEditing ? updateEditingField : updateNewItemField;
-    
+
     return (
       <>
         <div className="grid grid-cols-2 gap-4">
           <div>
-            <Label htmlFor="name">Nom du voyage *</Label>
+            <Label htmlFor="name">
+              <TranslateText text="Trip Name" language={currentLanguage} /> *
+            </Label>
             <Input
               id="name"
               value={item.name || ""}
               onChange={(e) => updateField("name", e.target.value)}
-              placeholder="Ex: Aventure dans le Sud tunisien"
+              placeholder={t("Ex: Aventure dans le Sud tunisien")}
             />
           </div>
           <div>
-            <Label htmlFor="duration_days">Durée en jours *</Label>
+            <Label htmlFor="duration_days">
+              <TranslateText text="Duration in days" language={currentLanguage} /> *
+            </Label>
             <Input
               id="duration_days"
               type="number"
@@ -817,26 +922,30 @@ const AdminTripPage = () => {
               max="30"
               value={item.duration_days || ""}
               onChange={(e) => updateField("duration_days", parseInt(e.target.value) || 1)}
-              placeholder="Ex: 7"
+              placeholder={t("Ex: 7")}
             />
           </div>
         </div>
         <div>
-          <Label htmlFor="description">Description</Label>
+          <Label htmlFor="description">
+            <TranslateText text="Description" language={currentLanguage} />
+          </Label>
           <Textarea
             id="description"
             value={item.description || ""}
             onChange={(e) => updateField("description", e.target.value)}
-            placeholder="Description du voyage pré-configuré"
+            placeholder={t("Description")}
             className="min-h-[100px]"
           />
         </div>
         <div className="grid grid-cols-2 gap-4">
           <div>
-            <Label htmlFor="target_airport_id">Aéroport de destination</Label>
+            <Label htmlFor="target_airport_id">
+              <TranslateText text="Destination Airport" language={currentLanguage} />
+            </Label>
             <Select value={item.target_airport_id || ""} onValueChange={(value) => updateField("target_airport_id", value)}>
               <SelectTrigger>
-                <SelectValue placeholder="Sélectionner un aéroport" />
+                <SelectValue placeholder={t("Select an airport")} />
               </SelectTrigger>
               <SelectContent>
                 {airports.map((airport) => (
@@ -848,43 +957,57 @@ const AdminTripPage = () => {
             </Select>
           </div>
           <div>
-            <Label htmlFor="price_estimate">Prix estimé</Label>
+            <Label htmlFor="price_estimate">
+              <TranslateText text="Estimated Price" language={currentLanguage} />
+            </Label>
             <Input
               id="price_estimate"
               value={item.price_estimate || ""}
               onChange={(e) => updateField("price_estimate", e.target.value)}
-              placeholder="Ex: À partir de 1200€"
+              placeholder={t("Ex: À partir de 1200€")}
             />
           </div>
         </div>
         <div className="grid grid-cols-2 gap-4">
           <div>
-            <Label htmlFor="difficulty_level">Niveau de difficulté</Label>
+            <Label htmlFor="difficulty_level">
+              <TranslateText text="Difficulty Level" language={currentLanguage} />
+            </Label>
             <Select value={item.difficulty_level || "medium"} onValueChange={(value) => updateField("difficulty_level", value)}>
               <SelectTrigger>
-                <SelectValue placeholder="Sélectionner un niveau" />
+                <SelectValue placeholder={t("Select a level")} />
               </SelectTrigger>
               <SelectContent>
-                <SelectItem value="easy">Facile</SelectItem>
-                <SelectItem value="medium">Moyen</SelectItem>
-                <SelectItem value="hard">Difficile</SelectItem>
+                <SelectItem value="easy">
+                  <TranslateText text="Easy" language={currentLanguage} />
+                </SelectItem>
+                <SelectItem value="medium">
+                  <TranslateText text="Medium" language={currentLanguage} />
+                </SelectItem>
+                <SelectItem value="hard">
+                  <TranslateText text="Hard" language={currentLanguage} />
+                </SelectItem>
               </SelectContent>
             </Select>
           </div>
           <div>
-            <Label htmlFor="theme">Thème</Label>
+            <Label htmlFor="theme">
+              <TranslateText text="Theme" language={currentLanguage} />
+            </Label>
             <Input
               id="theme"
               value={item.theme || ""}
               onChange={(e) => updateField("theme", e.target.value)}
-              placeholder="Ex: Aventure, Culture, Détente"
+              placeholder={t("Ex: Aventure, Culture, Détente")}
             />
           </div>
         </div>
         {/* Planning mode selector */}
         <div className="space-y-4">
           <div className="flex items-center justify-between">
-            <Label className="text-lg font-semibold">Mode de planification</Label>
+            <Label className="text-lg font-semibold">
+              <TranslateText text="Planning Mode" language={currentLanguage} />
+            </Label>
             <div className="flex items-center space-x-4">
               <div className="flex items-center space-x-2">
                 <Checkbox
@@ -894,7 +1017,7 @@ const AdminTripPage = () => {
                 />
                 <Label htmlFor="use-detailed-planning" className="flex items-center gap-2">
                   <Calendar className="h-4 w-4" />
-                  Timeline détaillée
+                  <TranslateText text="Detailed Timeline" language={currentLanguage} />
                 </Label>
               </div>
             </div>
@@ -904,14 +1027,16 @@ const AdminTripPage = () => {
             /* Detailed planning with timeline */
             <div className="space-y-6">
               <div className="flex items-center justify-between">
-                <Label className="text-lg font-semibold">Planification détaillée jour par jour</Label>
-                <Button 
-                  type="button" 
-                  variant="outline" 
+                <Label className="text-lg font-semibold">
+                  <TranslateText text="Detailed day-by-day planning" language={currentLanguage} />
+                </Label>
+                <Button
+                  type="button"
+                  variant="outline"
                   onClick={() => {
                     const newDay: DetailedDayPlan = {
                       day: detailedDays.length + 1,
-                      title: `Jour ${detailedDays.length + 1}`,
+                      title: `Day ${detailedDays.length + 1}`,
                       timeline: [],
                       accommodationType: 'none'
                     };
@@ -919,13 +1044,13 @@ const AdminTripPage = () => {
                   }}
                 >
                   <Plus className="mr-2 h-4 w-4" />
-                  Ajouter un jour
+                  <TranslateText text="Add a day" language={currentLanguage} />
                 </Button>
               </div>
 
               {detailedDays.length === 0 ? (
                 <div className="text-center py-8 text-muted-foreground border-2 border-dashed rounded-lg">
-                  Aucun jour planifié. Cliquez sur "Ajouter un jour" pour commencer.
+                  <TranslateText text="No days planned" language={currentLanguage} />
                 </div>
               ) : (
                 <div className="space-y-6">
@@ -960,10 +1085,12 @@ const AdminTripPage = () => {
             /* Simple planning */
             <div className="space-y-6">
               <div className="flex items-center justify-between">
-                <Label className="text-lg font-semibold">Planification simple jour par jour</Label>
-                <Button 
-                  type="button" 
-                  variant="outline" 
+                <Label className="text-lg font-semibold">
+                  <TranslateText text="Simple day-by-day planning" language={currentLanguage} />
+                </Label>
+                <Button
+                  type="button"
+                  variant="outline"
                   onClick={() => {
                     const nextDay = Object.keys(daySelections).length + 1;
                     setDaySelections(prev => ({
@@ -973,158 +1100,170 @@ const AdminTripPage = () => {
                   }}
                 >
                   <Plus className="mr-2 h-4 w-4" />
-                  Ajouter un jour
+                  <TranslateText text="Add a day" language={currentLanguage} />
                 </Button>
               </div>
               {Object.keys(daySelections).length > 0 && Object.keys(daySelections).sort((a, b) => parseInt(a) - parseInt(b)).map((dayKey) => {
                 const day = parseInt(dayKey);
                 const isLastDay = day === Object.keys(daySelections).length;
                 const dayData = daySelections[day] || { activities: [], accommodationId: '', accommodationType: 'none' };
-                  
-                  return (
-                    <div key={day} className="border rounded-lg p-4 space-y-4">
+
+                return (
+                  <div key={day} className="border rounded-lg p-4 space-y-4">
+                    <div className="flex items-center justify-between">
+                      <h3 className="font-semibold text-primary">
+                        <TranslateText text="Day" language={currentLanguage} /> {day}
+                      </h3>
+                      <Button
+                        type="button"
+                        variant="ghost"
+                        size="sm"
+                        onClick={() => {
+                          const newSelections = { ...daySelections };
+                          delete newSelections[day];
+
+                          // Reorder days to fill gaps
+                          const sortedDays = Object.keys(newSelections).sort((a, b) => parseInt(a) - parseInt(b));
+                          const reorderedSelections: { [key: number]: any } = {};
+                          sortedDays.forEach((oldDay, index) => {
+                            reorderedSelections[index + 1] = newSelections[parseInt(oldDay)];
+                          });
+
+                          setDaySelections(reorderedSelections);
+                        }}
+                      >
+                        <Trash2 className="h-4 w-4" />
+                      </Button>
+                    </div>
+
+                    {/* Activities selection - Multiple activities per day */}
+                    <div className="space-y-3">
                       <div className="flex items-center justify-between">
-                        <h3 className="font-semibold text-primary">Jour {day}</h3>
-                        <Button 
-                          type="button" 
-                          variant="ghost" 
+                        <Label>
+                          <TranslateText text="Day activities" language={currentLanguage} /> *
+                        </Label>
+                        <Button
+                          type="button"
+                          variant="outline"
                           size="sm"
                           onClick={() => {
-                            const newSelections = { ...daySelections };
-                            delete newSelections[day];
-                            
-                            // Reorder days to fill gaps
-                            const sortedDays = Object.keys(newSelections).sort((a, b) => parseInt(a) - parseInt(b));
-                            const reorderedSelections: { [key: number]: any } = {};
-                            sortedDays.forEach((oldDay, index) => {
-                              reorderedSelections[index + 1] = newSelections[parseInt(oldDay)];
-                            });
-                            
-                            setDaySelections(reorderedSelections);
+                            // Show a select dialog to add activities
+                            const firstAvailableActivity = activities.find(activity =>
+                              !dayData.activities.includes(activity.id!)
+                            );
+                            if (firstAvailableActivity) {
+                              addActivityToDay(day, firstAvailableActivity.id!);
+                            }
                           }}
                         >
-                          <Trash2 className="h-4 w-4" />
+                          <Plus className="h-4 w-4 mr-1" />
+                          <TranslateText text="Add Activity" language={currentLanguage} />
                         </Button>
                       </div>
-                      
-                       {/* Activities selection - Multiple activities per day */}
-                       <div className="space-y-3">
-                         <div className="flex items-center justify-between">
-                           <Label>Activités du jour *</Label>
-                           <Button
-                             type="button"
-                             variant="outline"
-                             size="sm"
-                             onClick={() => {
-                               // Show a select dialog to add activities
-                               const firstAvailableActivity = activities.find(activity => 
-                                 !dayData.activities.includes(activity.id!)
-                               );
-                               if (firstAvailableActivity) {
-                                 addActivityToDay(day, firstAvailableActivity.id!);
-                               }
-                             }}
-                           >
-                             <Plus className="h-4 w-4 mr-1" />
-                             Ajouter activité
-                           </Button>
-                         </div>
 
-                         {dayData.activities.length === 0 ? (
-                           <div className="text-sm text-muted-foreground border-2 border-dashed rounded p-4 text-center">
-                             Aucune activité programmée. Cliquez sur "Ajouter activité".
-                           </div>
-                         ) : (
-                           <div className="space-y-2">
-                             {dayData.activities.map((activityId, activityIndex) => {
-                               const activity = activities.find(a => a.id === activityId);
-                               return (
-                                 <div key={activityIndex} className="flex items-center gap-2 p-2 border rounded">
-                                   <div className="flex-1">
-                                     <Select 
-                                       value={activityId} 
-                                       onValueChange={(value) => {
-                                         const newActivities = [...dayData.activities];
-                                         newActivities[activityIndex] = value;
-                                         setDaySelections(prev => ({
-                                           ...prev,
-                                           [day]: {
-                                             ...prev[day],
-                                             activities: newActivities
-                                           }
-                                         }));
-                                       }}
-                                     >
-                                       <SelectTrigger className="text-sm">
-                                         <SelectValue placeholder="Sélectionner une activité" />
-                                       </SelectTrigger>
-                                       <SelectContent>
-                                         {activities.map((activity) => (
-                                           <SelectItem key={activity.id} value={activity.id!}>
-                                             {activity.title} - {activity.location}
-                                           </SelectItem>
-                                         ))}
-                                       </SelectContent>
-                                     </Select>
-                                   </div>
-                                   <Button
-                                     type="button"
-                                     variant="ghost"
-                                     size="sm"
-                                     onClick={() => removeActivityFromDay(day, activityIndex)}
-                                   >
-                                     <Trash2 className="h-4 w-4" />
-                                   </Button>
-                                 </div>
-                               );
-                             })}
-                           </div>
-                         )}
-                       </div>
-
-                      {/* Accommodation selection */}
-                      {!isLastDay && (
+                      {dayData.activities.length === 0 ? (
+                        <div className="text-sm text-muted-foreground border-2 border-dashed rounded p-4 text-center">
+                          <TranslateText text="No activities scheduled" language={currentLanguage} />
+                        </div>
+                      ) : (
                         <div className="space-y-2">
-                          <Label>Hébergement pour la nuit</Label>
-                          
-                          {/* Accommodation type selection */}
-                          <Select 
-                            value={dayData.accommodationType} 
-                            onValueChange={(value) => updateDaySelection(day, 'accommodationType', value)}
-                          >
-                            <SelectTrigger>
-                              <SelectValue placeholder="Type d'hébergement" />
-                            </SelectTrigger>
-                             <SelectContent>
-                               <SelectItem value="none">Aucun hébergement</SelectItem>
-                               <SelectItem value="hotel">Hôtel</SelectItem>
-                               <SelectItem value="guesthouse">Maison d'hôte</SelectItem>
-                             </SelectContent>
-                          </Select>
-
-                           {/* Specific accommodation selection */}
-                           {dayData.accommodationType && dayData.accommodationType !== 'none' && (
-                            <Select 
-                              value={dayData.accommodationId} 
-                              onValueChange={(value) => updateDaySelection(day, 'accommodationId', value)}
-                            >
-                              <SelectTrigger>
-                                <SelectValue placeholder={`Sélectionner ${dayData.accommodationType === 'hotel' ? 'un hôtel' : 'une maison d\'hôte'}`} />
-                              </SelectTrigger>
-                              <SelectContent>
-                                {(dayData.accommodationType === 'hotel' ? hotels : guestHouses).map((accommodation) => (
-                                  <SelectItem key={accommodation.id} value={accommodation.id!}>
-                                    {accommodation.name} - {accommodation.location} (ID: {accommodation.id?.slice(0, 8)}...)
-                                  </SelectItem>
-                                ))}
-                              </SelectContent>
-                            </Select>
-                          )}
+                          {dayData.activities.map((activityId, activityIndex) => {
+                            const activity = activities.find(a => a.id === activityId);
+                            return (
+                              <div key={activityIndex} className="flex items-center gap-2 p-2 border rounded">
+                                <div className="flex-1">
+                                  <Select
+                                    value={activityId}
+                                    onValueChange={(value) => {
+                                      const newActivities = [...dayData.activities];
+                                      newActivities[activityIndex] = value;
+                                      setDaySelections(prev => ({
+                                        ...prev,
+                                        [day]: {
+                                          ...prev[day],
+                                          activities: newActivities
+                                        }
+                                      }));
+                                    }}
+                                  >
+                                    <SelectTrigger className="text-sm">
+                                      <SelectValue placeholder={t("Select an activity")} />
+                                    </SelectTrigger>
+                                    <SelectContent>
+                                      {activities.map((activity) => (
+                                        <SelectItem key={activity.id} value={activity.id!}>
+                                          {activity.title} - {activity.location}
+                                        </SelectItem>
+                                      ))}
+                                    </SelectContent>
+                                  </Select>
+                                </div>
+                                <Button
+                                  type="button"
+                                  variant="ghost"
+                                  size="sm"
+                                  onClick={() => removeActivityFromDay(day, activityIndex)}
+                                >
+                                  <Trash2 className="h-4 w-4" />
+                                </Button>
+                              </div>
+                            );
+                          })}
                         </div>
                       )}
                     </div>
-                  );
-                })}
+
+                    {/* Accommodation selection */}
+                    {!isLastDay && (
+                      <div className="space-y-2">
+                        <Label>
+                          <TranslateText text="Night accommodation" language={currentLanguage} />
+                        </Label>
+
+                        {/* Accommodation type selection */}
+                        <Select
+                          value={dayData.accommodationType}
+                          onValueChange={(value) => updateDaySelection(day, 'accommodationType', value)}
+                        >
+                          <SelectTrigger>
+                            <SelectValue placeholder={t("Accommodation type")} />
+                          </SelectTrigger>
+                          <SelectContent>
+                            <SelectItem value="none">
+                              <TranslateText text="No accommodation" language={currentLanguage} />
+                            </SelectItem>
+                            <SelectItem value="hotel">
+                              <TranslateText text="Hotel" language={currentLanguage} />
+                            </SelectItem>
+                            <SelectItem value="guesthouse">
+                              <TranslateText text="Guest House" language={currentLanguage} />
+                            </SelectItem>
+                          </SelectContent>
+                        </Select>
+
+                        {/* Specific accommodation selection */}
+                        {dayData.accommodationType && dayData.accommodationType !== 'none' && (
+                          <Select
+                            value={dayData.accommodationId}
+                            onValueChange={(value) => updateDaySelection(day, 'accommodationId', value)}
+                          >
+                            <SelectTrigger>
+                              <SelectValue placeholder={t(`Select a ${dayData.accommodationType}`)} />
+                            </SelectTrigger>
+                            <SelectContent>
+                              {(dayData.accommodationType === 'hotel' ? hotels : guestHouses).map((accommodation) => (
+                                <SelectItem key={accommodation.id} value={accommodation.id!}>
+                                  {accommodation.name} - {accommodation.location} (ID: {accommodation.id?.slice(0, 8)}...)
+                                </SelectItem>
+                              ))}
+                            </SelectContent>
+                          </Select>
+                        )}
+                      </div>
+                    )}
+                  </div>
+                );
+              })}
             </div>
           )}
         </div>
@@ -1135,7 +1274,9 @@ const AdminTripPage = () => {
               checked={item.is_featured || false}
               onCheckedChange={(checked) => updateField("is_featured", checked)}
             />
-            <Label htmlFor="is_featured">Voyage en vedette</Label>
+            <Label htmlFor="is_featured">
+              <TranslateText text="Featured trip" language={currentLanguage} />
+            </Label>
           </div>
           <div className="flex items-center space-x-2">
             <Checkbox
@@ -1143,7 +1284,9 @@ const AdminTripPage = () => {
               checked={item.is_active !== false}
               onCheckedChange={(checked) => updateField("is_active", checked)}
             />
-            <Label htmlFor="is_active">Voyage actif</Label>
+            <Label htmlFor="is_active">
+              <TranslateText text="Active trip" language={currentLanguage} />
+            </Label>
           </div>
         </div>
         <div>
@@ -1163,44 +1306,72 @@ const AdminTripPage = () => {
     <AdminLayout>
       <div className="space-y-6">
         <div>
-          <h1 className="text-3xl font-bold">Gestion des Voyages</h1>
+          <h1 className="text-3xl font-bold">
+            <TranslateText text="Trip Management" language={currentLanguage} />
+          </h1>
           <p className="text-muted-foreground">
-            Gérez les activités, hôtels et maisons d'hôtes de votre plateforme.
+            <TranslateText text="Manage activities, hotels and guest houses" language={currentLanguage} />
           </p>
         </div>
 
         <Tabs value={currentTab} onValueChange={setCurrentTab} className="space-y-6">
           <TabsList className="grid w-full grid-cols-5">
-            <TabsTrigger value="activities">Activités</TabsTrigger>
-            <TabsTrigger value="hotels">Hôtels</TabsTrigger>
-            <TabsTrigger value="guesthouses">Maisons d'hôtes</TabsTrigger>
-            <TabsTrigger value="airports">Aéroports</TabsTrigger>
-            <TabsTrigger value="predefined-trips">Voyages</TabsTrigger>
+            <TabsTrigger value="activities">
+              <TranslateText text="Activities" language={currentLanguage} />
+            </TabsTrigger>
+            <TabsTrigger value="hotels">
+              <TranslateText text="Hotels" language={currentLanguage} />
+            </TabsTrigger>
+            <TabsTrigger value="guesthouses">
+              <TranslateText text="Guest Houses" language={currentLanguage} />
+            </TabsTrigger>
+            <TabsTrigger value="airports">
+              <TranslateText text="Airports" language={currentLanguage} />
+            </TabsTrigger>
+            <TabsTrigger value="predefined-trips">
+              <TranslateText text="Trips" language={currentLanguage} />
+            </TabsTrigger>
           </TabsList>
 
           <TabsContent value="activities" className="space-y-6">
             <Card>
               <CardHeader className="flex flex-row items-center justify-between">
-                <CardTitle>Activités</CardTitle>
+                <CardTitle>
+                  <TranslateText text="Activities" language={currentLanguage} />
+                </CardTitle>
                 <Button onClick={handleAddItem}>
                   <Plus className="mr-2 h-4 w-4" />
-                  Ajouter une activité
+                  <TranslateText text="Add Activity" language={currentLanguage} />
                 </Button>
               </CardHeader>
               <CardContent>
                 {activitiesLoading ? (
-                  <div>Chargement...</div>
+                  <div>{t("Loading...")}</div>
                 ) : (
                   <Table>
                     <TableHeader>
                       <TableRow>
-                        <TableHead>Titre</TableHead>
-                        <TableHead>Lieu</TableHead>
-                        <TableHead>Prix</TableHead>
-                        <TableHead>Note</TableHead>
-                        <TableHead>Catégorie</TableHead>
-                        <TableHead>Visibilité</TableHead>
-                        <TableHead>Actions</TableHead>
+                        <TableHead>
+                          <TranslateText text="Title" language={currentLanguage} />
+                        </TableHead>
+                        <TableHead>
+                          <TranslateText text="Location" language={currentLanguage} />
+                        </TableHead>
+                        <TableHead>
+                          <TranslateText text="Price" language={currentLanguage} />
+                        </TableHead>
+                        <TableHead>
+                          <TranslateText text="Rating" language={currentLanguage} />
+                        </TableHead>
+                        <TableHead>
+                          <TranslateText text="Category" language={currentLanguage} />
+                        </TableHead>
+                        <TableHead>
+                          <TranslateText text="Visibility" language={currentLanguage} />
+                        </TableHead>
+                        <TableHead>
+                          <TranslateText text="Actions" language={currentLanguage} />
+                        </TableHead>
                       </TableRow>
                     </TableHeader>
                     <TableBody>
@@ -1219,8 +1390,8 @@ const AdminTripPage = () => {
                           </TableCell>
                           <TableCell>
                             <div className="flex flex-col gap-1">
-                              {activity.show_in_travel && <Badge variant="outline" className="text-xs">Travel</Badge>}
-                              {activity.show_in_start_my_trip && <Badge variant="outline" className="text-xs">Start Trip</Badge>}
+                              {activity.show_in_travel && <Badge variant="outline" className="text-xs">{t("Travel")}</Badge>}
+                              {activity.show_in_start_my_trip && <Badge variant="outline" className="text-xs">{t("Start Trip")}</Badge>}
                             </div>
                           </TableCell>
                           <TableCell>
@@ -1253,25 +1424,39 @@ const AdminTripPage = () => {
           <TabsContent value="hotels" className="space-y-6">
             <Card>
               <CardHeader className="flex flex-row items-center justify-between">
-                <CardTitle>Hôtels</CardTitle>
+                <CardTitle>
+                  <TranslateText text="Hotels" language={currentLanguage} />
+                </CardTitle>
                 <Button onClick={handleAddItem}>
                   <Plus className="mr-2 h-4 w-4" />
-                  Ajouter un hôtel
+                  <TranslateText text="Add Hotel" language={currentLanguage} />
                 </Button>
               </CardHeader>
               <CardContent>
                 {hotelsLoading ? (
-                  <div>Chargement...</div>
+                  <div>{t("Loading...")}</div>
                 ) : (
                   <Table>
                     <TableHeader>
                       <TableRow>
-                        <TableHead>Nom</TableHead>
-                        <TableHead>Lieu</TableHead>
-                        <TableHead>Prix/nuit</TableHead>
-                        <TableHead>Note</TableHead>
-                        <TableHead>Petit-déjeuner</TableHead>
-                        <TableHead>Actions</TableHead>
+                        <TableHead>
+                          <TranslateText text="Name" language={currentLanguage} />
+                        </TableHead>
+                        <TableHead>
+                          <TranslateText text="Location" language={currentLanguage} />
+                        </TableHead>
+                        <TableHead>
+                          <TranslateText text="Price/Night" language={currentLanguage} />
+                        </TableHead>
+                        <TableHead>
+                          <TranslateText text="Rating" language={currentLanguage} />
+                        </TableHead>
+                        <TableHead>
+                          <TranslateText text="Breakfast" language={currentLanguage} />
+                        </TableHead>
+                        <TableHead>
+                          <TranslateText text="Actions" language={currentLanguage} />
+                        </TableHead>
                       </TableRow>
                     </TableHeader>
                     <TableBody>
@@ -1287,9 +1472,13 @@ const AdminTripPage = () => {
                           </TableCell>
                           <TableCell>
                             {hotel.breakfast ? (
-                              <Badge variant="default">Inclus</Badge>
+                              <Badge variant="default">
+                                <TranslateText text="Inclus" language={currentLanguage} />
+                              </Badge>
                             ) : (
-                              <Badge variant="secondary">Non inclus</Badge>
+                              <Badge variant="secondary">
+                                <TranslateText text="Non inclus" language={currentLanguage} />
+                              </Badge>
                             )}
                           </TableCell>
                           <TableCell>
@@ -1322,25 +1511,39 @@ const AdminTripPage = () => {
           <TabsContent value="guesthouses" className="space-y-6">
             <Card>
               <CardHeader className="flex flex-row items-center justify-between">
-                <CardTitle>Maisons d'hôtes</CardTitle>
+                <CardTitle>
+                  <TranslateText text="Guest Houses" language={currentLanguage} />
+                </CardTitle>
                 <Button onClick={handleAddItem}>
                   <Plus className="mr-2 h-4 w-4" />
-                  Ajouter une maison d'hôte
+                  <TranslateText text="Add Guest House" language={currentLanguage} />
                 </Button>
               </CardHeader>
               <CardContent>
                 {guestHousesLoading ? (
-                  <div>Chargement...</div>
+                  <div>{t("Loading...")}</div>
                 ) : (
                   <Table>
                     <TableHeader>
                       <TableRow>
-                        <TableHead>Nom</TableHead>
-                        <TableHead>Lieu</TableHead>
-                        <TableHead>Prix/nuit</TableHead>
-                        <TableHead>Note</TableHead>
-                        <TableHead>Petit-déjeuner</TableHead>
-                        <TableHead>Actions</TableHead>
+                        <TableHead>
+                          <TranslateText text="Name" language={currentLanguage} />
+                        </TableHead>
+                        <TableHead>
+                          <TranslateText text="Location" language={currentLanguage} />
+                        </TableHead>
+                        <TableHead>
+                          <TranslateText text="Price/Night" language={currentLanguage} />
+                        </TableHead>
+                        <TableHead>
+                          <TranslateText text="Rating" language={currentLanguage} />
+                        </TableHead>
+                        <TableHead>
+                          <TranslateText text="Breakfast" language={currentLanguage} />
+                        </TableHead>
+                        <TableHead>
+                          <TranslateText text="Actions" language={currentLanguage} />
+                        </TableHead>
                       </TableRow>
                     </TableHeader>
                     <TableBody>
@@ -1356,9 +1559,13 @@ const AdminTripPage = () => {
                           </TableCell>
                           <TableCell>
                             {guestHouse.breakfast ? (
-                              <Badge variant="default">Inclus</Badge>
+                              <Badge variant="default">
+                                <TranslateText text="Inclus" language={currentLanguage} />
+                              </Badge>
                             ) : (
-                              <Badge variant="secondary">Non inclus</Badge>
+                              <Badge variant="secondary">
+                                <TranslateText text="Non inclus" language={currentLanguage} />
+                              </Badge>
                             )}
                           </TableCell>
                           <TableCell>
@@ -1391,25 +1598,39 @@ const AdminTripPage = () => {
           <TabsContent value="airports" className="space-y-6">
             <Card>
               <CardHeader className="flex flex-row items-center justify-between">
-                <CardTitle>Aéroports</CardTitle>
+                <CardTitle>
+                  <TranslateText text="Airports" language={currentLanguage} />
+                </CardTitle>
                 <Button onClick={handleAddItem}>
                   <Plus className="mr-2 h-4 w-4" />
-                  Ajouter un aéroport
+                  <TranslateText text="Add Airport" language={currentLanguage} />
                 </Button>
               </CardHeader>
               <CardContent>
                 {airportsLoading ? (
-                  <div>Chargement...</div>
+                  <div>{t("Loading...")}</div>
                 ) : (
                   <Table>
                     <TableHeader>
                       <TableRow>
-                        <TableHead>Nom</TableHead>
-                        <TableHead>Code</TableHead>
-                        <TableHead>Lieu</TableHead>
-                        <TableHead>Région</TableHead>
-                        <TableHead>Statut</TableHead>
-                        <TableHead>Actions</TableHead>
+                        <TableHead>
+                          <TranslateText text="Name" language={currentLanguage} />
+                        </TableHead>
+                        <TableHead>
+                          <TranslateText text="Code" language={currentLanguage} />
+                        </TableHead>
+                        <TableHead>
+                          <TranslateText text="Location" language={currentLanguage} />
+                        </TableHead>
+                        <TableHead>
+                          <TranslateText text="Region" language={currentLanguage} />
+                        </TableHead>
+                        <TableHead>
+                          <TranslateText text="Status" language={currentLanguage} />
+                        </TableHead>
+                        <TableHead>
+                          <TranslateText text="Actions" language={currentLanguage} />
+                        </TableHead>
                       </TableRow>
                     </TableHeader>
                     <TableBody>
@@ -1423,9 +1644,13 @@ const AdminTripPage = () => {
                           <TableCell>{airport.region || "N/A"}</TableCell>
                           <TableCell>
                             {airport.is_active ? (
-                              <Badge variant="default">Actif</Badge>
+                              <Badge variant="default">
+                                <TranslateText text="Active" language={currentLanguage} />
+                              </Badge>
                             ) : (
-                              <Badge variant="secondary">Inactif</Badge>
+                              <Badge variant="secondary">
+                                <TranslateText text="Inactive" language={currentLanguage} />
+                              </Badge>
                             )}
                           </TableCell>
                           <TableCell>
@@ -1458,25 +1683,39 @@ const AdminTripPage = () => {
           <TabsContent value="predefined-trips" className="space-y-6">
             <Card>
               <CardHeader className="flex flex-row items-center justify-between">
-                <CardTitle>Voyages Pré-configurés</CardTitle>
+                <CardTitle>
+                  <TranslateText text="Trips" language={currentLanguage} />
+                </CardTitle>
                 <Button onClick={handleAddItem}>
                   <Plus className="mr-2 h-4 w-4" />
-                  Ajouter un voyage
+                  <TranslateText text="Add Trip" language={currentLanguage} />
                 </Button>
               </CardHeader>
               <CardContent>
                 {tripsLoading ? (
-                  <div>Chargement...</div>
+                  <div>{t("Loading...")}</div>
                 ) : (
                   <Table>
                     <TableHeader>
                       <TableRow>
-                        <TableHead>Nom</TableHead>
-                        <TableHead>Durée</TableHead>
-                        <TableHead>Prix estimé</TableHead>
-                        <TableHead>Difficulté</TableHead>
-                        <TableHead>Statut</TableHead>
-                        <TableHead>Actions</TableHead>
+                        <TableHead>
+                          <TranslateText text="Name" language={currentLanguage} />
+                        </TableHead>
+                        <TableHead>
+                          <TranslateText text="Duration" language={currentLanguage} />
+                        </TableHead>
+                        <TableHead>
+                          <TranslateText text="Estimated Price" language={currentLanguage} />
+                        </TableHead>
+                        <TableHead>
+                          <TranslateText text="Difficulty" language={currentLanguage} />
+                        </TableHead>
+                        <TableHead>
+                          <TranslateText text="Status" language={currentLanguage} />
+                        </TableHead>
+                        <TableHead>
+                          <TranslateText text="Actions" language={currentLanguage} />
+                        </TableHead>
                       </TableRow>
                     </TableHeader>
                     <TableBody>
@@ -1487,21 +1726,27 @@ const AdminTripPage = () => {
                               {trip.name}
                               {trip.is_featured && (
                                 <Badge variant="outline" className="text-xs w-fit mt-1">
-                                  Vedette
+                                  <TranslateText text="Featured" language={currentLanguage} />
                                 </Badge>
                               )}
                             </div>
                           </TableCell>
-                          <TableCell>{trip.duration_days} jours</TableCell>
+                          <TableCell>{trip.duration_days} {t("days")}</TableCell>
                           <TableCell>{trip.price_estimate || "N/A"}</TableCell>
                           <TableCell>
-                            <Badge variant="secondary">{trip.difficulty_level}</Badge>
+                            <Badge variant="secondary">
+                              <TranslateText text={trip.difficulty_level || "medium"} language={currentLanguage} />
+                            </Badge>
                           </TableCell>
                           <TableCell>
                             {trip.is_active ? (
-                              <Badge variant="default">Actif</Badge>
+                              <Badge variant="default">
+                                <TranslateText text="Active" language={currentLanguage} />
+                              </Badge>
                             ) : (
-                              <Badge variant="secondary">Inactif</Badge>
+                              <Badge variant="secondary">
+                                <TranslateText text="Inactive" language={currentLanguage} />
+                              </Badge>
                             )}
                           </TableCell>
                           <TableCell>
@@ -1537,10 +1782,10 @@ const AdminTripPage = () => {
           <DialogContent className="max-w-4xl max-h-[80vh] overflow-y-auto">
             <DialogHeader>
               <DialogTitle>
-                Modifier {currentTab === "activities" ? "l'activité" : 
-                         currentTab === "hotels" ? "l'hôtel" : 
-                         currentTab === "guesthouses" ? "la maison d'hôte" :
-                         currentTab === "airports" ? "l'aéroport" : "le voyage"}
+                {currentTab === "activities" ? t("Edit Activity") :
+                  currentTab === "hotels" ? t("Edit Hotel") :
+                    currentTab === "guesthouses" ? t("Edit Guest House") :
+                      currentTab === "airports" ? t("Edit Airport") : t("Edit Trip")}
               </DialogTitle>
             </DialogHeader>
             <div className="space-y-4">
@@ -1556,10 +1801,10 @@ const AdminTripPage = () => {
             </div>
             <div className="flex justify-end space-x-2">
               <Button variant="outline" onClick={() => setEditDialogOpen(false)}>
-                Annuler
+                <TranslateText text="Cancel" language={currentLanguage} />
               </Button>
               <Button onClick={handleSaveEdit}>
-                Sauvegarder
+                <TranslateText text="Save" language={currentLanguage} />
               </Button>
             </div>
           </DialogContent>
@@ -1570,10 +1815,10 @@ const AdminTripPage = () => {
           <DialogContent className="max-w-4xl max-h-[80vh] overflow-y-auto">
             <DialogHeader>
               <DialogTitle>
-                Ajouter {currentTab === "activities" ? "une activité" : 
-                         currentTab === "hotels" ? "un hôtel" : 
-                         currentTab === "guesthouses" ? "une maison d'hôte" :
-                         currentTab === "airports" ? "un aéroport" : "un voyage"}
+                {currentTab === "activities" ? t("Add Activity") :
+                  currentTab === "hotels" ? t("Add Hotel") :
+                    currentTab === "guesthouses" ? t("Add Guest House") :
+                      currentTab === "airports" ? t("Add Airport") : t("Add Trip")}
               </DialogTitle>
             </DialogHeader>
             <div className="space-y-4">
@@ -1585,10 +1830,10 @@ const AdminTripPage = () => {
             </div>
             <div className="flex justify-end space-x-2">
               <Button variant="outline" onClick={() => setAddDialogOpen(false)}>
-                Annuler
+                <TranslateText text="Cancel" language={currentLanguage} />
               </Button>
               <Button onClick={handleAddNewItem}>
-                Ajouter
+                <TranslateText text="Ajouter" language={currentLanguage} />
               </Button>
             </div>
           </DialogContent>
@@ -1598,15 +1843,19 @@ const AdminTripPage = () => {
         <AlertDialog open={deleteDialogOpen} onOpenChange={setDeleteDialogOpen}>
           <AlertDialogContent>
             <AlertDialogHeader>
-              <AlertDialogTitle>Êtes-vous sûr ?</AlertDialogTitle>
+              <AlertDialogTitle>
+                <TranslateText text="Are you sure?" language={currentLanguage} />
+              </AlertDialogTitle>
               <AlertDialogDescription>
-                Cette action ne peut pas être annulée. Cela supprimera définitivement cet élément.
+                <TranslateText text="This action cannot be undone. It will permanently delete this item." language={currentLanguage} />
               </AlertDialogDescription>
             </AlertDialogHeader>
             <AlertDialogFooter>
-              <AlertDialogCancel>Annuler</AlertDialogCancel>
+              <AlertDialogCancel>
+                <TranslateText text="Cancel" language={currentLanguage} />
+              </AlertDialogCancel>
               <AlertDialogAction onClick={handleDeleteItem}>
-                Supprimer
+                <TranslateText text="Delete" language={currentLanguage} />
               </AlertDialogAction>
             </AlertDialogFooter>
           </AlertDialogContent>

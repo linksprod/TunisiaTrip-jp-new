@@ -16,6 +16,8 @@ export interface UnifiedSearchResult {
   section?: string;
   image?: string;
   titleJP?: string;
+  descriptionJP?: string;
+  sectionJP?: string;
   source: 'basic' | 'enhanced' | 'ai';
   relevanceScore: number;
   contextType: 'page' | 'city' | 'activity' | 'section' | 'service';
@@ -31,7 +33,7 @@ export const useUnifiedSearch = (currentLanguage: string = 'EN') => {
   const [isBasicLoading, setIsBasicLoading] = useState(false);
   const [isAiLoading, setIsAiLoading] = useState(false);
   const [searchHistory, setSearchHistory] = useState<string[]>([]);
-  
+
   const navigate = useNavigate();
   const basicSearchTimeoutRef = useRef<NodeJS.Timeout>();
   const aiSearchTimeoutRef = useRef<NodeJS.Timeout>();
@@ -68,11 +70,13 @@ export const useUnifiedSearch = (currentLanguage: string = 'EN') => {
         section: item.section,
         image: item.image,
         titleJP: item.titleJP,
+        descriptionJP: item.descriptionJP,
+        sectionJP: item.sectionJP,
         source: 'basic' as const,
         relevanceScore: item.score || 0,
         contextType: getContextType(item.category, item.section)
       }));
-      
+
       setBasicResults(formattedResults);
     } catch (error) {
       console.error('Basic search error:', error);
@@ -93,14 +97,14 @@ export const useUnifiedSearch = (currentLanguage: string = 'EN') => {
     try {
       // Get enhanced query from semantic search service
       const enhancement = await enhanceSearchQuery(query, currentLanguage);
-      
+
       // Use enhanced search service
       const results = await enhancedSearch(
-        query, 
-        8, 
+        query,
+        8,
         enhancement.keywords.concat(enhancement.synonyms)
       );
-      
+
       const formattedResults: UnifiedSearchResult[] = results.map(item => ({
         id: item.id,
         title: item.title,
@@ -110,13 +114,15 @@ export const useUnifiedSearch = (currentLanguage: string = 'EN') => {
         section: item.section,
         image: item.image,
         titleJP: item.titleJP,
+        descriptionJP: item.descriptionJP,
+        sectionJP: item.sectionJP,
         source: 'ai' as const,
         relevanceScore: (item.relevanceScore || 0) + 0.1, // Slight boost for AI results
         contextType: getContextType(item.category, item.section)
       }));
-      
+
       setAiResults(formattedResults);
-      
+
       // Generate contextual suggestions
       generateSuggestions(query, enhancement.keywords);
     } catch (error) {
@@ -131,7 +137,7 @@ export const useUnifiedSearch = (currentLanguage: string = 'EN') => {
   const generateSuggestions = useCallback((query: string, keywords: string[]) => {
     const contextualSuggestions: string[] = [];
     const queryLower = query.toLowerCase();
-    
+
     // Context-based suggestions
     const suggestionMap = {
       'tunisia': currentLanguage === 'JP' ? ['チュニジアの観光地', 'チュニジア文化', 'チュニジア旅行'] : ['Tunisia attractions', 'Tunisia culture', 'Tunisia travel'],
@@ -160,7 +166,7 @@ export const useUnifiedSearch = (currentLanguage: string = 'EN') => {
   // Combine and prioritize results
   useEffect(() => {
     const combined = [...basicResults, ...aiResults];
-    
+
     // Remove duplicates by path, preferring AI results
     const uniqueResults = combined.reduce((acc, current) => {
       const existing = acc.find(item => item.path === current.path);
@@ -180,7 +186,7 @@ export const useUnifiedSearch = (currentLanguage: string = 'EN') => {
         // Boost important context types
         const aBoost = getContextBoost(a.contextType);
         const bBoost = getContextBoost(b.contextType);
-        
+
         return (b.relevanceScore + bBoost) - (a.relevanceScore + aBoost);
       })
       .slice(0, 8);
@@ -227,7 +233,7 @@ export const useUnifiedSearch = (currentLanguage: string = 'EN') => {
 
     // Navigate to result
     navigate(result.path);
-    
+
     // Clear search
     setSearchValue('');
     setIsSearchFocused(false);
@@ -242,7 +248,7 @@ export const useUnifiedSearch = (currentLanguage: string = 'EN') => {
     setBasicResults([]);
     setAiResults([]);
     setSuggestions([]);
-    
+
     if (basicSearchTimeoutRef.current) {
       clearTimeout(basicSearchTimeoutRef.current);
     }

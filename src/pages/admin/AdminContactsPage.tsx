@@ -7,6 +7,9 @@ import { Button } from "@/components/ui/button";
 import { Dialog, DialogContent, DialogHeader, DialogTitle } from "@/components/ui/dialog";
 import { Badge } from "@/components/ui/badge";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
+import { TranslateText } from "@/components/translation/TranslateText";
+import { useTranslation } from "@/hooks/use-translation";
+import { useToast } from "@/components/ui/use-toast";
 
 interface Contact {
   id: string;
@@ -72,6 +75,8 @@ const AdminContactsPage = () => {
   const [selectedContact, setSelectedContact] = useState<Contact | null>(null);
   const [isDetailDialogOpen, setIsDetailDialogOpen] = useState(false);
   const [activeFilter, setActiveFilter] = useState<'all' | 'new' | 'responded' | 'archived'>('all');
+  const { currentLanguage, t } = useTranslation();
+  const { toast } = useToast();
 
   const handleViewDetails = (contact: Contact) => {
     setSelectedContact(contact);
@@ -85,7 +90,7 @@ const AdminContactsPage = () => {
       }
       return contact;
     }));
-    
+
     if (selectedContact && selectedContact.id === contactId) {
       setSelectedContact({ ...selectedContact, status: newStatus });
     }
@@ -98,8 +103,8 @@ const AdminContactsPage = () => {
     }
   };
 
-  const filteredContacts = activeFilter === 'all' 
-    ? contacts 
+  const filteredContacts = activeFilter === 'all'
+    ? contacts
     : contacts.filter(contact => contact.status === activeFilter);
 
   const getStatusColor = (status: string) => {
@@ -115,37 +120,61 @@ const AdminContactsPage = () => {
     <EnhancedAdminLayout>
       <div className="space-y-6">
         <div>
-          <h1 className="text-3xl font-bold">Contact Management</h1>
+          <h1 className="text-3xl font-bold">
+            <TranslateText text="Contact Management" language={currentLanguage} />
+          </h1>
           <p className="text-muted-foreground mt-2">
-            Manage and respond to contact form submissions.
+            <TranslateText text="Manage and respond to contact form submissions." language={currentLanguage} />
           </p>
         </div>
 
         <Card>
           <CardHeader>
-            <CardTitle>Contact Form Submissions</CardTitle>
+            <CardTitle>
+              <TranslateText text="Contact Form Submissions" language={currentLanguage} />
+            </CardTitle>
             <CardDescription>
-              Review and manage all contact inquiries.
+              <TranslateText text="Review and manage all contact inquiries." language={currentLanguage} />
             </CardDescription>
           </CardHeader>
           <CardContent>
             <Tabs defaultValue="all" onValueChange={(value) => setActiveFilter(value as any)}>
               <TabsList className="mb-4">
-                <TabsTrigger value="all">All Contacts</TabsTrigger>
-                <TabsTrigger value="new">New</TabsTrigger>
-                <TabsTrigger value="responded">Responded</TabsTrigger>
-                <TabsTrigger value="archived">Archived</TabsTrigger>
+                <TabsTrigger value="all">
+                  <TranslateText text="All Contacts" language={currentLanguage} />
+                </TabsTrigger>
+                <TabsTrigger value="new">
+                  <TranslateText text="New" language={currentLanguage} />
+                </TabsTrigger>
+                <TabsTrigger value="responded">
+                  <TranslateText text="Responded" language={currentLanguage} />
+                </TabsTrigger>
+                <TabsTrigger value="archived">
+                  <TranslateText text="Archived" language={currentLanguage} />
+                </TabsTrigger>
               </TabsList>
-              
+
               <Table>
                 <TableHeader>
                   <TableRow>
-                    <TableHead>Date</TableHead>
-                    <TableHead>Name</TableHead>
-                    <TableHead>Email</TableHead>
-                    <TableHead>Subject</TableHead>
-                    <TableHead>Status</TableHead>
-                    <TableHead className="text-right">Actions</TableHead>
+                    <TableHead>
+                      <TranslateText text="Date" language={currentLanguage} />
+                    </TableHead>
+                    <TableHead>
+                      <TranslateText text="Name" language={currentLanguage} />
+                    </TableHead>
+                    <TableHead>
+                      <TranslateText text="Email" language={currentLanguage} />
+                    </TableHead>
+                    <TableHead>
+                      <TranslateText text="Subject" language={currentLanguage} />
+                    </TableHead>
+                    <TableHead>
+                      <TranslateText text="Status" language={currentLanguage} />
+                    </TableHead>
+                    <TableHead className="text-right">
+                      <TranslateText text="Actions" language={currentLanguage} />
+                    </TableHead>
                   </TableRow>
                 </TableHeader>
                 <TableBody>
@@ -154,10 +183,10 @@ const AdminContactsPage = () => {
                       <TableCell>{contact.submittedDate}</TableCell>
                       <TableCell className="font-medium">{contact.name}</TableCell>
                       <TableCell>{contact.email}</TableCell>
-                      <TableCell>{contact.subject || "General Inquiry"}</TableCell>
+                      <TableCell>{contact.subject || t("General Inquiry")}</TableCell>
                       <TableCell>
                         <Badge className={getStatusColor(contact.status)}>
-                          {contact.status.charAt(0).toUpperCase() + contact.status.slice(1)}
+                          <TranslateText text={contact.status.charAt(0).toUpperCase() + contact.status.slice(1)} language={currentLanguage} />
                         </Badge>
                       </TableCell>
                       <TableCell className="text-right">
@@ -166,7 +195,7 @@ const AdminContactsPage = () => {
                           size="sm"
                           onClick={() => handleViewDetails(contact)}
                         >
-                          View Details
+                          <TranslateText text="View Details" language={currentLanguage} />
                         </Button>
                       </TableCell>
                     </TableRow>
@@ -181,69 +210,81 @@ const AdminContactsPage = () => {
       <Dialog open={isDetailDialogOpen} onOpenChange={setIsDetailDialogOpen}>
         <DialogContent className="sm:max-w-[600px]">
           <DialogHeader>
-            <DialogTitle>Contact Details</DialogTitle>
+            <DialogTitle>
+              <TranslateText text="Contact Details" language={currentLanguage} />
+            </DialogTitle>
           </DialogHeader>
           {selectedContact && (
             <div className="space-y-4">
               <div className="grid grid-cols-2 gap-4">
                 <div>
-                  <p className="text-sm font-medium text-gray-500">Name</p>
+                  <p className="text-sm font-medium text-gray-500">
+                    <TranslateText text="Name" language={currentLanguage} />
+                  </p>
                   <p className="text-sm">{selectedContact.name}</p>
                 </div>
                 <div>
-                  <p className="text-sm font-medium text-gray-500">Email</p>
+                  <p className="text-sm font-medium text-gray-500">
+                    <TranslateText text="Email" language={currentLanguage} />
+                  </p>
                   <p className="text-sm">{selectedContact.email}</p>
                 </div>
                 <div>
-                  <p className="text-sm font-medium text-gray-500">Date Submitted</p>
+                  <p className="text-sm font-medium text-gray-500">
+                    <TranslateText text="Date Submitted" language={currentLanguage} />
+                  </p>
                   <p className="text-sm">{selectedContact.submittedDate}</p>
                 </div>
                 <div>
-                  <p className="text-sm font-medium text-gray-500">Subject</p>
-                  <p className="text-sm">{selectedContact.subject || "General Inquiry"}</p>
+                  <p className="text-sm font-medium text-gray-500">
+                    <TranslateText text="Subject" language={currentLanguage} />
+                  </p>
+                  <p className="text-sm">{selectedContact.subject || t("General Inquiry")}</p>
                 </div>
                 <div className="col-span-2">
-                  <p className="text-sm font-medium text-gray-500">Message</p>
+                  <p className="text-sm font-medium text-gray-500">
+                    <TranslateText text="Message" language={currentLanguage} />
+                  </p>
                   <div className="border rounded-md p-3 mt-1 bg-gray-50">
                     <p className="text-sm whitespace-pre-wrap">{selectedContact.message}</p>
                   </div>
                 </div>
               </div>
-              
+
               <div className="flex justify-between mt-6">
                 <div className="space-x-2">
                   <Button
-                    variant="outline" 
-                    size="sm" 
+                    variant="outline"
+                    size="sm"
                     onClick={() => handleUpdateStatus(selectedContact.id, 'new')}
                     disabled={selectedContact.status === 'new'}
                   >
-                    Mark as New
+                    <TranslateText text="Mark as New" language={currentLanguage} />
                   </Button>
                   <Button
-                    variant="outline" 
-                    size="sm" 
+                    variant="outline"
+                    size="sm"
                     onClick={() => handleUpdateStatus(selectedContact.id, 'responded')}
                     disabled={selectedContact.status === 'responded'}
                   >
-                    Mark as Responded
+                    <TranslateText text="Mark as Responded" language={currentLanguage} />
                   </Button>
                   <Button
-                    variant="outline" 
-                    size="sm" 
+                    variant="outline"
+                    size="sm"
                     onClick={() => handleUpdateStatus(selectedContact.id, 'archived')}
                     disabled={selectedContact.status === 'archived'}
                   >
-                    Archive
+                    <TranslateText text="Archive" language={currentLanguage} />
                   </Button>
                 </div>
-                
+
                 <Button
                   variant="destructive"
                   size="sm"
                   onClick={() => handleDeleteContact(selectedContact.id)}
                 >
-                  Delete
+                  <TranslateText text="Delete" language={currentLanguage} />
                 </Button>
               </div>
             </div>

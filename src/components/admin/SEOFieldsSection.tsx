@@ -11,6 +11,8 @@ import { Button } from "@/components/ui/button";
 import { Search, Facebook, Twitter, Globe, Settings, Instagram, Sparkles, Loader2, Eye } from "lucide-react";
 import { supabase } from "@/integrations/supabase/client";
 import { useToast } from "@/hooks/use-toast";
+import { useTranslation } from "@/hooks/use-translation";
+import { TranslateText } from "@/components/translation/TranslateText";
 import { BlogFormValues } from "@/hooks/use-blog-posts";
 
 interface SEOFieldsSectionProps {
@@ -42,12 +44,13 @@ const GenerateButton: React.FC<GenerateButtonProps> = ({
 }) => {
   const [isGenerating, setIsGenerating] = useState(false);
   const { toast } = useToast();
+  const { t } = useTranslation();
 
   const handleGenerate = async () => {
     if (!articleContent || !title) {
       toast({
-        title: "Missing Content",
-        description: "Please add a title and content to the article first",
+        title: t("Missing Content"),
+        description: t("Please add a title and content to the article first"),
         variant: "destructive"
       });
       return;
@@ -71,15 +74,15 @@ const GenerateButton: React.FC<GenerateButtonProps> = ({
       if (data?.content) {
         onGenerate(data.content);
         toast({
-          title: "Content Generated",
-          description: `${platform} ${contentType} generated successfully`,
+          title: t("Content Generated"),
+          description: `${platform} ${contentType} ${t("generated successfully")}`,
         });
       }
     } catch (error) {
       console.error('Error generating content:', error);
       toast({
-        title: "Error",
-        description: "Unable to generate content. Check your connection.",
+        title: t("Error"),
+        description: t("Unable to generate content. Check your connection."),
         variant: "destructive"
       });
     } finally {
@@ -101,7 +104,7 @@ const GenerateButton: React.FC<GenerateButtonProps> = ({
       ) : (
         <Sparkles className="h-4 w-4" />
       )}
-      {isGenerating ? 'Generating...' : 'AI'}
+      {isGenerating ? t('Generating...') : t('AI')}
     </Button>
   );
 };
@@ -114,7 +117,7 @@ export const SEOFieldsSection: React.FC<SEOFieldsSectionProps> = ({ control, wat
   const content = watch('content') || '';
   const focusKeyword = watch('focus_keyword') || '';
   const instagramHashtags = watch('instagram_hashtags') || [];
-  const currentLanguage = watch('language') || 'EN';
+  const { currentLanguage, t } = useTranslation();
 
   // SERP Preview Component
   const SERPPreview = () => (
@@ -136,7 +139,7 @@ export const SEOFieldsSection: React.FC<SEOFieldsSectionProps> = ({ control, wat
       <CardHeader>
         <CardTitle className="flex items-center gap-2">
           <Search className="h-5 w-5" />
-          SEO Settings
+          <TranslateText text="SEO Settings" language={currentLanguage} />
         </CardTitle>
       </CardHeader>
       <CardContent>
@@ -144,19 +147,19 @@ export const SEOFieldsSection: React.FC<SEOFieldsSectionProps> = ({ control, wat
           <TabsList className="grid w-full grid-cols-4">
             <TabsTrigger value="basic" className="flex items-center gap-2">
               <Search className="h-4 w-4" />
-              Basic SEO
+              <TranslateText text="Basic SEO" language={currentLanguage} />
             </TabsTrigger>
             <TabsTrigger value="instagram" className="flex items-center gap-2">
               <Instagram className="h-4 w-4" />
-              Instagram
+              <TranslateText text="Instagram" language={currentLanguage} />
             </TabsTrigger>
             <TabsTrigger value="facebook" className="flex items-center gap-2">
               <Facebook className="h-4 w-4" />
-              Facebook
+              <TranslateText text="Facebook" language={currentLanguage} />
             </TabsTrigger>
             <TabsTrigger value="twitter" className="flex items-center gap-2">
               <Twitter className="h-4 w-4" />
-              Twitter
+              <TranslateText text="Twitter" language={currentLanguage} />
             </TabsTrigger>
           </TabsList>
 
@@ -168,7 +171,7 @@ export const SEOFieldsSection: React.FC<SEOFieldsSectionProps> = ({ control, wat
                 render={({ field }) => (
                   <FormItem>
                     <FormLabel className="flex items-center justify-between">
-                      Meta Title
+                      <TranslateText text="Meta Title" language={currentLanguage} />
                       <div className="flex items-center gap-2">
                         <Badge variant={metaTitle.length > 60 ? "destructive" : metaTitle.length > 50 ? "secondary" : "default"}>
                           {metaTitle.length}/60
@@ -185,16 +188,16 @@ export const SEOFieldsSection: React.FC<SEOFieldsSectionProps> = ({ control, wat
                       </div>
                     </FormLabel>
                     <FormControl>
-                      <Input 
-                        placeholder="SEO-optimized title (50-60 characters recommended)" 
-                        {...field} 
+                      <Input
+                        placeholder={t("SEO-optimized title (50-60 characters recommended)")}
+                        {...field}
                       />
                     </FormControl>
                     <FormDescription>
-                      {metaTitle.length === 0 && "Will use the article title if empty"}
-                      {metaTitle.length > 0 && metaTitle.length <= 50 && "✅ Good length for search results"}
-                      {metaTitle.length > 50 && metaTitle.length <= 60 && "⚠️ Optimal range, but close to limit"}
-                      {metaTitle.length > 60 && "❌ Too long - may be truncated in search results"}
+                      {metaTitle.length === 0 && t("Will use the article title if empty")}
+                      {metaTitle.length > 0 && metaTitle.length <= 50 && `✅ ${t("Good length for search results")}`}
+                      {metaTitle.length > 50 && metaTitle.length <= 60 && `⚠️ ${t("Optimal range, but close to limit")}`}
+                      {metaTitle.length > 60 && `❌ ${t("Too long - may be truncated in search results")}`}
                     </FormDescription>
                     <FormMessage />
                   </FormItem>
@@ -207,7 +210,7 @@ export const SEOFieldsSection: React.FC<SEOFieldsSectionProps> = ({ control, wat
                 render={({ field }) => (
                   <FormItem>
                     <FormLabel className="flex items-center justify-between">
-                      Meta Description
+                      <TranslateText text="Meta Description" language={currentLanguage} />
                       <div className="flex items-center gap-2">
                         <Badge variant={metaDescription.length > 160 ? "destructive" : metaDescription.length > 140 ? "secondary" : "default"}>
                           {metaDescription.length}/160
@@ -224,18 +227,18 @@ export const SEOFieldsSection: React.FC<SEOFieldsSectionProps> = ({ control, wat
                       </div>
                     </FormLabel>
                     <FormControl>
-                      <Textarea 
-                        placeholder="Compelling description for search results (150-160 characters)" 
-                        className="resize-none" 
-                        rows={3} 
-                        {...field} 
+                      <Textarea
+                        placeholder={t("Compelling description for search results (150-160 characters)")}
+                        className="resize-none"
+                        rows={3}
+                        {...field}
                       />
                     </FormControl>
                     <FormDescription>
-                      {metaDescription.length === 0 && "Will use the article description if empty"}
-                      {metaDescription.length > 0 && metaDescription.length <= 140 && "✅ Good length for search results"}
-                      {metaDescription.length > 140 && metaDescription.length <= 160 && "⚠️ Optimal range, but close to limit"}
-                      {metaDescription.length > 160 && "❌ Too long - may be truncated in search results"}
+                      {metaDescription.length === 0 && t("Will use the article description if empty")}
+                      {metaDescription.length > 0 && metaDescription.length <= 140 && `✅ ${t("Good length for search results")}`}
+                      {metaDescription.length > 140 && metaDescription.length <= 160 && `⚠️ ${t("Optimal range, but close to limit")}`}
+                      {metaDescription.length > 160 && `❌ ${t("Too long - may be truncated in search results")}`}
                     </FormDescription>
                     <FormMessage />
                   </FormItem>
@@ -247,11 +250,11 @@ export const SEOFieldsSection: React.FC<SEOFieldsSectionProps> = ({ control, wat
                 name="focus_keyword"
                 render={({ field }) => (
                   <FormItem>
-                    <FormLabel>Focus Keyword</FormLabel>
+                    <FormLabel><TranslateText text="Focus Keyword" language={currentLanguage} /></FormLabel>
                     <FormControl>
-                      <Input 
-                        placeholder="Main keyword to rank for (e.g., 'Tunisia travel guide')" 
-                        {...field} 
+                      <Input
+                        placeholder={t("Main keyword to rank for (e.g., 'Tunisia travel guide')")}
+                        {...field}
                       />
                     </FormControl>
                     <FormDescription>
@@ -267,11 +270,11 @@ export const SEOFieldsSection: React.FC<SEOFieldsSectionProps> = ({ control, wat
                 name="seo_keywords"
                 render={({ field }) => (
                   <FormItem>
-                    <FormLabel>SEO Keywords</FormLabel>
+                    <FormLabel><TranslateText text="SEO Keywords" language={currentLanguage} /></FormLabel>
                     <FormControl>
-                      <Input 
-                        placeholder="tunisia, travel, guide, vacation (comma-separated)" 
-                        {...field} 
+                      <Input
+                        placeholder={t("tunisia, travel, guide, vacation (comma-separated)")}
+                        {...field}
                       />
                     </FormControl>
                     <FormDescription>
@@ -286,7 +289,7 @@ export const SEOFieldsSection: React.FC<SEOFieldsSectionProps> = ({ control, wat
             <div>
               <h4 className="text-sm font-medium mb-3 flex items-center gap-2">
                 <Eye className="h-4 w-4" />
-                Search Results Preview
+                <TranslateText text="Search Results Preview" language={currentLanguage} />
               </h4>
               <SERPPreview />
             </div>
@@ -299,7 +302,7 @@ export const SEOFieldsSection: React.FC<SEOFieldsSectionProps> = ({ control, wat
               render={({ field }) => (
                 <FormItem>
                   <FormLabel className="flex items-center justify-between">
-                    Instagram Caption
+                    <TranslateText text="Instagram Caption" language={currentLanguage} />
                     <div className="flex items-center gap-2">
                       <Badge variant={(field.value?.length || 0) > 2200 ? "destructive" : "default"}>
                         {field.value?.length || 0}/2200
@@ -316,11 +319,11 @@ export const SEOFieldsSection: React.FC<SEOFieldsSectionProps> = ({ control, wat
                     </div>
                   </FormLabel>
                   <FormControl>
-                    <Textarea 
-                      placeholder="Create an engaging Instagram caption with emojis and call-to-action..." 
-                      className="resize-none min-h-32" 
-                      rows={6} 
-                      {...field} 
+                    <Textarea
+                      placeholder={t("Create an engaging Instagram caption with emojis and call-to-action...")}
+                      className="resize-none min-h-32"
+                      rows={6}
+                      {...field}
                     />
                   </FormControl>
                   <FormDescription>
@@ -337,7 +340,7 @@ export const SEOFieldsSection: React.FC<SEOFieldsSectionProps> = ({ control, wat
               render={({ field }) => (
                 <FormItem>
                   <FormLabel className="flex items-center justify-between">
-                    Instagram Hashtags
+                    <TranslateText text="Instagram Hashtags" language={currentLanguage} />
                     <div className="flex items-center gap-2">
                       <Badge variant={(field.value?.length || 0) > 30 ? "destructive" : "default"}>
                         {field.value?.length || 0}/30
@@ -357,10 +360,10 @@ export const SEOFieldsSection: React.FC<SEOFieldsSectionProps> = ({ control, wat
                     </div>
                   </FormLabel>
                   <FormControl>
-                    <Textarea 
-                      placeholder="#travel #tunisia #vacation #explore #wanderlust" 
-                      className="resize-none" 
-                      rows={3} 
+                    <Textarea
+                      placeholder="#travel #tunisia #vacation #explore #wanderlust"
+                      className="resize-none"
+                      rows={3}
                       value={instagramHashtags.join(' ')}
                       onChange={(e) => {
                         const hashtags = e.target.value.split(/\s+/).filter(tag => tag.trim());
@@ -382,7 +385,7 @@ export const SEOFieldsSection: React.FC<SEOFieldsSectionProps> = ({ control, wat
               render={({ field }) => (
                 <FormItem>
                   <FormLabel className="flex items-center justify-between">
-                    Instagram Story Text
+                    <TranslateText text="Instagram Story Text" language={currentLanguage} />
                     <div className="flex items-center gap-2">
                       <Badge variant={(field.value?.length || 0) > 200 ? "destructive" : "default"}>
                         {field.value?.length || 0}/200
@@ -398,9 +401,9 @@ export const SEOFieldsSection: React.FC<SEOFieldsSectionProps> = ({ control, wat
                     </div>
                   </FormLabel>
                   <FormControl>
-                    <Input 
-                      placeholder="Short text for Instagram Story..." 
-                      {...field} 
+                    <Input
+                      placeholder={t("Short text for Instagram Story...")}
+                      {...field}
                     />
                   </FormControl>
                   <FormDescription>
@@ -419,7 +422,7 @@ export const SEOFieldsSection: React.FC<SEOFieldsSectionProps> = ({ control, wat
               render={({ field }) => (
                 <FormItem>
                   <FormLabel className="flex items-center justify-between">
-                    Facebook Title
+                    <TranslateText text="Facebook Title" language={currentLanguage} />
                     <div className="flex items-center gap-2">
                       <Badge variant={(field.value?.length || 0) > 60 ? "destructive" : "default"}>
                         {field.value?.length || 0}/60
@@ -436,9 +439,9 @@ export const SEOFieldsSection: React.FC<SEOFieldsSectionProps> = ({ control, wat
                     </div>
                   </FormLabel>
                   <FormControl>
-                    <Input 
-                      placeholder="Optimized title for Facebook..." 
-                      {...field} 
+                    <Input
+                      placeholder={t("Optimized title for Facebook...")}
+                      {...field}
                     />
                   </FormControl>
                   <FormDescription>
@@ -455,7 +458,7 @@ export const SEOFieldsSection: React.FC<SEOFieldsSectionProps> = ({ control, wat
               render={({ field }) => (
                 <FormItem>
                   <FormLabel className="flex items-center justify-between">
-                    Facebook Description
+                    <TranslateText text="Facebook Description" language={currentLanguage} />
                     <div className="flex items-center gap-2">
                       <Badge variant={(field.value?.length || 0) > 125 ? "destructive" : "default"}>
                         {field.value?.length || 0}/125
@@ -472,11 +475,11 @@ export const SEOFieldsSection: React.FC<SEOFieldsSectionProps> = ({ control, wat
                     </div>
                   </FormLabel>
                   <FormControl>
-                    <Textarea 
-                      placeholder="Optimized description for Facebook..." 
-                      className="resize-none" 
-                      rows={3} 
-                      {...field} 
+                    <Textarea
+                      placeholder={t("Optimized description for Facebook...")}
+                      className="resize-none"
+                      rows={3}
+                      {...field}
                     />
                   </FormControl>
                   <FormDescription>
@@ -492,11 +495,11 @@ export const SEOFieldsSection: React.FC<SEOFieldsSectionProps> = ({ control, wat
               name="facebook_image"
               render={({ field }) => (
                 <FormItem>
-                  <FormLabel>Facebook Image</FormLabel>
+                  <FormLabel><TranslateText text="Facebook Image" language={currentLanguage} /></FormLabel>
                   <FormControl>
-                    <Input 
-                      placeholder="Facebook-specific image URL (1200x630px recommended)" 
-                      {...field} 
+                    <Input
+                      placeholder={t("Facebook-specific image URL (1200x630px recommended)")}
+                      {...field}
                     />
                   </FormControl>
                   <FormDescription>
@@ -515,7 +518,7 @@ export const SEOFieldsSection: React.FC<SEOFieldsSectionProps> = ({ control, wat
               render={({ field }) => (
                 <FormItem>
                   <FormLabel className="flex items-center justify-between">
-                    Twitter Title
+                    <TranslateText text="Twitter Title" language={currentLanguage} />
                     <div className="flex items-center gap-2">
                       <Badge variant={(field.value?.length || 0) > 50 ? "destructive" : "default"}>
                         {field.value?.length || 0}/50
@@ -532,9 +535,9 @@ export const SEOFieldsSection: React.FC<SEOFieldsSectionProps> = ({ control, wat
                     </div>
                   </FormLabel>
                   <FormControl>
-                    <Input 
-                      placeholder="Title adapted for Twitter..." 
-                      {...field} 
+                    <Input
+                      placeholder={t("Title adapted for Twitter...")}
+                      {...field}
                     />
                   </FormControl>
                   <FormDescription>
@@ -551,7 +554,7 @@ export const SEOFieldsSection: React.FC<SEOFieldsSectionProps> = ({ control, wat
               render={({ field }) => (
                 <FormItem>
                   <FormLabel className="flex items-center justify-between">
-                    Twitter Description
+                    <TranslateText text="Twitter Description" language={currentLanguage} />
                     <div className="flex items-center gap-2">
                       <Badge variant={(field.value?.length || 0) > 140 ? "destructive" : "default"}>
                         {field.value?.length || 0}/140
@@ -568,11 +571,11 @@ export const SEOFieldsSection: React.FC<SEOFieldsSectionProps> = ({ control, wat
                     </div>
                   </FormLabel>
                   <FormControl>
-                    <Textarea 
-                      placeholder="Description for Twitter with hashtags..." 
-                      className="resize-none" 
-                      rows={3} 
-                      {...field} 
+                    <Textarea
+                      placeholder={t("Description for Twitter with hashtags...")}
+                      className="resize-none"
+                      rows={3}
+                      {...field}
                     />
                   </FormControl>
                   <FormDescription>
@@ -588,16 +591,16 @@ export const SEOFieldsSection: React.FC<SEOFieldsSectionProps> = ({ control, wat
               name="twitter_card_type"
               render={({ field }) => (
                 <FormItem>
-                  <FormLabel>Twitter Card Type</FormLabel>
+                  <FormLabel><TranslateText text="Twitter Card Type" language={currentLanguage} /></FormLabel>
                   <Select onValueChange={field.onChange} defaultValue={field.value}>
                     <FormControl>
                       <SelectTrigger>
-                        <SelectValue placeholder="Select Twitter card type" />
+                        <SelectValue placeholder={t("Select Twitter card type")} />
                       </SelectTrigger>
                     </FormControl>
                     <SelectContent>
-                      <SelectItem value="summary">Summary</SelectItem>
-                      <SelectItem value="summary_large_image">Summary with Large Image</SelectItem>
+                      <SelectItem value="summary">{t("Summary")}</SelectItem>
+                      <SelectItem value="summary_large_image">{t("Summary with Large Image")}</SelectItem>
                     </SelectContent>
                   </Select>
                   <FormDescription>
@@ -613,11 +616,11 @@ export const SEOFieldsSection: React.FC<SEOFieldsSectionProps> = ({ control, wat
               name="og_image_alt"
               render={({ field }) => (
                 <FormItem>
-                  <FormLabel>Image Alt Text</FormLabel>
+                  <FormLabel><TranslateText text="Image Alt Text" language={currentLanguage} /></FormLabel>
                   <FormControl>
-                    <Input 
-                      placeholder="Alternative text for the image..." 
-                      {...field} 
+                    <Input
+                      placeholder={t("Alternative text for the image...")}
+                      {...field}
                     />
                   </FormControl>
                   <FormDescription>

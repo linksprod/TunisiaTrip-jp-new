@@ -18,11 +18,9 @@ export function QuestionBanner(): JSX.Element {
     e.preventDefault();
     // Handle form submission logic here
     console.log("Submitted:", { email, question });
-    toast.success(currentLanguage === "EN" 
+    toast.success(currentLanguage === "EN"
       ? "Your question has been submitted. We'll get back to you soon!"
-      : currentLanguage === "JP"
-        ? "質問が送信されました。すぐにご連絡いたします！"
-        : "귀하의 질문이 제출되었습니다. 곧 연락 드리겠습니다!");
+      : "質問が送信されました。すぐにご連絡いたします！");
     // Reset form
     setEmail("");
     setQuestion("");
@@ -50,18 +48,18 @@ export function QuestionBanner(): JSX.Element {
               </h3>
             </div>
           </div>
-          
+
           {/* Right section with form */}
           <div className="w-full md:w-[35%] mt-8 md:mt-0 md:pl-8">
             <div className="flex flex-col gap-5">
               {/* Email input field - making frame invisible */}
-              <label 
+              <label
                 htmlFor="email"
                 className={`bg-blue-600/50 hover:bg-blue-600/70 rounded-[13px] transition-colors cursor-text ${isEmailFocused ? 'bg-blue-600/70' : ''} flex items-center gap-2 px-5 py-4 w-full`}
                 onClick={() => document.getElementById('email')?.focus()}
               >
                 <Mail className="w-5 h-5 text-white flex-shrink-0" />
-                <Input 
+                <Input
                   id="email"
                   type="email"
                   value={email}
@@ -69,41 +67,37 @@ export function QuestionBanner(): JSX.Element {
                   onFocus={() => setIsEmailFocused(true)}
                   onBlur={() => setIsEmailFocused(false)}
                   placeholder={
-                    currentLanguage === "EN" ? "Your email" :
-                    currentLanguage === "JP" ? "メールアドレス" :
-                    "이메일 주소"
+                    currentLanguage === "EN" ? "Your email" : "メールアドレス"
                   }
-                  className="border-none focus-visible:ring-0 bg-transparent text-white placeholder:text-[#C0D6FB] p-0 h-auto text-lg w-full shadow-none outline-none" 
+                  className="border-none focus-visible:ring-0 bg-transparent text-white placeholder:text-[#C0D6FB] p-0 h-auto text-lg w-full shadow-none outline-none"
                   required
                   style={{ outline: 'none', boxShadow: 'none' }}
                 />
               </label>
-              
+
               {/* Question input field */}
-              <label 
+              <label
                 htmlFor="question"
                 className={`border-2 ${isQuestionFocused ? 'border-blue-400' : 'border-[#C0D6FB]'} bg-white rounded-[13px] px-5 py-4 transition-colors hover:border-blue-400 shadow-sm cursor-text`}
                 onClick={() => document.getElementById('question')?.focus()}
               >
                 <div className="flex items-start gap-2">
-                  <Textarea 
-                    id="question" 
+                  <Textarea
+                    id="question"
                     value={question}
                     onChange={(e) => setQuestion(e.target.value)}
                     onFocus={() => setIsQuestionFocused(true)}
                     onBlur={() => setIsQuestionFocused(false)}
                     placeholder={
-                      currentLanguage === "EN" ? "What's your question about Tunisia?" :
-                      currentLanguage === "JP" ? "チュニジアについて質問がありますか？" :
-                      "튀니지에 대한 질문이 있으신가요?"
-                    } 
-                    className="border-none focus-visible:ring-0 text-[#4A7AB5] placeholder:text-[#8FAFE5] p-0 h-24 text-lg resize-none w-full" 
+                      currentLanguage === "EN" ? "What's your question about Tunisia?" : "チュニジアについて質問がありますか？"
+                    }
+                    className="border-none focus-visible:ring-0 text-[#4A7AB5] placeholder:text-[#8FAFE5] p-0 h-24 text-lg resize-none w-full"
                     required
                   />
                 </div>
                 <div className="flex justify-end mt-2">
-                  <button 
-                    type="submit" 
+                  <button
+                    type="submit"
                     className="flex items-center gap-2 bg-blue-500 hover:bg-blue-600 text-white px-4 py-2 rounded-md transition-colors"
                   >
                     <span>

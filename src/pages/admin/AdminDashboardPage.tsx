@@ -13,29 +13,32 @@ import { usePerformanceMetrics } from "@/hooks/use-performance-metrics";
 import { useDeviceSize } from "@/hooks/use-mobile";
 import { Skeleton } from "@/components/ui/skeleton";
 import { useToast } from "@/components/ui/use-toast";
+import { TranslateText } from "@/components/translation/TranslateText";
+import { useTranslation } from "@/hooks/use-translation";
 
 const AdminDashboardPage = () => {
   const { analytics, isLoading: loadingAnalytics, error: analyticsError } = useBlogAnalytics();
   const performanceMetrics = usePerformanceMetrics();
   const { isMobile } = useDeviceSize();
   const { toast } = useToast();
-  
+  const { currentLanguage, t } = useTranslation();
+
   React.useEffect(() => {
     if (analyticsError) {
       toast({
-        title: "Error loading analytics",
+        title: t("Error loading analytics"),
         description: analyticsError.message,
         variant: "destructive"
       });
     }
   }, [analyticsError, toast]);
-  
+
   // Format categories for chart display
   const categoryData = React.useMemo(() => {
     if (!analytics || !analytics.categoryCounts) {
       return [];
     }
-    
+
     return Object.entries(analytics.categoryCounts).map(
       ([category, count], index) => ({
         category: isMobile && category.length > 8 ? `${category.substring(0, 7)}...` : category,
@@ -54,8 +57,12 @@ const AdminDashboardPage = () => {
         <div className="space-y-6 md:space-y-8">
           <div className="flex justify-between items-center">
             <div>
-              <h1 className="text-3xl font-bold tracking-tight">Dashboard</h1>
-              <p className="text-muted-foreground">Loading dashboard data...</p>
+              <h1 className="text-3xl font-bold tracking-tight">
+                <TranslateText text="Dashboard" language={currentLanguage} />
+              </h1>
+              <p className="text-muted-foreground">
+                <TranslateText text="Loading dashboard data..." language={currentLanguage} />
+              </p>
             </div>
           </div>
           <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-4">
@@ -76,7 +83,7 @@ const AdminDashboardPage = () => {
   // This could be replaced with actual historical data comparison
   // For now, we'll use a simple calculation based on current metrics
   const avgLoadTime = 1200; // Average benchmark load time in ms
-  const perfImprovementRate = avgLoadTime > 0 
+  const perfImprovementRate = avgLoadTime > 0
     ? ((avgLoadTime - performanceMetrics.pageLoadTime) / avgLoadTime) * 100
     : 0;
 

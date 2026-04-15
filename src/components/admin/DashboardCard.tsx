@@ -1,7 +1,7 @@
-
 import React from "react";
 import { Card } from "@/components/ui/card";
 import { ArrowDown, ArrowUp } from "lucide-react";
+import { useTranslation } from "@/hooks/use-translation";
 
 interface DashboardCardProps {
   title: string;
@@ -22,8 +22,9 @@ export const DashboardCard = ({
   iconTextColor,
   period = "than last month"
 }: DashboardCardProps) => {
+  const { t } = useTranslation();
   const isPositive = change >= 0;
-  
+
   return (
     <Card className="p-6 shadow-sm transition-all hover:shadow-md">
       <div className="flex justify-between">
@@ -37,12 +38,12 @@ export const DashboardCard = ({
               ) : (
                 <ArrowDown className="w-3 h-3 mr-1" />
               )}{" "}
-              {Math.abs(change)}% {isPositive ? "higher" : "lower"}
+              {Math.abs(change)}% {isPositive ? t("higher") : t("lower")}
             </span>
-            <span className="text-gray-500">{period}</span>
+            <span className="text-gray-500">{t(period)}</span>
           </div>
         </div>
-        <div 
+        <div
           className={`flex items-center justify-center h-12 w-12 rounded-full ${iconBgColor} ${iconTextColor}`}
         >
           {icon}

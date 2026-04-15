@@ -10,6 +10,8 @@ export interface SearchItem {
   tab?: string;
   scrollTo?: string;
   titleJP?: string;
+  descriptionJP?: string;
+  sectionJP?: string;
   keywords?: string[];
   score?: number;
   image?: string;

@@ -3,14 +3,14 @@ import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Badge } from "@/components/ui/badge";
-import { 
-  Upload, 
-  Search, 
-  Grid3X3, 
-  List, 
-  Trash2, 
-  Download, 
-  Eye, 
+import {
+  Upload,
+  Search,
+  Grid3X3,
+  List,
+  Trash2,
+  Download,
+  Eye,
   Copy,
   Filter,
   Image as ImageIcon,
@@ -18,6 +18,8 @@ import {
 } from "lucide-react";
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
 import { cn } from "@/lib/utils";
+import { useTranslation } from "@/hooks/use-translation";
+import { TranslateText } from "@/components/translation/TranslateText";
 
 interface MediaFile {
   id: string;
@@ -40,6 +42,7 @@ export const MediaLibrary: React.FC<MediaLibraryProps> = ({
   mode = 'library',
   allowedTypes = ['image', 'document', 'video', 'audio']
 }) => {
+  const { currentLanguage, t } = useTranslation();
   const [viewMode, setViewMode] = useState<'grid' | 'list'>('grid');
   const [searchTerm, setSearchTerm] = useState("");
   const [typeFilter, setTypeFilter] = useState<string>("all");
@@ -147,14 +150,16 @@ export const MediaLibrary: React.FC<MediaLibraryProps> = ({
       {/* Header */}
       <div className="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-4">
         <div>
-          <h2 className="text-2xl font-bold">Media Library</h2>
+          <h2 className="text-2xl font-bold">
+            <TranslateText text="Media Library" language={currentLanguage} />
+          </h2>
           <p className="text-muted-foreground">
-            Manage your uploaded files and media assets
+            <TranslateText text="Manage your uploaded files and media assets" language={currentLanguage} />
           </p>
         </div>
         <Button className="w-fit">
           <Upload className="h-4 w-4 mr-2" />
-          Upload Files
+          {t("Upload Files")}
         </Button>
       </div>
 
@@ -163,25 +168,25 @@ export const MediaLibrary: React.FC<MediaLibraryProps> = ({
         <div className="relative flex-1">
           <Search className="absolute left-3 top-3 h-4 w-4 text-muted-foreground" />
           <Input
-            placeholder="Search files..."
+            placeholder={t("Search files...")}
             value={searchTerm}
             onChange={(e) => setSearchTerm(e.target.value)}
             className="pl-10"
           />
         </div>
-        
+
         <div className="flex gap-2">
           <Select value={typeFilter} onValueChange={setTypeFilter}>
             <SelectTrigger className="w-[130px]">
               <Filter className="h-4 w-4 mr-2" />
-              <SelectValue placeholder="Type" />
+              <SelectValue placeholder={t("Type")} />
             </SelectTrigger>
             <SelectContent>
-              <SelectItem value="all">All Types</SelectItem>
-              <SelectItem value="image">Images</SelectItem>
-              <SelectItem value="document">Documents</SelectItem>
-              <SelectItem value="video">Videos</SelectItem>
-              <SelectItem value="audio">Audio</SelectItem>
+              <SelectItem value="all">{t("All Types")}</SelectItem>
+              <SelectItem value="image">{t("Images")}</SelectItem>
+              <SelectItem value="document">{t("Documents")}</SelectItem>
+              <SelectItem value="video">{t("Videos")}</SelectItem>
+              <SelectItem value="audio">{t("Audio")}</SelectItem>
             </SelectContent>
           </Select>
 
@@ -191,6 +196,7 @@ export const MediaLibrary: React.FC<MediaLibraryProps> = ({
               size="sm"
               onClick={() => setViewMode('grid')}
               className="rounded-r-none"
+              title={t("Grid View")}
             >
               <Grid3X3 className="h-4 w-4" />
             </Button>
@@ -199,6 +205,7 @@ export const MediaLibrary: React.FC<MediaLibraryProps> = ({
               size="sm"
               onClick={() => setViewMode('list')}
               className="rounded-l-none"
+              title={t("List View")}
             >
               <List className="h-4 w-4" />
             </Button>
@@ -212,10 +219,10 @@ export const MediaLibrary: React.FC<MediaLibraryProps> = ({
           {filteredFiles.map((file) => {
             const IconComponent = getFileIcon(file.type);
             const isSelected = selectedFiles.has(file.id);
-            
+
             return (
-              <Card 
-                key={file.id} 
+              <Card
+                key={file.id}
                 className={cn(
                   "group cursor-pointer transition-all hover:shadow-md",
                   isSelected && "ring-2 ring-primary",
@@ -226,8 +233,8 @@ export const MediaLibrary: React.FC<MediaLibraryProps> = ({
                 <CardContent className="p-3">
                   <div className="aspect-square mb-3 rounded-lg overflow-hidden bg-muted flex items-center justify-center">
                     {file.type === 'image' ? (
-                      <img 
-                        src={file.url} 
+                      <img
+                        src={file.url}
                         alt={file.name}
                         className="w-full h-full object-cover"
                         onError={(e) => {
@@ -239,11 +246,11 @@ export const MediaLibrary: React.FC<MediaLibraryProps> = ({
                     <div className={cn("flex flex-col items-center justify-center", file.type === 'image' && "hidden")}>
                       <IconComponent className="h-8 w-8 text-muted-foreground mb-2" />
                       <Badge className={cn("text-xs", getTypeColor(file.type))}>
-                        {file.type.toUpperCase()}
+                        {t(file.type.charAt(0).toUpperCase() + file.type.slice(1))}
                       </Badge>
                     </div>
                   </div>
-                  
+
                   <div className="space-y-2">
                     <h4 className="text-sm font-medium truncate" title={file.name}>
                       {file.name}
@@ -264,9 +271,9 @@ export const MediaLibrary: React.FC<MediaLibraryProps> = ({
                     <Button variant="ghost" size="sm" className="h-7 w-7 p-0">
                       <Eye className="h-3 w-3" />
                     </Button>
-                    <Button 
-                      variant="ghost" 
-                      size="sm" 
+                    <Button
+                      variant="ghost"
+                      size="sm"
                       className="h-7 w-7 p-0"
                       onClick={(e) => {
                         e.stopPropagation();
@@ -294,9 +301,9 @@ export const MediaLibrary: React.FC<MediaLibraryProps> = ({
               {filteredFiles.map((file, index) => {
                 const IconComponent = getFileIcon(file.type);
                 const isSelected = selectedFiles.has(file.id);
-                
+
                 return (
-                  <div 
+                  <div
                     key={file.id}
                     className={cn(
                       "flex items-center gap-4 p-4 hover:bg-muted/50 cursor-pointer transition-colors",
@@ -307,8 +314,8 @@ export const MediaLibrary: React.FC<MediaLibraryProps> = ({
                   >
                     <div className="flex-shrink-0">
                       {file.type === 'image' ? (
-                        <img 
-                          src={file.url} 
+                        <img
+                          src={file.url}
                           alt={file.name}
                           className="w-12 h-12 object-cover rounded"
                         />
@@ -318,12 +325,12 @@ export const MediaLibrary: React.FC<MediaLibraryProps> = ({
                         </div>
                       )}
                     </div>
-                    
+
                     <div className="flex-1 min-w-0">
                       <h4 className="font-medium truncate">{file.name}</h4>
                       <div className="flex items-center gap-4 text-sm text-muted-foreground">
                         <Badge className={cn("text-xs", getTypeColor(file.type))}>
-                          {file.type.toUpperCase()}
+                          {t(file.type.charAt(0).toUpperCase() + file.type.slice(1))}
                         </Badge>
                         <span>{formatFileSize(file.size)}</span>
                         {file.dimensions && (
@@ -337,8 +344,8 @@ export const MediaLibrary: React.FC<MediaLibraryProps> = ({
                       <Button variant="ghost" size="sm">
                         <Eye className="h-4 w-4" />
                       </Button>
-                      <Button 
-                        variant="ghost" 
+                      <Button
+                        variant="ghost"
                         size="sm"
                         onClick={(e) => {
                           e.stopPropagation();
@@ -366,16 +373,16 @@ export const MediaLibrary: React.FC<MediaLibraryProps> = ({
       {selectedFiles.size > 0 && mode === 'library' && (
         <div className="flex items-center justify-between p-4 bg-muted rounded-lg">
           <span className="text-sm font-medium">
-            {selectedFiles.size} file{selectedFiles.size !== 1 ? 's' : ''} selected
+            {selectedFiles.size} {selectedFiles.size !== 1 ? t("files selected") : t("file selected")}
           </span>
           <div className="flex gap-2">
             <Button variant="outline" size="sm">
               <Download className="h-4 w-4 mr-2" />
-              Download
+              {t("Download")}
             </Button>
             <Button variant="outline" size="sm" className="text-destructive hover:text-destructive">
               <Trash2 className="h-4 w-4 mr-2" />
-              Delete
+              {t("Delete")}
             </Button>
           </div>
         </div>
@@ -385,16 +392,16 @@ export const MediaLibrary: React.FC<MediaLibraryProps> = ({
       {filteredFiles.length === 0 && (
         <Card className="p-12 text-center">
           <Upload className="h-12 w-12 mx-auto mb-4 text-muted-foreground" />
-          <h3 className="text-lg font-medium mb-2">No files found</h3>
+          <h3 className="text-lg font-medium mb-2">{t("No files found")}</h3>
           <p className="text-muted-foreground mb-6">
-            {searchTerm || typeFilter !== "all" 
-              ? "Try adjusting your search or filter criteria"
-              : "Upload your first file to get started"
+            {searchTerm || typeFilter !== "all"
+              ? t("Try adjusting your search or filter criteria")
+              : t("Upload your first file to get started")
             }
           </p>
           <Button>
             <Upload className="h-4 w-4 mr-2" />
-            Upload Files
+            {t("Upload Files")}
           </Button>
         </Card>
       )}

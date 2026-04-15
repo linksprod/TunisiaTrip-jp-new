@@ -4,12 +4,12 @@ import { Button } from "@/components/ui/button";
 import { Badge } from "@/components/ui/badge";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
-import { 
-  Select, 
-  SelectContent, 
-  SelectItem, 
-  SelectTrigger, 
-  SelectValue 
+import {
+  Select,
+  SelectContent,
+  SelectItem,
+  SelectTrigger,
+  SelectValue
 } from "@/components/ui/select";
 import {
   DropdownMenu,
@@ -21,12 +21,12 @@ import {
 import { Skeleton } from "@/components/ui/skeleton";
 import { useToast } from "@/components/ui/use-toast";
 import { BlogArticle } from "@/types/blog";
-import { 
-  Edit, 
-  Eye, 
-  Trash2, 
-  MoreVertical, 
-  Copy, 
+import {
+  Edit,
+  Eye,
+  Trash2,
+  MoreVertical,
+  Copy,
   Calendar,
   Clock,
   Globe,
@@ -38,6 +38,8 @@ import {
   Image as ImageIcon
 } from "lucide-react";
 import { cn } from "@/lib/utils";
+import { useTranslation } from "@/hooks/use-translation";
+import { TranslateText } from "@/components/translation/TranslateText";
 
 interface EnhancedBlogPostsGridProps {
   blogPosts: BlogArticle[];
@@ -61,9 +63,10 @@ export const EnhancedBlogPostsGrid: React.FC<EnhancedBlogPostsGridProps> = ({
   const [languageFilter, setLanguageFilter] = useState<string>("all");
   const [viewMode, setViewMode] = useState<"grid" | "list">("grid");
   const { toast } = useToast();
+  const { currentLanguage, t } = useTranslation();
 
   const formatDate = (dateString: string) => {
-    return new Date(dateString).toLocaleDateString('en-US', {
+    return new Date(dateString).toLocaleDateString(currentLanguage === 'jp' ? 'ja-JP' : 'en-US', {
       year: 'numeric',
       month: 'short',
       day: 'numeric'
@@ -79,13 +82,13 @@ export const EnhancedBlogPostsGrid: React.FC<EnhancedBlogPostsGridProps> = ({
 
   const filteredPosts = blogPosts.filter(post => {
     const matchesSearch = post.title.toLowerCase().includes(searchTerm.toLowerCase()) ||
-                         post.description?.toLowerCase().includes(searchTerm.toLowerCase()) ||
-                         post.category?.toLowerCase().includes(searchTerm.toLowerCase());
-    
+      post.description?.toLowerCase().includes(searchTerm.toLowerCase()) ||
+      post.category?.toLowerCase().includes(searchTerm.toLowerCase());
+
     const matchesStatus = statusFilter === "all" || post.status === statusFilter;
     const matchesLanguage =
       languageFilter === "all" || ((post.language || 'EN').toUpperCase() === languageFilter.toUpperCase());
-    
+
     return matchesSearch && matchesStatus && matchesLanguage;
   });
 
@@ -126,13 +129,13 @@ export const EnhancedBlogPostsGrid: React.FC<EnhancedBlogPostsGridProps> = ({
           <div className="flex flex-col lg:flex-row gap-4 justify-between items-start lg:items-center">
             <div>
               <h2 className="text-2xl font-bold text-gray-900 dark:text-white">
-                Blog Posts
+                <TranslateText text="Blog Posts" language={currentLanguage} />
               </h2>
               <p className="text-gray-600 dark:text-gray-300 mt-1">
-                Manage your blog content and articles
+                <TranslateText text="Manage your blog content and articles" language={currentLanguage} />
               </p>
             </div>
-            
+
             <div className="flex items-center gap-2">
               <Button
                 variant={viewMode === "grid" ? "default" : "outline"}
@@ -153,40 +156,40 @@ export const EnhancedBlogPostsGrid: React.FC<EnhancedBlogPostsGridProps> = ({
             </div>
           </div>
         </CardHeader>
-        
+
         <CardContent className="pt-0">
           <div className="flex flex-col lg:flex-row gap-4">
             <div className="relative flex-1">
               <Search className="absolute left-3 top-1/2 transform -translate-y-1/2 h-4 w-4 text-gray-400" />
               <Input
-                placeholder="Search posts by title, description, or category..."
+                placeholder={t("Search posts by title, description, or category...")}
                 value={searchTerm}
                 onChange={(e) => setSearchTerm(e.target.value)}
                 className="pl-10 bg-gray-50 dark:bg-gray-800 border-0"
               />
             </div>
-            
+
             <div className="flex gap-2">
               <Select value={statusFilter} onValueChange={setStatusFilter}>
                 <SelectTrigger className="w-32 bg-gray-50 dark:bg-gray-800 border-0">
                   <Filter className="h-4 w-4 mr-2" />
-                  <SelectValue placeholder="Status" />
+                  <SelectValue placeholder={t("Status")} />
                 </SelectTrigger>
                 <SelectContent>
-                  <SelectItem value="all">All Status</SelectItem>
-                  <SelectItem value="published">Published</SelectItem>
-                  <SelectItem value="draft">Draft</SelectItem>
-                  <SelectItem value="archived">Archived</SelectItem>
+                  <SelectItem value="all">{t("All Status")}</SelectItem>
+                  <SelectItem value="published">{t("Published")}</SelectItem>
+                  <SelectItem value="draft">{t("Draft")}</SelectItem>
+                  <SelectItem value="archived">{t("Archived")}</SelectItem>
                 </SelectContent>
               </Select>
-              
+
               <Select value={languageFilter} onValueChange={setLanguageFilter}>
                 <SelectTrigger className="w-32 bg-gray-50 dark:bg-gray-800 border-0">
                   <Globe className="h-4 w-4 mr-2" />
-                  <SelectValue placeholder="Language" />
+                  <SelectValue placeholder={t("Language")} />
                 </SelectTrigger>
                 <SelectContent>
-                  <SelectItem value="all">All Languages</SelectItem>
+                  <SelectItem value="all">{t("All Languages")}</SelectItem>
                   <SelectItem value="EN">🇺🇸 English</SelectItem>
                   <SelectItem value="JP">🇯🇵 Japanese</SelectItem>
                 </SelectContent>
@@ -199,8 +202,11 @@ export const EnhancedBlogPostsGrid: React.FC<EnhancedBlogPostsGridProps> = ({
       {/* Results Summary */}
       <div className="flex items-center justify-between">
         <p className="text-sm text-gray-600 dark:text-gray-300">
-          Showing <span className="font-medium">{filteredPosts.length}</span> of{" "}
-          <span className="font-medium">{blogPosts.length}</span> posts
+          <TranslateText text="Showing" language={currentLanguage} />{" "}
+          <span className="font-medium">{filteredPosts.length}</span>{" "}
+          <TranslateText text="of" language={currentLanguage} />{" "}
+          <span className="font-medium">{blogPosts.length}</span>{" "}
+          <TranslateText text="posts" language={currentLanguage} />
         </p>
       </div>
 
@@ -211,23 +217,23 @@ export const EnhancedBlogPostsGrid: React.FC<EnhancedBlogPostsGridProps> = ({
             <div className="max-w-md mx-auto">
               <ImageIcon className="h-16 w-16 text-gray-300 mx-auto mb-4" />
               <h3 className="text-lg font-semibold text-gray-900 dark:text-white mb-2">
-                No posts found
+                <TranslateText text="No posts found" language={currentLanguage} />
               </h3>
               <p className="text-gray-600 dark:text-gray-300 mb-6">
                 {searchTerm || statusFilter !== "all" || languageFilter !== "all"
-                  ? "Try adjusting your search criteria or filters."
-                  : "Get started by creating your first blog post."}
+                  ? t("Try adjusting your search criteria or filters.")
+                  : t("Get started by creating your first blog post.")}
               </p>
               <Button className="gap-2">
                 <Plus className="h-4 w-4" />
-                Create Your First Post
+                <TranslateText text="Create Your First Post" language={currentLanguage} />
               </Button>
             </div>
           </CardContent>
         </Card>
       ) : (
         <div className={cn(
-          viewMode === "grid" 
+          viewMode === "grid"
             ? "grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6"
             : "space-y-4"
         )}>
@@ -297,7 +303,7 @@ const PostCard: React.FC<PostCardProps> = ({
                 </div>
               )}
             </div>
-            
+
             <div className="flex-1 min-w-0">
               <div className="flex items-start justify-between mb-2">
                 <h3 className="text-lg font-semibold text-gray-900 dark:text-white truncate pr-4">
@@ -311,11 +317,11 @@ const PostCard: React.FC<PostCardProps> = ({
                   onDuplicate={onDuplicate}
                 />
               </div>
-              
+
               <p className="text-gray-600 dark:text-gray-300 text-sm mb-3 line-clamp-2">
                 {post.description}
               </p>
-              
+
               <div className="flex items-center justify-between">
                 <div className="flex items-center gap-4 text-sm text-gray-500">
                   <div className="flex items-center gap-1">
@@ -324,10 +330,10 @@ const PostCard: React.FC<PostCardProps> = ({
                   </div>
                   <div className="flex items-center gap-1">
                     <Clock className="h-4 w-4" />
-                    5 min read
+                    5 {t("min read")}
                   </div>
                 </div>
-                
+
                 <div className="flex items-center gap-2">
                   <Badge className={getStatusColor(post.status)}>
                     {post.status}
@@ -365,7 +371,7 @@ const PostCard: React.FC<PostCardProps> = ({
             <ImageIcon className="h-12 w-12 text-gray-400" />
           </div>
         )}
-        
+
         <div className="absolute top-4 right-4">
           <PostActions
             post={post}
@@ -375,14 +381,14 @@ const PostCard: React.FC<PostCardProps> = ({
             onDuplicate={onDuplicate}
           />
         </div>
-        
+
         <div className="absolute bottom-4 left-4">
           <Badge className={getStatusColor(post.status)}>
-            {post.status}
+            {t(post.status.charAt(0).toUpperCase() + post.status.slice(1))}
           </Badge>
         </div>
       </div>
-      
+
       <CardContent className="p-6">
         <div className="space-y-4">
           <div>
@@ -393,7 +399,7 @@ const PostCard: React.FC<PostCardProps> = ({
               {post.description}
             </p>
           </div>
-          
+
           <div className="flex items-center justify-between pt-2 border-t border-gray-100 dark:border-gray-800">
             <div className="flex items-center gap-3 text-xs text-gray-500">
               <div className="flex items-center gap-1">
@@ -402,10 +408,10 @@ const PostCard: React.FC<PostCardProps> = ({
               </div>
               <div className="flex items-center gap-1">
                 <Clock className="h-3 w-3" />
-                5m
+                5{t("m")}
               </div>
             </div>
-            
+
             <div className="flex items-center gap-2">
               {post.language && (
                 <Badge variant="outline" className="text-xs px-2">
@@ -443,9 +449,9 @@ const PostActions: React.FC<PostActionsProps> = ({
   return (
     <DropdownMenu>
       <DropdownMenuTrigger asChild>
-        <Button 
-          variant="ghost" 
-          size="sm" 
+        <Button
+          variant="ghost"
+          size="sm"
           className="h-8 w-8 p-0 bg-white/90 hover:bg-white shadow-sm"
         >
           <MoreVertical className="h-4 w-4" />
@@ -454,31 +460,31 @@ const PostActions: React.FC<PostActionsProps> = ({
       <DropdownMenuContent align="end" className="w-48">
         <DropdownMenuItem onClick={() => onEdit(post)} className="gap-2">
           <Edit className="h-4 w-4" />
-          Edit Post
+          {t("Edit Post")}
         </DropdownMenuItem>
-        
+
         {onView && (
           <DropdownMenuItem onClick={() => onView(post)} className="gap-2">
             <Eye className="h-4 w-4" />
-            Preview
+            {t("Preview")}
           </DropdownMenuItem>
         )}
-        
+
         {onDuplicate && (
           <DropdownMenuItem onClick={() => onDuplicate(post)} className="gap-2">
             <Copy className="h-4 w-4" />
-            Duplicate
+            {t("Duplicate")}
           </DropdownMenuItem>
         )}
-        
+
         <DropdownMenuSeparator />
-        
-        <DropdownMenuItem 
-          onClick={() => onDelete(post)} 
+
+        <DropdownMenuItem
+          onClick={() => onDelete(post)}
           className="gap-2 text-red-600 focus:text-red-600"
         >
           <Trash2 className="h-4 w-4" />
-          Delete
+          {t("Delete")}
         </DropdownMenuItem>
       </DropdownMenuContent>
     </DropdownMenu>

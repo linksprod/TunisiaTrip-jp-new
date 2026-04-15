@@ -4,7 +4,8 @@ import { FileText, Clock, Search as SearchIcon } from "lucide-react";
 import { cn } from "@/lib/utils";
 import { TranslateText } from "@/components/translation/TranslateText";
 import { UnifiedSearchResult } from "@/hooks/use-unified-search";
-import { getResultIcon, getCategoryBadge, getCategoryColor } from "@/utils/search/searchUtils";
+import { getResultIcon, getCategoryColor } from "@/utils/search/searchUtils";
+import { useTranslation } from "@/hooks/use-translation";
 
 interface ResponsiveSearchDropdownProps {
   showContent: boolean;
@@ -35,6 +36,8 @@ export const ResponsiveSearchDropdown: React.FC<ResponsiveSearchDropdownProps> =
   onSuggestionClick,
   dropdownRef
 }) => {
+  const { t } = useTranslation();
+
   if (!showContent) return null;
 
   // Aggressive mobile positioning and sizing
@@ -49,7 +52,7 @@ export const ResponsiveSearchDropdown: React.FC<ResponsiveSearchDropdownProps> =
         "-ml-2 -mr-2" // Negative margins to break out of container
       );
     }
-    
+
     return cn(
       "absolute top-full left-1/2 transform -translate-x-1/2 mt-2",
       "w-72 sm:w-80 md:w-96 lg:w-[400px] xl:w-[500px]",
@@ -63,7 +66,7 @@ export const ResponsiveSearchDropdown: React.FC<ResponsiveSearchDropdownProps> =
     if (isHeader) {
       return "px-4 py-3 text-sm font-medium bg-gray-50 border-b border-gray-100";
     }
-    
+
     return cn(
       "px-4 py-4", // Larger padding for mobile
       "hover:bg-blue-50 active:bg-blue-100 cursor-pointer",
@@ -85,7 +88,7 @@ export const ResponsiveSearchDropdown: React.FC<ResponsiveSearchDropdownProps> =
     <div
       ref={dropdownRef}
       className={getDropdownClasses()}
-      style={{ 
+      style={{
         // Ensure proper stacking and positioning on mobile
         position: 'absolute',
         zIndex: isMobile ? 70 : 50,
@@ -114,12 +117,19 @@ export const ResponsiveSearchDropdown: React.FC<ResponsiveSearchDropdownProps> =
             <TranslateText text="Search Results" language={currentLanguage} />
             <span className="text-gray-400">({results.length})</span>
           </div>
-          
+
           {results.map((result, index) => {
             const IconComponent = getResultIcon(result);
-            const categoryBadge = getCategoryBadge(result.category);
+            const categoryBadge = t(result.category);
             const categoryColor = getCategoryColor(result.category);
-            
+
+            // Localized content
+            const isJP = currentLanguage === 'JP';
+            const displayTitle = (isJP && result.titleJP) ? result.titleJP : result.title;
+            const displayDescription = (isJP && result.descriptionJP) ? result.descriptionJP : result.description;
+            const displaySection = (isJP && result.sectionJP) ? result.sectionJP : result.section;
+            const displayContext = (isJP && result.contextType) ? t(result.contextType) : result.contextType;
+
             return (
               <div
                 key={`result-${result.id || index}`}
@@ -131,7 +141,7 @@ export const ResponsiveSearchDropdown: React.FC<ResponsiveSearchDropdownProps> =
                     "flex-shrink-0 mt-0.5 text-blue-500 group-hover:text-blue-600",
                     "w-5 h-5"
                   )} />
-                  
+
                   <div className="flex-1 min-w-0">
                     <div className="flex items-start justify-between gap-2 mb-1">
                       <h4 className={cn(
@@ -139,9 +149,9 @@ export const ResponsiveSearchDropdown: React.FC<ResponsiveSearchDropdownProps> =
                         "truncate flex-1 transition-colors",
                         getTextClasses()
                       )}>
-                        {currentLanguage === 'JP' && result.titleJP ? result.titleJP : result.title}
+                        {displayTitle}
                       </h4>
-                      
+
                       <span className={cn(
                         "px-2 py-0.5 text-xs rounded-full font-medium flex-shrink-0",
                         categoryColor
@@ -149,22 +159,22 @@ export const ResponsiveSearchDropdown: React.FC<ResponsiveSearchDropdownProps> =
                         {categoryBadge}
                       </span>
                     </div>
-                    
-                    {result.description && (
+
+                    {displayDescription && (
                       <p className={cn(
                         "text-gray-500 line-clamp-2 mb-1",
                         getTextClasses('sm')
                       )}>
-                        {result.description}
+                        {displayDescription}
                       </p>
                     )}
-                    
+
                     <div className={cn(
                       "flex items-center gap-3 text-gray-400",
                       getTextClasses('sm')
                     )}>
-                      {result.contextType && (
-                        <span className="capitalize">{result.contextType}</span>
+                      {displayContext && (
+                        <span className="capitalize">{displayContext}</span>
                       )}
                       {result.source === 'ai' && (
                         <span className="text-blue-500 font-medium">AI</span>
@@ -185,7 +195,7 @@ export const ResponsiveSearchDropdown: React.FC<ResponsiveSearchDropdownProps> =
             <SearchIcon className="w-4 h-4 flex-shrink-0" />
             <TranslateText text="Suggestions" language={currentLanguage} />
           </div>
-          
+
           {suggestions.map((suggestion, index) => (
             <div
               key={`suggestion-${index}`}
@@ -213,7 +223,7 @@ export const ResponsiveSearchDropdown: React.FC<ResponsiveSearchDropdownProps> =
             <Clock className="w-4 h-4 flex-shrink-0" />
             <TranslateText text="Recent Searches" language={currentLanguage} />
           </div>
-          
+
           {history.slice(0, 3).map((historyItem, index) => (
             <div
               key={`history-${index}`}
@@ -237,9 +247,9 @@ export const ResponsiveSearchDropdown: React.FC<ResponsiveSearchDropdownProps> =
       {/* No Results */}
       {!isLoading && searchValue.trim() && results.length === 0 && (
         <div className={cn(getItemClasses(), "text-center text-gray-500 justify-center")}>
-          <TranslateText 
-            text="No results found. Try a different search term." 
-            language={currentLanguage} 
+          <TranslateText
+            text="No results found. Try a different search term."
+            language={currentLanguage}
           />
         </div>
       )}

@@ -11,13 +11,16 @@ import { EnhancedBlogPostsGrid } from "@/components/admin/modern/EnhancedBlogPos
 import { useBlogPosts, BlogFormValues } from "@/hooks/use-blog-posts";
 import { useToast } from "@/components/ui/use-toast";
 import { LoadingIndicator } from "@/components/ui/LoadingIndicator";
+import { useTranslation } from "@/hooks/use-translation";
+import { TranslateText } from "@/components/translation/TranslateText";
 
 const AdminBlogPage = () => {
   const [isAddMode, setIsAddMode] = useState(false);
   const [isEditMode, setIsEditMode] = useState(false);
   const [currentPost, setCurrentPost] = useState<BlogArticle | null>(null);
   const { toast } = useToast();
-  
+  const { currentLanguage, t } = useTranslation();
+
   const {
     blogPosts,
     isLoading,
@@ -52,34 +55,34 @@ const AdminBlogPage = () => {
   const handleFormSubmit = async (data: BlogFormValues) => {
     console.log("Form submitted with data:", data);
     let success = false;
-    
+
     try {
       if (isAddMode) {
         success = await handleAddPost(data);
         if (success && data.status === 'published') {
           toast({
-            title: "Blog post published",
-            description: "Your post is now live on the blog page",
+            title: t("Blog post published"),
+            description: t("Your post is now live on the blog page"),
           });
         }
       } else if (isEditMode && currentPost) {
         success = await handleUpdatePost(data, currentPost);
         if (success && data.status === 'published' && currentPost.status !== 'published') {
           toast({
-            title: "Blog post published",
-            description: "Your post is now live on the blog page",
+            title: t("Blog post published"),
+            description: t("Your post is now live on the blog page"),
           });
         }
       }
-      
+
       if (success) {
         handleCancel();
       }
     } catch (error) {
       console.error("Error handling form submit:", error);
       toast({
-        title: "Error",
-        description: "There was a problem publishing your post",
+        title: t("Error"),
+        description: t("There was a problem publishing your post"),
         variant: "destructive"
       });
     }
@@ -87,12 +90,12 @@ const AdminBlogPage = () => {
 
   const actionButtons = (
     <div className="flex gap-2">
-      <Button 
-        className="bg-admin-primary hover:bg-admin-accent transition-colors text-white" 
+      <Button
+        className="bg-admin-primary hover:bg-admin-accent transition-colors text-white"
         onClick={handleAddNewClick}
         disabled={isAddMode || isEditMode}
       >
-        <Plus className="mr-2 h-4 w-4" /> Add New Blog Post
+        <Plus className="mr-2 h-4 w-4" /> <TranslateText text="Add New Blog Post" language={currentLanguage} />
       </Button>
     </div>
   );
@@ -100,9 +103,9 @@ const AdminBlogPage = () => {
   return (
     <EnhancedAdminLayout>
       <div className="space-y-8 animate-fadeIn">
-        <AdminHeader 
-          title="Blog Management" 
-          description="Add, edit, or delete blog articles."
+        <AdminHeader
+          title={t("Blog Management")}
+          description={t("Add, edit, or delete blog articles.")}
           actionButton={actionButtons}
         />
 
@@ -119,7 +122,7 @@ const AdminBlogPage = () => {
 
         {/* Enhanced Blog Posts Grid - Only show when not in add/edit mode */}
         {!isAddMode && !isEditMode && (
-          <EnhancedBlogPostsGrid 
+          <EnhancedBlogPostsGrid
             blogPosts={blogPosts}
             isLoading={isLoading}
             onEdit={handleEditPost}
@@ -131,10 +134,10 @@ const AdminBlogPage = () => {
         <ConfirmDialog
           open={deleteConfirmOpen}
           onOpenChange={setDeleteConfirmOpen}
-          title="Delete Blog Post"
-          description="Are you sure you want to delete this blog post? This action cannot be undone."
-          confirmText="Delete"
-          cancelText="Cancel"
+          title={t("Delete Blog Post")}
+          description={t("Are you sure you want to delete this blog post? This action cannot be undone.")}
+          confirmText={t("Delete")}
+          cancelText={t("Cancel")}
           onConfirm={handleDeletePost}
           variant="destructive"
         />

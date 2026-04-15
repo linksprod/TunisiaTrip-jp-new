@@ -115,9 +115,9 @@ const StartMyTripPageOptimized = () => {
   const handleGeneratePresentation = async () => {
     if (selectedActivities.length === 0) {
       toast.warning(
-        <TranslateText text="Veuillez sélectionner au moins une activité" language={currentLanguage} />,
+        <TranslateText text="Please select at least one activity" language={currentLanguage} />,
         {
-          description: <TranslateText text="Les activités sont nécessaires pour créer votre présentation personnalisée." language={currentLanguage} />
+          description: <TranslateText text="Activities are needed to create your personalized itinerary." language={currentLanguage} />
         }
       );
       return;
@@ -126,9 +126,9 @@ const StartMyTripPageOptimized = () => {
     const totalAccommodations = selectedHotels.length + selectedGuestHouses.length;
     if (totalAccommodations === 0) {
       toast.warning(
-        <TranslateText text="Veuillez sélectionner au moins un hébergement" language={currentLanguage} />,
+        <TranslateText text="Please select at least one accommodation" language={currentLanguage} />,
         {
-          description: <TranslateText text="Les hébergements aident à optimiser votre présentation." language={currentLanguage} />
+          description: <TranslateText text="Accommodations help optimize your geographical route." language={currentLanguage} />
         }
       );
       return;
@@ -138,9 +138,9 @@ const StartMyTripPageOptimized = () => {
     setShowPresentation(true);
 
     toast.info(
-      <TranslateText text="Génération de votre présentation personnalisée..." language={currentLanguage} />,
+      <TranslateText text="Generating your personalized presentation..." language={currentLanguage} />,
       {
-        description: <TranslateText text="Notre IA crée une présentation engageante pour votre voyage en Tunisie" language={currentLanguage} />,
+        description: <TranslateText text="Our AI is creating an engaging presentation for your trip to Tunisia" language={currentLanguage} />,
         duration: 3000
       }
     );
@@ -164,14 +164,14 @@ const StartMyTripPageOptimized = () => {
       window.scrollTo({ top: 0, behavior: 'smooth' });
 
       toast.success(
-        <TranslateText text="Votre présentation de voyage a été créée !" language={currentLanguage} />,
+        <TranslateText text="Your travel presentation has been created!" language={currentLanguage} />,
         {
-          description: <TranslateText text="Découvrez votre voyage personnalisé en Tunisie" language={currentLanguage} />
+          description: <TranslateText text="Discover your personalized trip to Tunisia" language={currentLanguage} />
         }
       );
     } catch (error) {
       console.error("Presentation generation error:", error);
-      toast.error(<TranslateText text="Impossible de générer la présentation. Veuillez réessayer." language={currentLanguage} />);
+      toast.error(<TranslateText text="Unable to generate presentation. Please try again." language={currentLanguage} />);
       setShowPresentation(false);
     } finally {
       setIsGeneratingPresentation(false);

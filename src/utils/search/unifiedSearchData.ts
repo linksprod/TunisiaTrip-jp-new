@@ -25,6 +25,8 @@ function getPageSearchData() {
       category: 'home' as const,
       section: 'main',
       titleJP: 'チュニジア旅行ガイド',
+      descriptionJP: 'エキスパートの推奨事項と地元のアドバイスが含まれた、チュニジア旅行の完全なガイド。',
+      sectionJP: 'メイン',
       keywords: ['home', 'main', 'tunisia', 'guide', 'travel', 'discover', 'welcome', 'start', 'ホーム', 'メイン', 'チュニジア', 'ガイド'],
       score: 0
     },
@@ -36,6 +38,8 @@ function getPageSearchData() {
       category: 'about' as const,
       section: 'information',
       titleJP: 'チュニジアについて',
+      descriptionJP: 'チュニジアの豊かな文化、魅力的な歴史、地理、多様な地域について学びましょう。',
+      sectionJP: '情報',
       keywords: ['about', 'tunisia', 'culture', 'history', 'information', 'country', 'geography', 'overview', 'チュニジアについて', '文化', '歴史'],
       score: 0
     },
@@ -47,6 +51,8 @@ function getPageSearchData() {
       category: 'travel' as const,
       section: 'planning',
       titleJP: '旅行情報',
+      descriptionJP: '旅程、アクティビティ、都市、実用的な旅行情報を含む完全な旅行ガイド。',
+      sectionJP: 'プランニング',
       keywords: ['travel', 'information', 'tour', 'packages', 'itinerary', 'activities', 'cities', 'planning', '旅行', '情報', 'ツアー'],
       score: 0
     },
@@ -58,6 +64,8 @@ function getPageSearchData() {
       category: 'atlantis' as const,
       section: 'services',
       titleJP: 'アトランティス航海',
+      descriptionJP: 'パーソナライズされたツアー、ホテル予約、旅行サービスを提供するプロフェッショナルな旅行代理店。',
+      sectionJP: 'サービス',
       keywords: ['atlantis', 'voyages', 'company', 'services', 'agency', 'professional', 'booking', 'tours', 'アトランティス', '会社', 'サービス'],
       score: 0
     },
@@ -69,6 +77,8 @@ function getPageSearchData() {
       category: 'travel' as const,
       section: 'planning',
       titleJP: '旅行を始める',
+      descriptionJP: 'インタラクティブなトリッププランナーとカスタマイズされた旅程で、完璧なチュニジア旅行を計画しましょう。',
+      sectionJP: 'プランニング',
       keywords: ['start', 'trip', 'planner', 'plan', 'customize', 'itinerary', 'interactive', '旅行を始める', 'プランナー'],
       score: 0
     },
@@ -80,6 +90,8 @@ function getPageSearchData() {
       category: 'blog' as const,
       section: 'articles',
       titleJP: 'ブログ',
+      descriptionJP: 'チュニジア旅行のエキスパートや地元ガイドによる旅行記、ヒント、洞察。',
+      sectionJP: '記事',
       keywords: ['blog', 'articles', 'stories', 'tips', 'insights', 'experiences', 'travel blog', 'ブログ', '記事', '旅行記'],
       score: 0
     }
@@ -97,6 +109,8 @@ function getSectionSearchData() {
       category: 'about' as const,
       section: 'culture',
       titleJP: 'チュニジア文化',
+      descriptionJP: 'チュニジアの豊かな文化的遺産、伝統、習慣、そして生活様式を発見してください。',
+      sectionJP: '文化',
       image: '/uploads/67d662bd-9913-40c8-9171-f34177b63a89.png',
       keywords: ['culture', 'traditions', 'customs', 'heritage', 'arab', 'berber', 'lifestyle', 'way of life', '文化', '伝統', '習慣'],
       score: 0
@@ -109,6 +123,8 @@ function getSectionSearchData() {
       category: 'about' as const,
       section: 'weather',
       titleJP: '天気・気候',
+      descriptionJP: '完全な天気ガイド、季節のパターン、およびチュニジアを訪れるのに最適な時期。',
+      sectionJP: '天気',
       keywords: ['weather', 'climate', 'temperature', 'seasons', 'best time', 'visit', 'planning', '天気', '気候', '季節'],
       score: 0
     },
@@ -120,6 +136,8 @@ function getSectionSearchData() {
       category: 'about' as const,
       section: 'languages',
       titleJP: '言語',
+      descriptionJP: 'チュニジアで話されているアラビア語、フランス語、ベルベル語について学びましょう。',
+      sectionJP: '言語',
       keywords: ['languages', 'arabic', 'french', 'berber', 'communication', 'speaking', 'dialect', '言語', 'アラビア語', 'フランス語'],
       score: 0
     },
@@ -131,6 +149,8 @@ function getSectionSearchData() {
       category: 'travel' as const,
       section: 'transportation',
       titleJP: '交通手段',
+      descriptionJP: '電車、バス、タクシー、レンタカーなど、チュニジア国内の移動に関する完全ガイド。',
+      sectionJP: '交通手段',
       keywords: ['transportation', 'transport', 'taxi', 'bus', 'train', 'car', 'rental', 'getting around', '交通', 'タクシー', 'バス'],
       score: 0
     },
@@ -142,6 +162,8 @@ function getSectionSearchData() {
       category: 'accommodation' as const,
       section: 'hotels',
       titleJP: 'ホテル・宿泊',
+      descriptionJP: '厳選されたホテルやゲストハウスから、完璧な滞在先を見つけましょう。',
+      sectionJP: 'ホテル',
       keywords: ['hotels', 'accommodation', 'stay', 'lodging', 'guest houses', 'booking', 'rooms', 'ホテル', '宿泊', '部屋'],
       score: 0
     }
@@ -159,6 +181,8 @@ function getCitySearchData() {
       category: 'city' as const,
       section: 'destinations',
       titleJP: 'チュニス',
+      descriptionJP: 'メディナ、博物館、近代的なアトラクションがあるチュニジアの活気ある首都を探索してください。',
+      sectionJP: '目的地',
       image: '/uploads/f725cd5d-dab1-4471-90ca-93cf7764136b.png',
       keywords: ['tunis', 'capital', 'city', 'medina', 'museums', 'attractions', 'downtown', 'チュニス', '首都', '都市'],
       score: 0
@@ -171,6 +195,8 @@ function getCitySearchData() {
       category: 'city' as const,
       section: 'destinations',
       titleJP: 'シディ・ブ・サイード',
+      descriptionJP: '見事な青と白の建築と海の景色を楽しめる、有名な崖の上の村。',
+      sectionJP: '目的地',
       image: '/uploads/2714f2c3-4465-4a55-8369-5484aa8f3b28.png',
       keywords: ['sidi bou said', 'blue', 'white', 'village', 'cliff', 'sea', 'views', 'architecture', 'シディブサイード', '青と白', '村'],
       score: 0
@@ -183,6 +209,8 @@ function getCitySearchData() {
       category: 'city' as const,
       section: 'destinations',
       titleJP: 'ハンマメット',
+      descriptionJP: '美しい海岸線、リゾート、ウォーターアクティビティがある人気のビーチ目的地。',
+      sectionJP: '目的地',
       keywords: ['hammamet', 'beach', 'resort', 'coastline', 'swimming', 'water', 'activities', 'ハンマメット', 'ビーチ', 'リゾート'],
       score: 0
     },
@@ -194,6 +222,8 @@ function getCitySearchData() {
       category: 'city' as const,
       section: 'destinations',
       titleJP: 'ジェルバ島',
+      descriptionJP: 'のどかなビーチ、伝統的な村、ユニークな文化がある美しい島。',
+      sectionJP: '目的地',
       keywords: ['djerba', 'island', 'paradise', 'beaches', 'traditional', 'villages', 'culture', 'ジェルバ', '島', 'パラダイス'],
       score: 0
     }
@@ -211,6 +241,8 @@ function getActivitySearchData() {
       category: 'activity' as const,
       section: 'desert',
       titleJP: 'サハラ砂漠体験',
+      descriptionJP: 'ラクダトレッキング、キャンプ、星空観察を楽しめる、忘れられない砂漠の冒険。',
+      sectionJP: '砂漠',
       image: '/uploads/2714f2c3-4465-4a55-8369-5484aa8f3b28.png',
       keywords: ['sahara', 'desert', 'camels', 'camping', 'stars', 'adventure', 'dunes', 'oasis', 'サハラ', '砂漠', 'ラクダ'],
       score: 0
@@ -223,6 +255,8 @@ function getActivitySearchData() {
       category: 'activity' as const,
       section: 'entertainment',
       titleJP: 'スターウォーズ撮影地',
+      descriptionJP: 'タトゥイーンのシーンや映画セットを含む、象徴的なスターウォーズの撮影場所を訪問しましょう。',
+      sectionJP: 'エンターテイメント',
       image: '/uploads/38ad0f33-36f7-4fa7-87c7-b4e8e7a9c2d1.png',
       keywords: ['star wars', 'filming', 'locations', 'tatooine', 'movie', 'sets', 'matmata', 'スターウォーズ', '撮影地', '映画'],
       score: 0
@@ -235,6 +269,8 @@ function getActivitySearchData() {
       category: 'activity' as const,
       section: 'history',
       titleJP: 'ローマ遺跡',
+      descriptionJP: '古代ローマの遺跡、円形劇場、およびユネスコ世界遺産を探索してください。',
+      sectionJP: '歴史',
       image: '/uploads/c0f73b03-8e7e-4aea-996c-25418c3b8927.png',
       keywords: ['roman', 'ruins', 'archaeological', 'amphitheater', 'unesco', 'heritage', 'ancient', 'history', 'ローマ', '遺跡', '古代'],
       score: 0
@@ -247,6 +283,8 @@ function getActivitySearchData() {
       category: 'activity' as const,
       section: 'beaches',
       titleJP: '地中海ビーチ',
+      descriptionJP: '透き通った水と黄金の砂が広がる美しい地中海のビーチでリラックスしてください。',
+      sectionJP: 'ビーチ',
       image: '/uploads/f725cd5d-dab1-4471-90ca-93cf7764136b.png',
       keywords: ['beaches', 'mediterranean', 'swimming', 'sun', 'sand', 'water', 'coast', 'seaside', 'ビーチ', '地中海', '海'],
       score: 0
