@@ -16,21 +16,29 @@ import { ArticleMetaTags } from "@/components/common/ArticleMetaTags";
 import { ShareButtons } from "@/components/blog/ShareButtons";
 
 const ArticlePage = () => {
-  const { slug } = useParams<{ slug: string }>();
-  const [article, setArticle] = useState<BlogArticle | null>(null);
+  const { slug: paramSlug } = useParams<{ slug: string }>();
+
+  // SSR Data Injection: Use global slug/data if provided (from entry-server and prerender)
+  const ssrSlug = typeof globalThis !== 'undefined' ? (globalThis as any).__SSR_SLUG__ : null;
+  const ssrData = typeof globalThis !== 'undefined' ? (globalThis as any).__SSR_DATA__ : null;
+
+  const slug = paramSlug || ssrSlug;
+  const initialArticle = (ssrData && (ssrData.slug === slug || ssrData.id === slug)) ? ssrData : null;
+
+  const [article, setArticle] = useState<BlogArticle | null>(initialArticle);
   const [relatedArticles, setRelatedArticles] = useState<BlogArticle[]>([]);
-  const [isLoading, setIsLoading] = useState(true);
+  const [isLoading, setIsLoading] = useState(!initialArticle);
   const [error, setError] = useState<string | null>(null);
   const { currentLanguage } = useTranslation();
   const { toast } = useToast();
 
   useEffect(() => {
     const fetchArticle = async () => {
-      if (!slug) return;
-      
+      if (!slug || initialArticle) return;
+
       try {
         console.log(`Fetching article with slug: ${slug} in language: ${currentLanguage}`);
-        
+
         // First try to find by slug in current language
         let { data, error } = await supabase
           .from('blog_articles')
@@ -39,13 +47,13 @@ const ArticlePage = () => {
           .eq('language', currentLanguage)
           .eq('status', 'published')
           .single();
-          
+
         console.log('Direct slug search result:', { data, error });
-          
+
         // If not found in current language, try to find the original or translated version
         if (error && error.code === 'PGRST116') {
           console.log(`Article not found with slug: ${slug} in language: ${currentLanguage}, searching for alternative versions...`);
-          
+
           // Look for any article with this slug (any language)
           const { data: anyVersionData, error: anyVersionError } = await supabase
             .from('blog_articles')
@@ -53,9 +61,9 @@ const ArticlePage = () => {
             .eq('slug', slug)
             .eq('status', 'published')
             .maybeSingle();
-            
+
           console.log('Any version search result:', { anyVersionData, anyVersionError });
-            
+
           if (anyVersionData) {
             // Found an article with this slug, now look for the translated version
             if (anyVersionData.language === currentLanguage) {
@@ -65,10 +73,10 @@ const ArticlePage = () => {
               console.log(`Article is already in the correct language: ${currentLanguage}`);
             } else {
               console.log(`Article found in ${anyVersionData.language}, searching for ${currentLanguage} translation...`);
-              
+
               // Look for the translated version using both original_id patterns
               let translatedData = null;
-              
+
               // Pattern 1: If current article is a translation, look for siblings
               if (anyVersionData.original_id) {
                 console.log(`Current article is a translation with original_id: ${anyVersionData.original_id}`);
@@ -79,12 +87,12 @@ const ArticlePage = () => {
                   .eq('language', currentLanguage)
                   .eq('status', 'published')
                   .maybeSingle();
-                  
+
                 if (sibling) {
                   translatedData = sibling;
                   console.log('Found sibling translation:', sibling);
                 }
-                
+
                 // Also check if the original itself is in the target language
                 if (!translatedData) {
                   const { data: original } = await supabase
@@ -94,7 +102,7 @@ const ArticlePage = () => {
                     .eq('language', currentLanguage)
                     .eq('status', 'published')
                     .maybeSingle();
-                    
+
                   if (original) {
                     translatedData = original;
                     console.log('Found original in target language:', original);
@@ -110,13 +118,13 @@ const ArticlePage = () => {
                   .eq('language', currentLanguage)
                   .eq('status', 'published')
                   .maybeSingle();
-                  
+
                 if (translation) {
                   translatedData = translation;
                   console.log('Found translation:', translation);
                 }
               }
-              
+
               if (translatedData) {
                 data = translatedData;
                 error = null;
@@ -137,17 +145,17 @@ const ArticlePage = () => {
               .eq('id', slug)
               .eq('status', 'published')
               .maybeSingle();
-              
+
             console.log('ID search result:', { dataById, errorById });
             data = dataById;
             error = errorById;
           }
         }
-          
+
         if (error) throw error;
-        
+
         setArticle(data as BlogArticle);
-        
+
         // Fetch related articles in current language
         const { data: related } = await supabase
           .from('blog_articles')
@@ -156,7 +164,7 @@ const ArticlePage = () => {
           .eq('status', 'published')
           .neq('id', data.id)
           .limit(3);
-          
+
         if (related) {
           setRelatedArticles(related as BlogArticle[]);
         }
@@ -167,13 +175,13 @@ const ArticlePage = () => {
         setIsLoading(false);
       }
     };
-    
+
     fetchArticle();
   }, [slug, currentLanguage]);
 
   const formatDate = (dateString?: string) => {
     if (!dateString) return '';
-    
+
     const date = new Date(dateString);
     return new Intl.DateTimeFormat(currentLanguage === 'JP' ? 'ja-JP' : 'en-US', {
       year: 'numeric',
@@ -198,23 +206,23 @@ const ArticlePage = () => {
       <MainLayout>
         <div className="container mx-auto px-4 py-12 text-center max-w-6xl">
           <h1 className="text-2xl font-bold mb-4">
-            <TranslateText 
-              text="Article Not Found" 
-              language={currentLanguage} 
+            <TranslateText
+              text="Article Not Found"
+              language={currentLanguage}
             />
           </h1>
           <p className="mb-6 text-gray-600">
-            <TranslateText 
-              text="The article you're looking for doesn't exist or has been removed." 
-              language={currentLanguage} 
+            <TranslateText
+              text="The article you're looking for doesn't exist or has been removed."
+              language={currentLanguage}
             />
           </p>
           <Button asChild>
             <Link to="/blog">
               <ArrowLeft className="mr-2 h-4 w-4" />
-              <TranslateText 
-                text="Back to Blog" 
-                language={currentLanguage} 
+              <TranslateText
+                text="Back to Blog"
+                language={currentLanguage}
               />
             </Link>
           </Button>
@@ -227,7 +235,7 @@ const ArticlePage = () => {
     <MainLayout>
       {/* Dynamic Meta Tags for Social Sharing */}
       <ArticleMetaTags article={article} />
-      
+
       <div className="container mx-auto px-4 py-8 max-w-6xl">
         <div className="grid grid-cols-1 lg:grid-cols-3 gap-8">
           {/* Main Content */}
@@ -250,11 +258,11 @@ const ArticlePage = () => {
                     <TranslateText text={article.category} language={currentLanguage} />
                   </span>
                 </div>
-                
+
                 <h1 className="text-3xl md:text-4xl font-bold mb-4 text-gray-900 leading-tight">
                   <TranslateText text={article.title} language={currentLanguage} />
                 </h1>
-                
+
                 {/* Short Description */}
                 {article.description && (
                   <div className="mb-6 p-4 bg-white border-l-4 border-blue-500 shadow-sm">
@@ -263,7 +271,7 @@ const ArticlePage = () => {
                     </p>
                   </div>
                 )}
-                
+
                 <div className="flex items-center gap-4 text-gray-500 text-sm">
                   <div className="flex items-center">
                     <Calendar className="h-4 w-4 mr-2" />
@@ -290,12 +298,12 @@ const ArticlePage = () => {
                   />
                 </div>
               )}
-              
+
               {/* Article Content */}
               <div className="p-6">
                 <div className="article-content">
                   {article.content ? (
-                    <ContentRenderer 
+                    <ContentRenderer
                       content={article.content}
                       className="prose prose-lg max-w-none prose-headings:text-gray-900 prose-headings:font-bold prose-h1:text-3xl prose-h2:text-2xl prose-h3:text-xl prose-p:text-gray-700 prose-p:leading-relaxed prose-p:mb-4 prose-li:text-gray-700 prose-li:mb-2 prose-ul:mb-4 prose-ol:mb-4 prose-blockquote:border-l-blue-500 prose-blockquote:bg-blue-50 prose-blockquote:italic prose-blockquote:pl-4 prose-blockquote:py-2 prose-strong:text-gray-900 prose-em:text-gray-800"
                     />

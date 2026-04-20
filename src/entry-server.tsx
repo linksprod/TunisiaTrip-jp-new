@@ -13,6 +13,7 @@ import BlogPage from './pages/BlogPage';
 import AtlantisPage from './pages/AtlantisPage';
 import { StartMyTripNewPage } from './pages/StartMyTripNewPage';
 import NotFoundPage from './pages/NotFoundPage';
+import ArticlePage from './pages/ArticlePage';
 
 interface RenderResult {
     html: string;
@@ -35,7 +36,17 @@ export function render(url: string): RenderResult {
         defaultOptions: { queries: { retry: 0, staleTime: Infinity } },
     });
 
-    const PageComponent = ROUTES[url];
+    let PageComponent = ROUTES[url];
+
+    // Handle dynamic blog routes
+    if (!PageComponent && url.startsWith('/blog/')) {
+        PageComponent = ArticlePage;
+        const slug = decodeURIComponent(url.split('/blog/')[1]);
+        (global as any).__SSR_SLUG__ = slug;
+    } else {
+        delete (global as any).__SSR_SLUG__;
+    }
+
     if (!PageComponent) {
         throw new Error(`No component found for route: ${url}`);
     }
