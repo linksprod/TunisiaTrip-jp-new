@@ -65,14 +65,15 @@ export function BlogContent({ selectedCategory, onCategorySelect, searchQuery, o
     // Filter by category
     const matchesCategory = !selectedCategory || 
       (categoryMapping[selectedCategory] || []).some(cat => 
-        article.category.toLowerCase() === cat.toLowerCase()
+        article.category && cat && article.category.toLowerCase() === cat.toLowerCase()
       );
     
     // Filter by search query (title, description, or category)
+    const query = searchQuery.toLowerCase();
     const matchesSearch = !searchQuery.trim() || 
-      article.title.toLowerCase().includes(searchQuery.toLowerCase()) ||
-      article.description.toLowerCase().includes(searchQuery.toLowerCase()) ||
-      article.category.toLowerCase().includes(searchQuery.toLowerCase());
+      (article.title && article.title.toLowerCase().includes(query)) ||
+      (article.description && article.description.toLowerCase().includes(query)) ||
+      (article.category && article.category.toLowerCase().includes(query));
     
     return matchesCategory && matchesSearch;
   });

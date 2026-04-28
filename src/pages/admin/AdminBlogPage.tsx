@@ -95,7 +95,7 @@ const AdminBlogPage = () => {
         onClick={handleAddNewClick}
         disabled={isAddMode || isEditMode}
       >
-        <Plus className="mr-2 h-4 w-4" /> <TranslateText text="Add New Blog Post" language={currentLanguage} />
+        <Plus className="mr-2 h-4 w-4" /> <TranslateText text="Add New Blog Post" />
       </Button>
     </div>
   );

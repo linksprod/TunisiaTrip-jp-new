@@ -58,10 +58,10 @@ const AdminDashboardPage = () => {
           <div className="flex justify-between items-center">
             <div>
               <h1 className="text-3xl font-bold tracking-tight">
-                <TranslateText text="Dashboard" language={currentLanguage} />
+                <TranslateText text="Dashboard" />
               </h1>
               <p className="text-muted-foreground">
-                <TranslateText text="Loading dashboard data..." language={currentLanguage} />
+                <TranslateText text="Loading dashboard data..." />
               </p>
             </div>
           </div>

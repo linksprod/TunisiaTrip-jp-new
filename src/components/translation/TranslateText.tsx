@@ -1,4 +1,5 @@
 import React, { useEffect, useState, useCallback } from 'react';
+import { cn } from '@/lib/utils';
 import { useTranslation } from '@/hooks/use-translation';
 import { useTranslationProvider } from './TranslationProvider';
 // Force reload translations after update
@@ -184,5 +185,5 @@ export const TranslateText: React.FC<TranslateTextProps> = ({
     updateTranslation();
   }, [updateTranslation, targetLanguage, updateKey, text]);
   
-  return <span className={className}>{translatedText}</span>;
+  return <span className={cn("notranslate", className)}>{translatedText}</span>;
 };

@@ -48,7 +48,7 @@ const BlogEditor: React.FC<BlogEditorProps> = ({
   onCancel
 }) => {
   const { toast } = useToast();
-  const { t } = useTranslation();
+  const { t, currentLanguage } = useTranslation();
   const [isTranslating, setIsTranslating] = React.useState(false);
   const [isGeneratingSlug, setIsGeneratingSlug] = React.useState(false);
   const [isSlugManuallyEdited, setIsSlugManuallyEdited] = React.useState(false);
@@ -63,7 +63,7 @@ const BlogEditor: React.FC<BlogEditorProps> = ({
       category: currentPost?.category || "",
       image: currentPost?.image || "",
       status: (currentPost?.status as 'draft' | 'published') || "draft",
-      language: (currentPost?.language as 'EN' | 'JP') || "EN",
+      language: (currentPost?.language as 'EN' | 'JP') || (currentLanguage as 'EN' | 'JP') || "JP",
       meta_title: currentPost?.meta_title || "",
       meta_description: currentPost?.meta_description || "",
       focus_keyword: currentPost?.focus_keyword || "",

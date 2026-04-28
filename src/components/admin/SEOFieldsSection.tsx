@@ -139,7 +139,7 @@ export const SEOFieldsSection: React.FC<SEOFieldsSectionProps> = ({ control, wat
       <CardHeader>
         <CardTitle className="flex items-center gap-2">
           <Search className="h-5 w-5" />
-          <TranslateText text="SEO Settings" language={currentLanguage} />
+          <TranslateText text="SEO Settings" />
         </CardTitle>
       </CardHeader>
       <CardContent>
@@ -147,7 +147,7 @@ export const SEOFieldsSection: React.FC<SEOFieldsSectionProps> = ({ control, wat
           <TabsList className="grid w-full grid-cols-4">
             <TabsTrigger value="basic" className="flex items-center gap-2">
               <Search className="h-4 w-4" />
-              <TranslateText text="Basic SEO" language={currentLanguage} />
+              <TranslateText text="Basic SEO" />
             </TabsTrigger>
             <TabsTrigger value="instagram" className="flex items-center gap-2">
               <Instagram className="h-4 w-4" />

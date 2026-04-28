@@ -195,30 +195,22 @@ export function SidebarMenuButton({
   asChild?: boolean
 } & React.ButtonHTMLAttributes<HTMLButtonElement>) {
   const { expanded } = useSidebar()
-  const Comp = asChild ? React.Fragment : "button"
+  const baseClasses = "flex h-10 w-full cursor-pointer items-center rounded-md p-2 text-sm font-medium transition-colors hover:bg-gray-100 hover:text-gray-900"
+
+  if (asChild && React.isValidElement(children)) {
+    return React.cloneElement(children, {
+      className: cn(baseClasses, className, (children.props as any).className),
+      ...props
+    } as any)
+  }
 
   return (
-    <Comp className={cn(className)} {...(asChild ? {} : props)}>
-      {asChild ? (
-        <div
-          className={cn(
-            "flex h-10 w-full cursor-pointer items-center rounded-md p-2 text-sm font-medium transition-colors hover:bg-gray-100 hover:text-gray-900",
-            className
-          )}
-        >
-          {children}
-        </div>
-      ) : (
-        <div
-          className={cn(
-            "flex h-10 w-full cursor-pointer items-center rounded-md p-2 text-sm font-medium transition-colors hover:bg-gray-100 hover:text-gray-900",
-            className
-          )}
-        >
-          {children}
-        </div>
-      )}
-    </Comp>
+    <button
+      className={cn(baseClasses, className)}
+      {...props}
+    >
+      {children}
+    </button>
   )
 }
 

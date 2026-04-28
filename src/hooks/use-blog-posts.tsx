@@ -139,7 +139,9 @@ export const useBlogPosts = () => {
         image: formData.image,
         status: formData.status,
         language: (formData.language || 'EN').toUpperCase() as 'EN' | 'JP',
-        publish_date: formData.status === 'published' ? new Date().toISOString() : null,
+        publish_date: formData.status === 'published' 
+          ? new Date().toISOString() 
+          : (formData.status === 'draft' ? new Date().toISOString() : null), // Ensure not null if DB requires it
         meta_title: formData.meta_title,
         meta_description: formData.meta_description,
         focus_keyword: formData.focus_keyword,
@@ -171,7 +173,7 @@ export const useBlogPosts = () => {
         console.error("Error adding blog post:", error);
         toast({
           title: "Error",
-          description: "Failed to add blog post",
+          description: error.message || "Failed to add blog post",
           variant: "destructive"
         });
         return false;
@@ -242,7 +244,8 @@ export const useBlogPosts = () => {
         facebook_title: formData.facebook_title,
         facebook_description: formData.facebook_description,
         facebook_image: formData.facebook_image,
-        ...((!wasPublished && isPublishedNow) ? { publish_date: new Date().toISOString() } : {})
+        ...((!wasPublished && isPublishedNow) ? { publish_date: new Date().toISOString() } : 
+           (formData.status === 'draft' && !currentPost.publish_date ? { publish_date: new Date().toISOString() } : {}))
       };
       
       const { error } = await supabase
@@ -254,7 +257,7 @@ export const useBlogPosts = () => {
         console.error("Error updating blog post:", error);
         toast({
           title: "Error",
-          description: "Failed to update blog post",
+          description: error.message || "Failed to update blog post",
           variant: "destructive"
         });
         return false;

@@ -12,10 +12,10 @@ const AdminMediaPage = () => {
       <div className="space-y-6">
         <div>
           <h1 className="text-3xl font-bold">
-            <TranslateText text="Media Management" language={currentLanguage} />
+            <TranslateText text="Media Management" />
           </h1>
           <p className="text-muted-foreground mt-2">
-            <TranslateText text="Manage website images with automatic compression and WebP conversion." language={currentLanguage} />
+            <TranslateText text="Manage website images with automatic compression and WebP conversion." />
           </p>
         </div>
 

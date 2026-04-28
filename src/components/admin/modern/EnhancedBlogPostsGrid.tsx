@@ -202,11 +202,11 @@ export const EnhancedBlogPostsGrid: React.FC<EnhancedBlogPostsGridProps> = ({
       {/* Results Summary */}
       <div className="flex items-center justify-between">
         <p className="text-sm text-gray-600 dark:text-gray-300">
-          <TranslateText text="Showing" language={currentLanguage} />{" "}
+          <TranslateText text="Showing" />{" "}
           <span className="font-medium">{filteredPosts.length}</span>{" "}
-          <TranslateText text="of" language={currentLanguage} />{" "}
+          <TranslateText text="of" />{" "}
           <span className="font-medium">{blogPosts.length}</span>{" "}
-          <TranslateText text="posts" language={currentLanguage} />
+          <TranslateText text="posts" />
         </p>
       </div>
 
@@ -217,7 +217,7 @@ export const EnhancedBlogPostsGrid: React.FC<EnhancedBlogPostsGridProps> = ({
             <div className="max-w-md mx-auto">
               <ImageIcon className="h-16 w-16 text-gray-300 mx-auto mb-4" />
               <h3 className="text-lg font-semibold text-gray-900 dark:text-white mb-2">
-                <TranslateText text="No posts found" language={currentLanguage} />
+                <TranslateText text="No posts found" />
               </h3>
               <p className="text-gray-600 dark:text-gray-300 mb-6">
                 {searchTerm || statusFilter !== "all" || languageFilter !== "all"
@@ -283,6 +283,7 @@ const PostCard: React.FC<PostCardProps> = ({
   getStatusColor,
   getLanguageFlag
 }) => {
+  const { t } = useTranslation();
   const imageUrl = getImageUrl(post);
 
   if (viewMode === "list") {
@@ -446,6 +447,7 @@ const PostActions: React.FC<PostActionsProps> = ({
   onView,
   onDuplicate
 }) => {
+  const { t } = useTranslation();
   return (
     <DropdownMenu>
       <DropdownMenuTrigger asChild>

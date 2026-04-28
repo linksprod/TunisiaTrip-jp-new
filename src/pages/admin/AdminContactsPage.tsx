@@ -121,36 +121,36 @@ const AdminContactsPage = () => {
       <div className="space-y-6">
         <div>
           <h1 className="text-3xl font-bold">
-            <TranslateText text="Contact Management" language={currentLanguage} />
+            <TranslateText text="Contact Management" />
           </h1>
           <p className="text-muted-foreground mt-2">
-            <TranslateText text="Manage and respond to contact form submissions." language={currentLanguage} />
+            <TranslateText text="Manage and respond to contact form submissions." />
           </p>
         </div>
 
         <Card>
           <CardHeader>
             <CardTitle>
-              <TranslateText text="Contact Form Submissions" language={currentLanguage} />
+              <TranslateText text="Contact Form Submissions" />
             </CardTitle>
             <CardDescription>
-              <TranslateText text="Review and manage all contact inquiries." language={currentLanguage} />
+              <TranslateText text="Review and manage all contact inquiries." />
             </CardDescription>
           </CardHeader>
           <CardContent>
             <Tabs defaultValue="all" onValueChange={(value) => setActiveFilter(value as any)}>
               <TabsList className="mb-4">
                 <TabsTrigger value="all">
-                  <TranslateText text="All Contacts" language={currentLanguage} />
+                  <TranslateText text="All Contacts" />
                 </TabsTrigger>
                 <TabsTrigger value="new">
-                  <TranslateText text="New" language={currentLanguage} />
+                  <TranslateText text="New" />
                 </TabsTrigger>
                 <TabsTrigger value="responded">
-                  <TranslateText text="Responded" language={currentLanguage} />
+                  <TranslateText text="Responded" />
                 </TabsTrigger>
                 <TabsTrigger value="archived">
-                  <TranslateText text="Archived" language={currentLanguage} />
+                  <TranslateText text="Archived" />
                 </TabsTrigger>
               </TabsList>
 
@@ -158,22 +158,22 @@ const AdminContactsPage = () => {
                 <TableHeader>
                   <TableRow>
                     <TableHead>
-                      <TranslateText text="Date" language={currentLanguage} />
+                      <TranslateText text="Date" />
                     </TableHead>
                     <TableHead>
-                      <TranslateText text="Name" language={currentLanguage} />
+                      <TranslateText text="Name" />
                     </TableHead>
                     <TableHead>
-                      <TranslateText text="Email" language={currentLanguage} />
+                      <TranslateText text="Email" />
                     </TableHead>
                     <TableHead>
-                      <TranslateText text="Subject" language={currentLanguage} />
+                      <TranslateText text="Subject" />
                     </TableHead>
                     <TableHead>
-                      <TranslateText text="Status" language={currentLanguage} />
+                      <TranslateText text="Status" />
                     </TableHead>
                     <TableHead className="text-right">
-                      <TranslateText text="Actions" language={currentLanguage} />
+                      <TranslateText text="Actions" />
                     </TableHead>
                   </TableRow>
                 </TableHeader>
@@ -186,7 +186,7 @@ const AdminContactsPage = () => {
                       <TableCell>{contact.subject || t("General Inquiry")}</TableCell>
                       <TableCell>
                         <Badge className={getStatusColor(contact.status)}>
-                          <TranslateText text={contact.status.charAt(0).toUpperCase() + contact.status.slice(1)} language={currentLanguage} />
+                          <TranslateText text={contact.status.charAt(0).toUpperCase() + contact.status.slice(1)} />
                         </Badge>
                       </TableCell>
                       <TableCell className="text-right">
@@ -195,7 +195,7 @@ const AdminContactsPage = () => {
                           size="sm"
                           onClick={() => handleViewDetails(contact)}
                         >
-                          <TranslateText text="View Details" language={currentLanguage} />
+                          <TranslateText text="View Details" />
                         </Button>
                       </TableCell>
                     </TableRow>
@@ -211,7 +211,7 @@ const AdminContactsPage = () => {
         <DialogContent className="sm:max-w-[600px]">
           <DialogHeader>
             <DialogTitle>
-              <TranslateText text="Contact Details" language={currentLanguage} />
+              <TranslateText text="Contact Details" />
             </DialogTitle>
           </DialogHeader>
           {selectedContact && (
@@ -219,31 +219,31 @@ const AdminContactsPage = () => {
               <div className="grid grid-cols-2 gap-4">
                 <div>
                   <p className="text-sm font-medium text-gray-500">
-                    <TranslateText text="Name" language={currentLanguage} />
+                    <TranslateText text="Name" />
                   </p>
                   <p className="text-sm">{selectedContact.name}</p>
                 </div>
                 <div>
                   <p className="text-sm font-medium text-gray-500">
-                    <TranslateText text="Email" language={currentLanguage} />
+                    <TranslateText text="Email" />
                   </p>
                   <p className="text-sm">{selectedContact.email}</p>
                 </div>
                 <div>
                   <p className="text-sm font-medium text-gray-500">
-                    <TranslateText text="Date Submitted" language={currentLanguage} />
+                    <TranslateText text="Date Submitted" />
                   </p>
                   <p className="text-sm">{selectedContact.submittedDate}</p>
                 </div>
                 <div>
                   <p className="text-sm font-medium text-gray-500">
-                    <TranslateText text="Subject" language={currentLanguage} />
+                    <TranslateText text="Subject" />
                   </p>
                   <p className="text-sm">{selectedContact.subject || t("General Inquiry")}</p>
                 </div>
                 <div className="col-span-2">
                   <p className="text-sm font-medium text-gray-500">
-                    <TranslateText text="Message" language={currentLanguage} />
+                    <TranslateText text="Message" />
                   </p>
                   <div className="border rounded-md p-3 mt-1 bg-gray-50">
                     <p className="text-sm whitespace-pre-wrap">{selectedContact.message}</p>
@@ -259,7 +259,7 @@ const AdminContactsPage = () => {
                     onClick={() => handleUpdateStatus(selectedContact.id, 'new')}
                     disabled={selectedContact.status === 'new'}
                   >
-                    <TranslateText text="Mark as New" language={currentLanguage} />
+                    <TranslateText text="Mark as New" />
                   </Button>
                   <Button
                     variant="outline"
@@ -267,7 +267,7 @@ const AdminContactsPage = () => {
                     onClick={() => handleUpdateStatus(selectedContact.id, 'responded')}
                     disabled={selectedContact.status === 'responded'}
                   >
-                    <TranslateText text="Mark as Responded" language={currentLanguage} />
+                    <TranslateText text="Mark as Responded" />
                   </Button>
                   <Button
                     variant="outline"
@@ -275,7 +275,7 @@ const AdminContactsPage = () => {
                     onClick={() => handleUpdateStatus(selectedContact.id, 'archived')}
                     disabled={selectedContact.status === 'archived'}
                   >
-                    <TranslateText text="Archive" language={currentLanguage} />
+                    <TranslateText text="Archive" />
                   </Button>
                 </div>
 
@@ -284,7 +284,7 @@ const AdminContactsPage = () => {
                   size="sm"
                   onClick={() => handleDeleteContact(selectedContact.id)}
                 >
-                  <TranslateText text="Delete" language={currentLanguage} />
+                  <TranslateText text="Delete" />
                 </Button>
               </div>
             </div>

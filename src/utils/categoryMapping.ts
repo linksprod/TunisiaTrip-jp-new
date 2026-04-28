@@ -27,8 +27,10 @@ export const getCategoryColor = (categorySlug: string): string => {
 
 // Match DB category to UI category slug
 export const matchCategoryToSlug = (dbCategory: string): string | null => {
+  if (!dbCategory) return null;
+  
   for (const [slug, categories] of Object.entries(categoryMapping)) {
-    if (categories.some(cat => cat.toLowerCase() === dbCategory.toLowerCase())) {
+    if (categories.some(cat => cat && cat.toLowerCase() === dbCategory.toLowerCase())) {
       return slug;
     }
   }

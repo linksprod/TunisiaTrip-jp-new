@@ -312,7 +312,7 @@ const AdminTripPage = () => {
         <div className="grid grid-cols-2 gap-4">
           <div>
             <Label htmlFor="title">
-              <TranslateText text="Title" language={currentLanguage} /> *
+              <TranslateText text="Title" /> *
             </Label>
             <Input
               id="title"
@@ -323,7 +323,7 @@ const AdminTripPage = () => {
           </div>
           <div>
             <Label htmlFor="location">
-              <TranslateText text="Location" language={currentLanguage} /> *
+              <TranslateText text="Location" /> *
             </Label>
             <Input
               id="location"
@@ -336,7 +336,7 @@ const AdminTripPage = () => {
         <div className="grid grid-cols-2 gap-4">
           <div>
             <Label htmlFor="duration">
-              <TranslateText text="Duration" language={currentLanguage} />
+              <TranslateText text="Duration" />
             </Label>
             <Input
               id="duration"
@@ -347,7 +347,7 @@ const AdminTripPage = () => {
           </div>
           <div>
             <Label htmlFor="price">
-              <TranslateText text="Price" language={currentLanguage} />
+              <TranslateText text="Price" />
             </Label>
             <Input
               id="price"
@@ -360,7 +360,7 @@ const AdminTripPage = () => {
         <div className="grid grid-cols-2 gap-4">
           <div>
             <Label htmlFor="category">
-              <TranslateText text="Category" language={currentLanguage} />
+              <TranslateText text="Category" />
             </Label>
             <Select value={item.category || "activity"} onValueChange={(value) => updateField("category", value)}>
               <SelectTrigger>
@@ -368,26 +368,26 @@ const AdminTripPage = () => {
               </SelectTrigger>
               <SelectContent>
                 <SelectItem value="activity">
-                  <TranslateText text="Activity" language={currentLanguage} />
+                  <TranslateText text="Activity" />
                 </SelectItem>
                 <SelectItem value="cultural">
-                  <TranslateText text="Cultural" language={currentLanguage} />
+                  <TranslateText text="Cultural" />
                 </SelectItem>
                 <SelectItem value="adventure">
-                  <TranslateText text="Adventure" language={currentLanguage} />
+                  <TranslateText text="Adventure" />
                 </SelectItem>
                 <SelectItem value="relaxation">
-                  <TranslateText text="Relaxation" language={currentLanguage} />
+                  <TranslateText text="Relaxation" />
                 </SelectItem>
                 <SelectItem value="gastronomy">
-                  <TranslateText text="Gastronomy" language={currentLanguage} />
+                  <TranslateText text="Gastronomy" />
                 </SelectItem>
               </SelectContent>
             </Select>
           </div>
           <div>
             <Label htmlFor="rating">
-              <TranslateText text="Rating" language={currentLanguage} />
+              <TranslateText text="Rating" />
             </Label>
             <Input
               id="rating"
@@ -403,7 +403,7 @@ const AdminTripPage = () => {
         </div>
         <div>
           <Label htmlFor="description">
-            <TranslateText text="Description" language={currentLanguage} />
+            <TranslateText text="Description" />
           </Label>
           <Textarea
             id="description"
@@ -415,7 +415,7 @@ const AdminTripPage = () => {
         </div>
         <div>
           <Label htmlFor="tags">
-            <TranslateText text="Tags (comma separated)" language={currentLanguage} />
+            <TranslateText text="Tags (comma separated)" />
           </Label>
           <Input
             id="tags"
@@ -427,7 +427,7 @@ const AdminTripPage = () => {
         <div className="grid grid-cols-2 gap-4">
           <div>
             <Label htmlFor="latitude">
-              <TranslateText text="Latitude" language={currentLanguage} />
+              <TranslateText text="Latitude" />
             </Label>
             <Input
               id="latitude"
@@ -440,7 +440,7 @@ const AdminTripPage = () => {
           </div>
           <div>
             <Label htmlFor="longitude">
-              <TranslateText text="Longitude" language={currentLanguage} />
+              <TranslateText text="Longitude" />
             </Label>
             <Input
               id="longitude"
@@ -454,7 +454,7 @@ const AdminTripPage = () => {
         </div>
         <div className="space-y-4">
           <Label>
-            <TranslateText text="Visibility Options" language={currentLanguage} />
+            <TranslateText text="Visibility Options" />
           </Label>
           <div className="flex items-center space-x-2">
             <Checkbox
@@ -463,7 +463,7 @@ const AdminTripPage = () => {
               onCheckedChange={(checked) => updateField("show_in_travel", checked)}
             />
             <Label htmlFor="show_in_travel">
-              <TranslateText text="Show in Travel page" language={currentLanguage} />
+              <TranslateText text="Show in Travel page" />
             </Label>
           </div>
           <div className="flex items-center space-x-2">
@@ -473,7 +473,7 @@ const AdminTripPage = () => {
               onCheckedChange={(checked) => updateField("show_in_start_my_trip", checked)}
             />
             <Label htmlFor="show_in_start_my_trip">
-              <TranslateText text="Show in Start My Trip page" language={currentLanguage} />
+              <TranslateText text="Show in Start My Trip page" />
             </Label>
           </div>
         </div>
@@ -498,7 +498,7 @@ const AdminTripPage = () => {
         <div className="grid grid-cols-2 gap-4">
           <div>
             <Label htmlFor="name">
-              <TranslateText text="Name" language={currentLanguage} /> *
+              <TranslateText text="Name" /> *
             </Label>
             <Input
               id="name"
@@ -509,7 +509,7 @@ const AdminTripPage = () => {
           </div>
           <div>
             <Label htmlFor="location">
-              <TranslateText text="Location" language={currentLanguage} /> *
+              <TranslateText text="Location" /> *
             </Label>
             <Input
               id="location"
@@ -522,7 +522,7 @@ const AdminTripPage = () => {
         <div className="grid grid-cols-2 gap-4">
           <div>
             <Label htmlFor="price_per_night">
-              <TranslateText text="Price per night" language={currentLanguage} />
+              <TranslateText text="Price per night" />
             </Label>
             <Input
               id="price_per_night"
@@ -533,7 +533,7 @@ const AdminTripPage = () => {
           </div>
           <div>
             <Label htmlFor="rating">
-              <TranslateText text="Rating" language={currentLanguage} />
+              <TranslateText text="Rating" />
             </Label>
             <Input
               id="rating"
@@ -549,7 +549,7 @@ const AdminTripPage = () => {
         </div>
         <div>
           <Label htmlFor="description">
-            <TranslateText text="Description" language={currentLanguage} />
+            <TranslateText text="Description" />
           </Label>
           <Textarea
             id="description"
@@ -561,7 +561,7 @@ const AdminTripPage = () => {
         </div>
         <div>
           <Label htmlFor="amenities">
-            <TranslateText text="Amenities (comma separated)" language={currentLanguage} />
+            <TranslateText text="Amenities (comma separated)" />
           </Label>
           <Input
             id="amenities"
@@ -573,7 +573,7 @@ const AdminTripPage = () => {
         <div className="grid grid-cols-2 gap-4">
           <div>
             <Label htmlFor="latitude">
-              <TranslateText text="Latitude" language={currentLanguage} />
+              <TranslateText text="Latitude" />
             </Label>
             <Input
               id="latitude"
@@ -586,7 +586,7 @@ const AdminTripPage = () => {
           </div>
           <div>
             <Label htmlFor="longitude">
-              <TranslateText text="Longitude" language={currentLanguage} />
+              <TranslateText text="Longitude" />
             </Label>
             <Input
               id="longitude"
@@ -605,7 +605,7 @@ const AdminTripPage = () => {
             onCheckedChange={(checked) => updateField("breakfast", checked)}
           />
           <Label htmlFor="breakfast">
-            <TranslateText text="Breakfast included" language={currentLanguage} />
+            <TranslateText text="Breakfast included" />
           </Label>
         </div>
         <div>
@@ -629,7 +629,7 @@ const AdminTripPage = () => {
         <div className="grid grid-cols-2 gap-4">
           <div>
             <Label htmlFor="name">
-              <TranslateText text="Name" language={currentLanguage} /> *
+              <TranslateText text="Name" /> *
             </Label>
             <Input
               id="name"
@@ -640,7 +640,7 @@ const AdminTripPage = () => {
           </div>
           <div>
             <Label htmlFor="location">
-              <TranslateText text="Location" language={currentLanguage} /> *
+              <TranslateText text="Location" /> *
             </Label>
             <Input
               id="location"
@@ -653,7 +653,7 @@ const AdminTripPage = () => {
         <div className="grid grid-cols-2 gap-4">
           <div>
             <Label htmlFor="price_per_night">
-              <TranslateText text="Price per night" language={currentLanguage} />
+              <TranslateText text="Price per night" />
             </Label>
             <Input
               id="price_per_night"
@@ -664,7 +664,7 @@ const AdminTripPage = () => {
           </div>
           <div>
             <Label htmlFor="rating">
-              <TranslateText text="Rating" language={currentLanguage} />
+              <TranslateText text="Rating" />
             </Label>
             <Input
               id="rating"
@@ -680,7 +680,7 @@ const AdminTripPage = () => {
         </div>
         <div>
           <Label htmlFor="description">
-            <TranslateText text="Description" language={currentLanguage} />
+            <TranslateText text="Description" />
           </Label>
           <Textarea
             id="description"
@@ -692,7 +692,7 @@ const AdminTripPage = () => {
         </div>
         <div>
           <Label htmlFor="amenities">
-            <TranslateText text="Amenities (comma separated)" language={currentLanguage} />
+            <TranslateText text="Amenities (comma separated)" />
           </Label>
           <Input
             id="amenities"
@@ -704,7 +704,7 @@ const AdminTripPage = () => {
         <div className="grid grid-cols-2 gap-4">
           <div>
             <Label htmlFor="latitude">
-              <TranslateText text="Latitude" language={currentLanguage} />
+              <TranslateText text="Latitude" />
             </Label>
             <Input
               id="latitude"
@@ -717,7 +717,7 @@ const AdminTripPage = () => {
           </div>
           <div>
             <Label htmlFor="longitude">
-              <TranslateText text="Longitude" language={currentLanguage} />
+              <TranslateText text="Longitude" />
             </Label>
             <Input
               id="longitude"
@@ -736,7 +736,7 @@ const AdminTripPage = () => {
             onCheckedChange={(checked) => updateField("breakfast", checked)}
           />
           <Label htmlFor="breakfast">
-            <TranslateText text="Breakfast included" language={currentLanguage} />
+            <TranslateText text="Breakfast included" />
           </Label>
         </div>
         <div>
@@ -760,7 +760,7 @@ const AdminTripPage = () => {
         <div className="grid grid-cols-2 gap-4">
           <div>
             <Label htmlFor="name">
-              <TranslateText text="Name" language={currentLanguage} /> *
+              <TranslateText text="Name" /> *
             </Label>
             <Input
               id="name"
@@ -783,7 +783,7 @@ const AdminTripPage = () => {
         <div className="grid grid-cols-2 gap-4">
           <div>
             <Label htmlFor="location">
-              <TranslateText text="Location" language={currentLanguage} /> *
+              <TranslateText text="Location" /> *
             </Label>
             <Input
               id="location"
@@ -794,7 +794,7 @@ const AdminTripPage = () => {
           </div>
           <div>
             <Label htmlFor="region">
-              <TranslateText text="Region" language={currentLanguage} />
+              <TranslateText text="Region" />
             </Label>
             <Select value={item.region || ""} onValueChange={(value) => updateField("region", value)}>
               <SelectTrigger>
@@ -802,19 +802,19 @@ const AdminTripPage = () => {
               </SelectTrigger>
               <SelectContent>
                 <SelectItem value="North">
-                  <TranslateText text="North" language={currentLanguage} />
+                  <TranslateText text="North" />
                 </SelectItem>
                 <SelectItem value="South">
-                  <TranslateText text="South" language={currentLanguage} />
+                  <TranslateText text="South" />
                 </SelectItem>
                 <SelectItem value="Center">
-                  <TranslateText text="Center" language={currentLanguage} />
+                  <TranslateText text="Center" />
                 </SelectItem>
                 <SelectItem value="East">
-                  <TranslateText text="East" language={currentLanguage} />
+                  <TranslateText text="East" />
                 </SelectItem>
                 <SelectItem value="West">
-                  <TranslateText text="West" language={currentLanguage} />
+                  <TranslateText text="West" />
                 </SelectItem>
               </SelectContent>
             </Select>
@@ -822,7 +822,7 @@ const AdminTripPage = () => {
         </div>
         <div>
           <Label htmlFor="description">
-            <TranslateText text="Description" language={currentLanguage} />
+            <TranslateText text="Description" />
           </Label>
           <Textarea
             id="description"
@@ -835,7 +835,7 @@ const AdminTripPage = () => {
         <div className="grid grid-cols-2 gap-4">
           <div>
             <Label htmlFor="latitude">
-              <TranslateText text="Latitude" language={currentLanguage} /> *
+              <TranslateText text="Latitude" /> *
             </Label>
             <Input
               id="latitude"
@@ -848,7 +848,7 @@ const AdminTripPage = () => {
           </div>
           <div>
             <Label htmlFor="longitude">
-              <TranslateText text="Longitude" language={currentLanguage} /> *
+              <TranslateText text="Longitude" /> *
             </Label>
             <Input
               id="longitude"
@@ -862,7 +862,7 @@ const AdminTripPage = () => {
         </div>
         <div>
           <Label htmlFor="advantages">
-            <TranslateText text="Advantages (comma separated)" language={currentLanguage} />
+            <TranslateText text="Advantages (comma separated)" />
           </Label>
           <Input
             id="advantages"
@@ -878,7 +878,7 @@ const AdminTripPage = () => {
             onCheckedChange={(checked) => updateField("is_active", checked)}
           />
           <Label htmlFor="is_active">
-            <TranslateText text="Active Airport" language={currentLanguage} />
+            <TranslateText text="Active Airport" />
           </Label>
         </div>
         <div>
@@ -902,7 +902,7 @@ const AdminTripPage = () => {
         <div className="grid grid-cols-2 gap-4">
           <div>
             <Label htmlFor="name">
-              <TranslateText text="Trip Name" language={currentLanguage} /> *
+              <TranslateText text="Trip Name" /> *
             </Label>
             <Input
               id="name"
@@ -913,7 +913,7 @@ const AdminTripPage = () => {
           </div>
           <div>
             <Label htmlFor="duration_days">
-              <TranslateText text="Duration in days" language={currentLanguage} /> *
+              <TranslateText text="Duration in days" /> *
             </Label>
             <Input
               id="duration_days"
@@ -928,7 +928,7 @@ const AdminTripPage = () => {
         </div>
         <div>
           <Label htmlFor="description">
-            <TranslateText text="Description" language={currentLanguage} />
+            <TranslateText text="Description" />
           </Label>
           <Textarea
             id="description"
@@ -941,7 +941,7 @@ const AdminTripPage = () => {
         <div className="grid grid-cols-2 gap-4">
           <div>
             <Label htmlFor="target_airport_id">
-              <TranslateText text="Destination Airport" language={currentLanguage} />
+              <TranslateText text="Destination Airport" />
             </Label>
             <Select value={item.target_airport_id || ""} onValueChange={(value) => updateField("target_airport_id", value)}>
               <SelectTrigger>
@@ -958,7 +958,7 @@ const AdminTripPage = () => {
           </div>
           <div>
             <Label htmlFor="price_estimate">
-              <TranslateText text="Estimated Price" language={currentLanguage} />
+              <TranslateText text="Estimated Price" />
             </Label>
             <Input
               id="price_estimate"
@@ -971,7 +971,7 @@ const AdminTripPage = () => {
         <div className="grid grid-cols-2 gap-4">
           <div>
             <Label htmlFor="difficulty_level">
-              <TranslateText text="Difficulty Level" language={currentLanguage} />
+              <TranslateText text="Difficulty Level" />
             </Label>
             <Select value={item.difficulty_level || "medium"} onValueChange={(value) => updateField("difficulty_level", value)}>
               <SelectTrigger>
@@ -979,20 +979,20 @@ const AdminTripPage = () => {
               </SelectTrigger>
               <SelectContent>
                 <SelectItem value="easy">
-                  <TranslateText text="Easy" language={currentLanguage} />
+                  <TranslateText text="Easy" />
                 </SelectItem>
                 <SelectItem value="medium">
-                  <TranslateText text="Medium" language={currentLanguage} />
+                  <TranslateText text="Medium" />
                 </SelectItem>
                 <SelectItem value="hard">
-                  <TranslateText text="Hard" language={currentLanguage} />
+                  <TranslateText text="Hard" />
                 </SelectItem>
               </SelectContent>
             </Select>
           </div>
           <div>
             <Label htmlFor="theme">
-              <TranslateText text="Theme" language={currentLanguage} />
+              <TranslateText text="Theme" />
             </Label>
             <Input
               id="theme"
@@ -1006,7 +1006,7 @@ const AdminTripPage = () => {
         <div className="space-y-4">
           <div className="flex items-center justify-between">
             <Label className="text-lg font-semibold">
-              <TranslateText text="Planning Mode" language={currentLanguage} />
+              <TranslateText text="Planning Mode" />
             </Label>
             <div className="flex items-center space-x-4">
               <div className="flex items-center space-x-2">
@@ -1017,7 +1017,7 @@ const AdminTripPage = () => {
                 />
                 <Label htmlFor="use-detailed-planning" className="flex items-center gap-2">
                   <Calendar className="h-4 w-4" />
-                  <TranslateText text="Detailed Timeline" language={currentLanguage} />
+                  <TranslateText text="Detailed Timeline" />
                 </Label>
               </div>
             </div>
@@ -1028,7 +1028,7 @@ const AdminTripPage = () => {
             <div className="space-y-6">
               <div className="flex items-center justify-between">
                 <Label className="text-lg font-semibold">
-                  <TranslateText text="Detailed day-by-day planning" language={currentLanguage} />
+                  <TranslateText text="Detailed day-by-day planning" />
                 </Label>
                 <Button
                   type="button"
@@ -1044,13 +1044,13 @@ const AdminTripPage = () => {
                   }}
                 >
                   <Plus className="mr-2 h-4 w-4" />
-                  <TranslateText text="Add a day" language={currentLanguage} />
+                  <TranslateText text="Add a day" />
                 </Button>
               </div>
 
               {detailedDays.length === 0 ? (
                 <div className="text-center py-8 text-muted-foreground border-2 border-dashed rounded-lg">
-                  <TranslateText text="No days planned" language={currentLanguage} />
+                  <TranslateText text="No days planned" />
                 </div>
               ) : (
                 <div className="space-y-6">
@@ -1086,7 +1086,7 @@ const AdminTripPage = () => {
             <div className="space-y-6">
               <div className="flex items-center justify-between">
                 <Label className="text-lg font-semibold">
-                  <TranslateText text="Simple day-by-day planning" language={currentLanguage} />
+                  <TranslateText text="Simple day-by-day planning" />
                 </Label>
                 <Button
                   type="button"
@@ -1100,7 +1100,7 @@ const AdminTripPage = () => {
                   }}
                 >
                   <Plus className="mr-2 h-4 w-4" />
-                  <TranslateText text="Add a day" language={currentLanguage} />
+                  <TranslateText text="Add a day" />
                 </Button>
               </div>
               {Object.keys(daySelections).length > 0 && Object.keys(daySelections).sort((a, b) => parseInt(a) - parseInt(b)).map((dayKey) => {
@@ -1112,7 +1112,7 @@ const AdminTripPage = () => {
                   <div key={day} className="border rounded-lg p-4 space-y-4">
                     <div className="flex items-center justify-between">
                       <h3 className="font-semibold text-primary">
-                        <TranslateText text="Day" language={currentLanguage} /> {day}
+                        <TranslateText text="Day" /> {day}
                       </h3>
                       <Button
                         type="button"
@@ -1140,7 +1140,7 @@ const AdminTripPage = () => {
                     <div className="space-y-3">
                       <div className="flex items-center justify-between">
                         <Label>
-                          <TranslateText text="Day activities" language={currentLanguage} /> *
+                          <TranslateText text="Day activities" /> *
                         </Label>
                         <Button
                           type="button"
@@ -1157,13 +1157,13 @@ const AdminTripPage = () => {
                           }}
                         >
                           <Plus className="h-4 w-4 mr-1" />
-                          <TranslateText text="Add Activity" language={currentLanguage} />
+                          <TranslateText text="Add Activity" />
                         </Button>
                       </div>
 
                       {dayData.activities.length === 0 ? (
                         <div className="text-sm text-muted-foreground border-2 border-dashed rounded p-4 text-center">
-                          <TranslateText text="No activities scheduled" language={currentLanguage} />
+                          <TranslateText text="No activities scheduled" />
                         </div>
                       ) : (
                         <div className="space-y-2">
@@ -1217,7 +1217,7 @@ const AdminTripPage = () => {
                     {!isLastDay && (
                       <div className="space-y-2">
                         <Label>
-                          <TranslateText text="Night accommodation" language={currentLanguage} />
+                          <TranslateText text="Night accommodation" />
                         </Label>
 
                         {/* Accommodation type selection */}
@@ -1230,13 +1230,13 @@ const AdminTripPage = () => {
                           </SelectTrigger>
                           <SelectContent>
                             <SelectItem value="none">
-                              <TranslateText text="No accommodation" language={currentLanguage} />
+                              <TranslateText text="No accommodation" />
                             </SelectItem>
                             <SelectItem value="hotel">
-                              <TranslateText text="Hotel" language={currentLanguage} />
+                              <TranslateText text="Hotel" />
                             </SelectItem>
                             <SelectItem value="guesthouse">
-                              <TranslateText text="Guest House" language={currentLanguage} />
+                              <TranslateText text="Guest House" />
                             </SelectItem>
                           </SelectContent>
                         </Select>
@@ -1275,7 +1275,7 @@ const AdminTripPage = () => {
               onCheckedChange={(checked) => updateField("is_featured", checked)}
             />
             <Label htmlFor="is_featured">
-              <TranslateText text="Featured trip" language={currentLanguage} />
+              <TranslateText text="Featured trip" />
             </Label>
           </div>
           <div className="flex items-center space-x-2">
@@ -1285,7 +1285,7 @@ const AdminTripPage = () => {
               onCheckedChange={(checked) => updateField("is_active", checked)}
             />
             <Label htmlFor="is_active">
-              <TranslateText text="Active trip" language={currentLanguage} />
+              <TranslateText text="Active trip" />
             </Label>
           </div>
         </div>
@@ -1307,29 +1307,29 @@ const AdminTripPage = () => {
       <div className="space-y-6">
         <div>
           <h1 className="text-3xl font-bold">
-            <TranslateText text="Trip Management" language={currentLanguage} />
+            <TranslateText text="Trip Management" />
           </h1>
           <p className="text-muted-foreground">
-            <TranslateText text="Manage activities, hotels and guest houses" language={currentLanguage} />
+            <TranslateText text="Manage activities, hotels and guest houses" />
           </p>
         </div>
 
         <Tabs value={currentTab} onValueChange={setCurrentTab} className="space-y-6">
           <TabsList className="grid w-full grid-cols-5">
             <TabsTrigger value="activities">
-              <TranslateText text="Activities" language={currentLanguage} />
+              <TranslateText text="Activities" />
             </TabsTrigger>
             <TabsTrigger value="hotels">
-              <TranslateText text="Hotels" language={currentLanguage} />
+              <TranslateText text="Hotels" />
             </TabsTrigger>
             <TabsTrigger value="guesthouses">
-              <TranslateText text="Guest Houses" language={currentLanguage} />
+              <TranslateText text="Guest Houses" />
             </TabsTrigger>
             <TabsTrigger value="airports">
-              <TranslateText text="Airports" language={currentLanguage} />
+              <TranslateText text="Airports" />
             </TabsTrigger>
             <TabsTrigger value="predefined-trips">
-              <TranslateText text="Trips" language={currentLanguage} />
+              <TranslateText text="Trips" />
             </TabsTrigger>
           </TabsList>
 
@@ -1337,11 +1337,11 @@ const AdminTripPage = () => {
             <Card>
               <CardHeader className="flex flex-row items-center justify-between">
                 <CardTitle>
-                  <TranslateText text="Activities" language={currentLanguage} />
+                  <TranslateText text="Activities" />
                 </CardTitle>
                 <Button onClick={handleAddItem}>
                   <Plus className="mr-2 h-4 w-4" />
-                  <TranslateText text="Add Activity" language={currentLanguage} />
+                  <TranslateText text="Add Activity" />
                 </Button>
               </CardHeader>
               <CardContent>
@@ -1352,25 +1352,25 @@ const AdminTripPage = () => {
                     <TableHeader>
                       <TableRow>
                         <TableHead>
-                          <TranslateText text="Title" language={currentLanguage} />
+                          <TranslateText text="Title" />
                         </TableHead>
                         <TableHead>
-                          <TranslateText text="Location" language={currentLanguage} />
+                          <TranslateText text="Location" />
                         </TableHead>
                         <TableHead>
-                          <TranslateText text="Price" language={currentLanguage} />
+                          <TranslateText text="Price" />
                         </TableHead>
                         <TableHead>
-                          <TranslateText text="Rating" language={currentLanguage} />
+                          <TranslateText text="Rating" />
                         </TableHead>
                         <TableHead>
-                          <TranslateText text="Category" language={currentLanguage} />
+                          <TranslateText text="Category" />
                         </TableHead>
                         <TableHead>
-                          <TranslateText text="Visibility" language={currentLanguage} />
+                          <TranslateText text="Visibility" />
                         </TableHead>
                         <TableHead>
-                          <TranslateText text="Actions" language={currentLanguage} />
+                          <TranslateText text="Actions" />
                         </TableHead>
                       </TableRow>
                     </TableHeader>
@@ -1425,11 +1425,11 @@ const AdminTripPage = () => {
             <Card>
               <CardHeader className="flex flex-row items-center justify-between">
                 <CardTitle>
-                  <TranslateText text="Hotels" language={currentLanguage} />
+                  <TranslateText text="Hotels" />
                 </CardTitle>
                 <Button onClick={handleAddItem}>
                   <Plus className="mr-2 h-4 w-4" />
-                  <TranslateText text="Add Hotel" language={currentLanguage} />
+                  <TranslateText text="Add Hotel" />
                 </Button>
               </CardHeader>
               <CardContent>
@@ -1440,22 +1440,22 @@ const AdminTripPage = () => {
                     <TableHeader>
                       <TableRow>
                         <TableHead>
-                          <TranslateText text="Name" language={currentLanguage} />
+                          <TranslateText text="Name" />
                         </TableHead>
                         <TableHead>
-                          <TranslateText text="Location" language={currentLanguage} />
+                          <TranslateText text="Location" />
                         </TableHead>
                         <TableHead>
-                          <TranslateText text="Price/Night" language={currentLanguage} />
+                          <TranslateText text="Price/Night" />
                         </TableHead>
                         <TableHead>
-                          <TranslateText text="Rating" language={currentLanguage} />
+                          <TranslateText text="Rating" />
                         </TableHead>
                         <TableHead>
-                          <TranslateText text="Breakfast" language={currentLanguage} />
+                          <TranslateText text="Breakfast" />
                         </TableHead>
                         <TableHead>
-                          <TranslateText text="Actions" language={currentLanguage} />
+                          <TranslateText text="Actions" />
                         </TableHead>
                       </TableRow>
                     </TableHeader>
@@ -1473,11 +1473,11 @@ const AdminTripPage = () => {
                           <TableCell>
                             {hotel.breakfast ? (
                               <Badge variant="default">
-                                <TranslateText text="Inclus" language={currentLanguage} />
+                                <TranslateText text="Inclus" />
                               </Badge>
                             ) : (
                               <Badge variant="secondary">
-                                <TranslateText text="Non inclus" language={currentLanguage} />
+                                <TranslateText text="Non inclus" />
                               </Badge>
                             )}
                           </TableCell>
@@ -1512,11 +1512,11 @@ const AdminTripPage = () => {
             <Card>
               <CardHeader className="flex flex-row items-center justify-between">
                 <CardTitle>
-                  <TranslateText text="Guest Houses" language={currentLanguage} />
+                  <TranslateText text="Guest Houses" />
                 </CardTitle>
                 <Button onClick={handleAddItem}>
                   <Plus className="mr-2 h-4 w-4" />
-                  <TranslateText text="Add Guest House" language={currentLanguage} />
+                  <TranslateText text="Add Guest House" />
                 </Button>
               </CardHeader>
               <CardContent>
@@ -1527,22 +1527,22 @@ const AdminTripPage = () => {
                     <TableHeader>
                       <TableRow>
                         <TableHead>
-                          <TranslateText text="Name" language={currentLanguage} />
+                          <TranslateText text="Name" />
                         </TableHead>
                         <TableHead>
-                          <TranslateText text="Location" language={currentLanguage} />
+                          <TranslateText text="Location" />
                         </TableHead>
                         <TableHead>
-                          <TranslateText text="Price/Night" language={currentLanguage} />
+                          <TranslateText text="Price/Night" />
                         </TableHead>
                         <TableHead>
-                          <TranslateText text="Rating" language={currentLanguage} />
+                          <TranslateText text="Rating" />
                         </TableHead>
                         <TableHead>
-                          <TranslateText text="Breakfast" language={currentLanguage} />
+                          <TranslateText text="Breakfast" />
                         </TableHead>
                         <TableHead>
-                          <TranslateText text="Actions" language={currentLanguage} />
+                          <TranslateText text="Actions" />
                         </TableHead>
                       </TableRow>
                     </TableHeader>
@@ -1560,11 +1560,11 @@ const AdminTripPage = () => {
                           <TableCell>
                             {guestHouse.breakfast ? (
                               <Badge variant="default">
-                                <TranslateText text="Inclus" language={currentLanguage} />
+                                <TranslateText text="Inclus" />
                               </Badge>
                             ) : (
                               <Badge variant="secondary">
-                                <TranslateText text="Non inclus" language={currentLanguage} />
+                                <TranslateText text="Non inclus" />
                               </Badge>
                             )}
                           </TableCell>
@@ -1599,11 +1599,11 @@ const AdminTripPage = () => {
             <Card>
               <CardHeader className="flex flex-row items-center justify-between">
                 <CardTitle>
-                  <TranslateText text="Airports" language={currentLanguage} />
+                  <TranslateText text="Airports" />
                 </CardTitle>
                 <Button onClick={handleAddItem}>
                   <Plus className="mr-2 h-4 w-4" />
-                  <TranslateText text="Add Airport" language={currentLanguage} />
+                  <TranslateText text="Add Airport" />
                 </Button>
               </CardHeader>
               <CardContent>
@@ -1614,22 +1614,22 @@ const AdminTripPage = () => {
                     <TableHeader>
                       <TableRow>
                         <TableHead>
-                          <TranslateText text="Name" language={currentLanguage} />
+                          <TranslateText text="Name" />
                         </TableHead>
                         <TableHead>
-                          <TranslateText text="Code" language={currentLanguage} />
+                          <TranslateText text="Code" />
                         </TableHead>
                         <TableHead>
-                          <TranslateText text="Location" language={currentLanguage} />
+                          <TranslateText text="Location" />
                         </TableHead>
                         <TableHead>
-                          <TranslateText text="Region" language={currentLanguage} />
+                          <TranslateText text="Region" />
                         </TableHead>
                         <TableHead>
-                          <TranslateText text="Status" language={currentLanguage} />
+                          <TranslateText text="Status" />
                         </TableHead>
                         <TableHead>
-                          <TranslateText text="Actions" language={currentLanguage} />
+                          <TranslateText text="Actions" />
                         </TableHead>
                       </TableRow>
                     </TableHeader>
@@ -1645,11 +1645,11 @@ const AdminTripPage = () => {
                           <TableCell>
                             {airport.is_active ? (
                               <Badge variant="default">
-                                <TranslateText text="Active" language={currentLanguage} />
+                                <TranslateText text="Active" />
                               </Badge>
                             ) : (
                               <Badge variant="secondary">
-                                <TranslateText text="Inactive" language={currentLanguage} />
+                                <TranslateText text="Inactive" />
                               </Badge>
                             )}
                           </TableCell>
@@ -1684,11 +1684,11 @@ const AdminTripPage = () => {
             <Card>
               <CardHeader className="flex flex-row items-center justify-between">
                 <CardTitle>
-                  <TranslateText text="Trips" language={currentLanguage} />
+                  <TranslateText text="Trips" />
                 </CardTitle>
                 <Button onClick={handleAddItem}>
                   <Plus className="mr-2 h-4 w-4" />
-                  <TranslateText text="Add Trip" language={currentLanguage} />
+                  <TranslateText text="Add Trip" />
                 </Button>
               </CardHeader>
               <CardContent>
@@ -1699,22 +1699,22 @@ const AdminTripPage = () => {
                     <TableHeader>
                       <TableRow>
                         <TableHead>
-                          <TranslateText text="Name" language={currentLanguage} />
+                          <TranslateText text="Name" />
                         </TableHead>
                         <TableHead>
-                          <TranslateText text="Duration" language={currentLanguage} />
+                          <TranslateText text="Duration" />
                         </TableHead>
                         <TableHead>
-                          <TranslateText text="Estimated Price" language={currentLanguage} />
+                          <TranslateText text="Estimated Price" />
                         </TableHead>
                         <TableHead>
-                          <TranslateText text="Difficulty" language={currentLanguage} />
+                          <TranslateText text="Difficulty" />
                         </TableHead>
                         <TableHead>
-                          <TranslateText text="Status" language={currentLanguage} />
+                          <TranslateText text="Status" />
                         </TableHead>
                         <TableHead>
-                          <TranslateText text="Actions" language={currentLanguage} />
+                          <TranslateText text="Actions" />
                         </TableHead>
                       </TableRow>
                     </TableHeader>
@@ -1726,7 +1726,7 @@ const AdminTripPage = () => {
                               {trip.name}
                               {trip.is_featured && (
                                 <Badge variant="outline" className="text-xs w-fit mt-1">
-                                  <TranslateText text="Featured" language={currentLanguage} />
+                                  <TranslateText text="Featured" />
                                 </Badge>
                               )}
                             </div>
@@ -1735,17 +1735,17 @@ const AdminTripPage = () => {
                           <TableCell>{trip.price_estimate || "N/A"}</TableCell>
                           <TableCell>
                             <Badge variant="secondary">
-                              <TranslateText text={trip.difficulty_level || "medium"} language={currentLanguage} />
+                              <TranslateText text={trip.difficulty_level || "medium"} />
                             </Badge>
                           </TableCell>
                           <TableCell>
                             {trip.is_active ? (
                               <Badge variant="default">
-                                <TranslateText text="Active" language={currentLanguage} />
+                                <TranslateText text="Active" />
                               </Badge>
                             ) : (
                               <Badge variant="secondary">
-                                <TranslateText text="Inactive" language={currentLanguage} />
+                                <TranslateText text="Inactive" />
                               </Badge>
                             )}
                           </TableCell>
@@ -1801,10 +1801,10 @@ const AdminTripPage = () => {
             </div>
             <div className="flex justify-end space-x-2">
               <Button variant="outline" onClick={() => setEditDialogOpen(false)}>
-                <TranslateText text="Cancel" language={currentLanguage} />
+                <TranslateText text="Cancel" />
               </Button>
               <Button onClick={handleSaveEdit}>
-                <TranslateText text="Save" language={currentLanguage} />
+                <TranslateText text="Save" />
               </Button>
             </div>
           </DialogContent>
@@ -1830,10 +1830,10 @@ const AdminTripPage = () => {
             </div>
             <div className="flex justify-end space-x-2">
               <Button variant="outline" onClick={() => setAddDialogOpen(false)}>
-                <TranslateText text="Cancel" language={currentLanguage} />
+                <TranslateText text="Cancel" />
               </Button>
               <Button onClick={handleAddNewItem}>
-                <TranslateText text="Ajouter" language={currentLanguage} />
+                <TranslateText text="Ajouter" />
               </Button>
             </div>
           </DialogContent>
@@ -1844,18 +1844,18 @@ const AdminTripPage = () => {
           <AlertDialogContent>
             <AlertDialogHeader>
               <AlertDialogTitle>
-                <TranslateText text="Are you sure?" language={currentLanguage} />
+                <TranslateText text="Are you sure?" />
               </AlertDialogTitle>
               <AlertDialogDescription>
-                <TranslateText text="This action cannot be undone. It will permanently delete this item." language={currentLanguage} />
+                <TranslateText text="This action cannot be undone. It will permanently delete this item." />
               </AlertDialogDescription>
             </AlertDialogHeader>
             <AlertDialogFooter>
               <AlertDialogCancel>
-                <TranslateText text="Cancel" language={currentLanguage} />
+                <TranslateText text="Cancel" />
               </AlertDialogCancel>
               <AlertDialogAction onClick={handleDeleteItem}>
-                <TranslateText text="Delete" language={currentLanguage} />
+                <TranslateText text="Delete" />
               </AlertDialogAction>
             </AlertDialogFooter>
           </AlertDialogContent>
