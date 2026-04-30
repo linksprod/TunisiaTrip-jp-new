@@ -64,6 +64,11 @@ export function EnhancedAdminLayout({ children }: EnhancedAdminLayoutProps) {
       label: t("SEO"),
       href: "/admin/seo"
     },
+    {
+      icon: Users,
+      label: t("Users"),
+      href: "/admin/users"
+    },
   ];
 
   const userInitials = user?.email

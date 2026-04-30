@@ -26,6 +26,7 @@ import {
   LazyAdminTripPage,
   LazyAdminContactsPage,
   LazyAdminSEOPage,
+  LazyAdminUsersPage,
   optimizeRouteTransition
 } from "./utils/routeOptimization";
 
@@ -132,6 +133,11 @@ function App() {
                     <Route path="/admin/seo-management" element={
                       <AdminProtectedRoute>
                         <LazyAdminSEOPage />
+                      </AdminProtectedRoute>
+                    } />
+                    <Route path="/admin/users" element={
+                      <AdminProtectedRoute>
+                        <LazyAdminUsersPage />
                       </AdminProtectedRoute>
                     } />
                     {/* Legacy admin redirects */}

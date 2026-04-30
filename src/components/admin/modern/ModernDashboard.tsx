@@ -107,18 +107,18 @@ export const ModernDashboard = () => {
       hoverColor: "hover:from-blue-600 hover:to-blue-700"
     },
     {
-      title: t("View Analytics"),
-      description: t("Check performance data"),
-      icon: BarChart3,
-      href: "/admin/seo",
+      title: t("Manage Contacts"),
+      description: t("Contact administration"),
+      icon: MessageSquare,
+      href: "/admin/contacts",
       color: "bg-gradient-to-r from-purple-500 to-purple-600",
       hoverColor: "hover:from-purple-600 hover:to-purple-700"
     },
     {
-      title: t("Manage Contacts"),
-      description: t("Contact administration"),
+      title: t("Manage Users"),
+      description: t("User administration"),
       icon: Users,
-      href: "/admin/contacts",
+      href: "/admin/users",
       color: "bg-gradient-to-r from-orange-500 to-orange-600",
       hoverColor: "hover:from-orange-600 hover:to-orange-700"
     }

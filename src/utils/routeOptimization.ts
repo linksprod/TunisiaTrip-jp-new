@@ -13,6 +13,7 @@ export const LazyAdminBlogPage = lazy(() => import('../pages/admin/AdminBlogPage
 export const LazyAdminTripPage = lazy(() => import('../pages/admin/AdminTripPage'));
 export const LazyAdminContactsPage = lazy(() => import('../pages/admin/AdminContactsPage'));
 export const LazyAdminSEOPage = lazy(() => import('../pages/admin/AdminSEOPage'));
+export const LazyAdminUsersPage = lazy(() => import('../pages/admin/AdminUsersPage'));
 
 // Preload critical routes that are likely to be visited
 export const preloadCriticalRoutes = () => {
