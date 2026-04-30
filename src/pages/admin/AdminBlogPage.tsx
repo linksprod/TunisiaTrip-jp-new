@@ -27,6 +27,7 @@ const AdminBlogPage = () => {
     isSubmitting,
     deleteConfirmOpen,
     postToDelete,
+    refreshPosts,
     handleAddPost,
     handleUpdatePost,
     confirmDeletePost,
@@ -117,6 +118,7 @@ const AdminBlogPage = () => {
             isSubmitting={isSubmitting}
             onSubmit={handleFormSubmit}
             onCancel={handleCancel}
+            onPostCreated={refreshPosts}
           />
         )}
 

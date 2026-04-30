@@ -21,7 +21,7 @@ import {
   SelectTrigger,
   SelectValue,
 } from "@/components/ui/select";
-import { Loader2, Save, Send, Languages, RefreshCw } from "lucide-react";
+import { Loader2, Save, Send, Languages, RefreshCw, Copy } from "lucide-react";
 import { BlogArticle } from "@/types/blog";
 import { BlogFormValues } from "@/hooks/use-blog-posts";
 import ImageUploader from "@/components/admin/ImageUploader";
@@ -38,6 +38,7 @@ interface BlogEditorProps {
   isSubmitting: boolean;
   onSubmit: (data: BlogFormValues) => void;
   onCancel: () => void;
+  onPostCreated?: () => void;
 }
 
 const BlogEditor: React.FC<BlogEditorProps> = ({
@@ -45,7 +46,8 @@ const BlogEditor: React.FC<BlogEditorProps> = ({
   currentPost,
   isSubmitting,
   onSubmit,
-  onCancel
+  onCancel,
+  onPostCreated
 }) => {
   const { toast } = useToast();
   const { t, currentLanguage } = useTranslation();
@@ -207,7 +209,12 @@ const BlogEditor: React.FC<BlogEditorProps> = ({
           .single();
 
         if (insertError) throw insertError;
-
+        
+        // Notify parent that a new post was created (the Japanese version)
+        if (onPostCreated) {
+          onPostCreated();
+        }
+        
         toast({
           title: t("Japanese draft created"),
           description: t("A new Japanese version has been created."),
@@ -269,42 +276,56 @@ const BlogEditor: React.FC<BlogEditorProps> = ({
                         required
                       />
                     </FormControl>
-                    <div className="flex gap-2">
-                      <Button
-                        type="button"
-                        variant="outline"
-                        size="sm"
-                        onClick={() => handleGenerateSlug('EN')}
-                        disabled={isGeneratingSlug}
-                        className="flex-1"
-                      >
-                        {isGeneratingSlug ? (
-                          <Loader2 className="h-3 w-3 animate-spin" />
-                        ) : (
-                          <>
-                            <RefreshCw className="h-3 w-3 mr-1" />
-                            🇺🇸 EN
-                          </>
-                        )}
-                      </Button>
-                      <Button
-                        type="button"
-                        variant="outline"
-                        size="sm"
-                        onClick={() => handleGenerateSlug('JP')}
-                        disabled={isGeneratingSlug}
-                        className="flex-1"
-                      >
-                        {isGeneratingSlug ? (
-                          <Loader2 className="h-3 w-3 animate-spin" />
-                        ) : (
-                          <>
-                            <RefreshCw className="h-3 w-3 mr-1" />
-                            🇯🇵 JP
-                          </>
-                        )}
-                      </Button>
-                    </div>
+                      <div className="flex gap-2">
+                        <Button
+                          type="button"
+                          variant="outline"
+                          size="sm"
+                          onClick={() => handleGenerateSlug('EN')}
+                          disabled={isGeneratingSlug}
+                          className="flex-1"
+                        >
+                          {isGeneratingSlug ? (
+                            <Loader2 className="h-3 w-3 animate-spin" />
+                          ) : (
+                            <>
+                              <RefreshCw className="h-3 w-3 mr-1" />
+                              🇺🇸 EN
+                            </>
+                          )}
+                        </Button>
+                        <Button
+                          type="button"
+                          variant="outline"
+                          size="sm"
+                          onClick={() => handleGenerateSlug('JP')}
+                          disabled={isGeneratingSlug}
+                          className="flex-1"
+                        >
+                          {isGeneratingSlug ? (
+                            <Loader2 className="h-3 w-3 animate-spin" />
+                          ) : (
+                            <>
+                              <RefreshCw className="h-3 w-3 mr-1" />
+                              🇯🇵 JP
+                            </>
+                          )}
+                        </Button>
+                        <Button
+                          type="button"
+                          variant="outline"
+                          size="sm"
+                          onClick={() => {
+                            const title = form.getValues('title');
+                            const cleanSlug = title.toLowerCase().trim().replace(/\s+/g, '-');
+                            form.setValue('slug', cleanSlug, { shouldDirty: true, shouldTouch: true, shouldValidate: true });
+                          }}
+                          className="px-2"
+                          title="Copy title to slug"
+                        >
+                          <Copy className="h-3 w-3" />
+                        </Button>
+                      </div>
                   </div>
                   <FormDescription className="text-xs">
                     URL: tunisitrip.jp/blog/{form.watch('slug') || 'article-slug'}

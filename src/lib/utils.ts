@@ -44,17 +44,17 @@ export async function generateSEOSlug(text: string): Promise<string> {
     return text
       .toLowerCase()
       .trim()
-      .replace(/[^\w\s-]/g, '') // Remove special characters
+      .replace(/[^\w\s\u3000-\u303f\u3040-\u309f\u30a0-\u30ff\uff00-\uff9f\u4e00-\u9faf\u3400-\u4dbf-]/g, '') // Remove special characters but keep Japanese
       .replace(/\s+/g, '-')     // Replace spaces with hyphens
       .replace(/-+/g, '-')      // Replace multiple hyphens with single
       .replace(/^-|-$/g, '');   // Remove leading/trailing hyphens
   } catch (error) {
     console.warn('Error generating SEO slug, falling back to basic generation:', error);
-    // Fallback to basic slug generation
+    // Fallback to basic slug generation, preserving Japanese characters
     return text
       .toLowerCase()
       .trim()
-      .replace(/[^\w\s-]/g, '')
+      .replace(/[^\w\s\u3000-\u303f\u3040-\u309f\u30a0-\u30ff\uff00-\uff9f\u4e00-\u9faf\u3400-\u4dbf-]/g, '')
       .replace(/\s+/g, '-')
       .replace(/-+/g, '-')
       .replace(/^-|-$/g, '');

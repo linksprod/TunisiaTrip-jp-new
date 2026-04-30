@@ -56,7 +56,7 @@ export const useBlogPosts = () => {
   useEffect(() => {
     let isMounted = true;
     
-    const fetchBlogPosts = async () => {
+    const refreshPosts = async () => {
       try {
         setIsLoading(true);
         
@@ -88,7 +88,7 @@ export const useBlogPosts = () => {
     };
 
     if (user) {
-      fetchBlogPosts();
+      refreshPosts();
     }
     
     return () => {
@@ -123,6 +123,20 @@ export const useBlogPosts = () => {
       supabase.removeChannel(channel);
     };
   }, [user]);
+
+  const refreshPosts = async () => {
+    try {
+      const { data, error } = await supabase
+        .from('blog_articles')
+        .select('*')
+        .order('created_at', { ascending: false });
+      
+      if (error) throw error;
+      setBlogPosts(data as BlogArticle[]);
+    } catch (error) {
+      console.error("Error refreshing blog posts:", error);
+    }
+  };
   
   const handleAddPost = async (formData: BlogFormValues) => {
     try {
@@ -363,6 +377,7 @@ export const useBlogPosts = () => {
     isSubmitting,
     deleteConfirmOpen,
     postToDelete,
+    refreshPosts,
     handleAddPost,
     handleUpdatePost,
     confirmDeletePost,

@@ -28,7 +28,8 @@ import {
   ChevronRight,
   Shield,
   BarChart3,
-  Settings
+  Settings,
+  Globe
 } from 'lucide-react';
 import { useTranslation } from '@/hooks/use-translation';
 import { TranslateText } from '@/components/translation/TranslateText';
@@ -40,7 +41,7 @@ interface EnhancedAdminLayoutProps {
 export function EnhancedAdminLayout({ children }: EnhancedAdminLayoutProps) {
   const location = useLocation();
   const { user, signOut } = useAuth();
-  const { currentLanguage, t } = useTranslation();
+  const { currentLanguage, setLanguageWithReload, t } = useTranslation();
 
   const navItems = [
     {
@@ -125,7 +126,7 @@ export function EnhancedAdminLayout({ children }: EnhancedAdminLayoutProps) {
                             ) : (
                               <BreadcrumbLink asChild>
                                 <Link
-                                  to={breadcrumb.href}
+                                  to={{ pathname: breadcrumb.href, search: location.search }}
                                   className="text-muted-foreground hover:text-foreground transition-colors"
                                 >
                                   {breadcrumb.label}
@@ -141,8 +142,23 @@ export function EnhancedAdminLayout({ children }: EnhancedAdminLayoutProps) {
                 </div>
 
                 <div className="flex items-center gap-3">
-                  <Avatar className="h-8 w-8">
-                    <AvatarFallback className="bg-primary text-primary-foreground text-xs font-medium">
+                  <Button
+                    variant="ghost"
+                    size="icon"
+                    onClick={() => setLanguageWithReload(currentLanguage === 'JP' ? 'EN' : 'JP')}
+                    className="h-9 w-9 rounded-full text-muted-foreground hover:text-primary hover:bg-primary/10 transition-colors"
+                    title={currentLanguage === 'JP' ? 'Switch to English' : '日本語に切り替え'}
+                  >
+                    <Globe className="h-5 w-5" />
+                    <span className="sr-only">
+                      {currentLanguage === 'JP' ? 'Switch to English' : 'Switch to Japanese'}
+                    </span>
+                  </Button>
+                  
+                  <div className="h-6 w-[1px] bg-border mx-1" />
+                  
+                  <Avatar className="h-8 w-8 ring-2 ring-primary/10">
+                    <AvatarFallback className="bg-primary text-primary-foreground text-xs font-semibold shadow-inner">
                       {userInitials}
                     </AvatarFallback>
                   </Avatar>
@@ -220,7 +236,10 @@ function AdminSidebar({ navItems, user, userInitials, onSignOut }: AdminSidebarP
                         }
                       `}
                     >
-                      <Link to={item.href} className="flex items-center gap-3">
+                      <Link 
+                        to={{ pathname: item.href, search: location.search }} 
+                        className="flex items-center gap-3"
+                      >
                         <item.icon className={`h-5 w-5 ${isActive ? 'text-primary-foreground' : ''}`} />
                         {!collapsed && (
                           <span className="font-medium">{item.label}</span>
