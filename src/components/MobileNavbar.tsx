@@ -131,43 +131,7 @@ export function MobileNavbar(): JSX.Element {
                   <TranslateText text="Atlantis" language={currentLanguage} />
                 </Link>
                 
-                <div className="mt-3 pt-3 border-t border-gray-100">
-                  <div className="text-gray-500 text-xs mb-2 font-inter flex items-center gap-2">
-                    <Globe size={14} />
-                    <TranslateText text="Select Language" language={currentLanguage} />
-                  </div>
-                  <div className="flex flex-col gap-1">
-                    <button 
-                      onClick={() => handleLanguageChange("EN")}
-                      className={`text-left py-2 px-3 rounded-lg text-[13px] transition-colors font-medium ${currentLanguage === "EN" ? "bg-blue-50 text-[#347EFF]" : "text-gray-700 hover:bg-gray-50"}`}
-                    >
-                      <span className="flex items-center gap-2">
-                        <img 
-                          src="/flags/us.png" 
-                          alt="US flag" 
-                          className="w-5 h-4 object-cover border border-gray-200 rounded-sm"
-                        />
-                        <TranslateText text="EN (English)" language={currentLanguage} />
-                      </span>
-                    </button>
-                    <button 
-                      onClick={() => handleLanguageChange("JP")}
-                      className={`text-left py-2 px-3 rounded-lg text-[13px] transition-colors font-medium ${currentLanguage === "JP" ? "bg-blue-50 text-[#347EFF]" : "text-gray-700 hover:bg-gray-50"}`}
-                    >
-                      <span className="flex items-center gap-2">
-                        <OptimizedImage 
-                          src={JP_FLAG_PATH}
-                          alt="Japanese flag" 
-                          className="w-5 h-4 object-cover border border-gray-200 rounded-sm"
-                          width={20} 
-                          height={16}
-                          decoding="async"
-                        />
-                        <TranslateText text="JP (日本語)" language={currentLanguage} />
-                      </span>
-                    </button>
-                  </div>
-                </div>
+
               </nav>
             </SheetContent>
           </Sheet>
@@ -188,52 +152,6 @@ export function MobileNavbar(): JSX.Element {
         </div>
         
         <div className="flex items-center">
-          <DropdownMenu>
-            <DropdownMenuTrigger className="flex items-center gap-2 px-3 py-2 rounded-full bg-gray-50 hover:bg-gray-100 transition-colors text-[#347EFF] border border-gray-200">
-              {currentLanguage === "JP" ? (
-                <OptimizedImage 
-                  src={JP_FLAG_PATH}
-                  alt="Japanese flag" 
-                  className="w-5 h-4 object-cover border border-gray-200 rounded-sm"
-                  width={20} 
-                  height={16}
-                  persistent={true}
-                />
-              ) : (
-                <img 
-                  src="/flags/us.png" 
-                  alt="US flag" 
-                  className="w-5 h-4 object-cover border border-gray-200 rounded-sm"
-                />
-              )}
-              <span className="text-[13px] font-inter font-medium">{currentLanguage}</span>
-            </DropdownMenuTrigger>
-            <DropdownMenuContent align="end" className="w-[130px] z-[70]">
-              <DropdownMenuItem onClick={() => handleLanguageChange("EN")} className={currentLanguage === "EN" ? "bg-blue-50 text-[#347EFF]" : ""}>
-                <span className="flex items-center gap-2">
-                  <img 
-                    src="/flags/us.png" 
-                    alt="US flag" 
-                    className="w-5 h-4 object-cover border border-gray-200 rounded-sm"
-                  />
-                  <span className="font-medium">EN</span>
-                </span>
-              </DropdownMenuItem>
-              <DropdownMenuItem onClick={() => handleLanguageChange("JP")} className={currentLanguage === "JP" ? "bg-blue-50 text-[#347EFF]" : ""}>
-                <span className="flex items-center gap-2">
-                  <OptimizedImage 
-                    src={JP_FLAG_PATH}
-                    alt="Japanese flag" 
-                    className="w-5 h-4 object-cover border border-gray-200 rounded-sm"
-                    width={20} 
-                    height={16}
-                    persistent={true}
-                  />
-                  <span className="font-medium">JP</span>
-                </span>
-              </DropdownMenuItem>
-            </DropdownMenuContent>
-          </DropdownMenu>
         </div>
       </div>
     </header>

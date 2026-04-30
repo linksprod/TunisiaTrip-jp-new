@@ -206,58 +206,6 @@ export function Navbar(): JSX.Element {
         </nav>
         
         <div className="flex items-center gap-4">
-          <DropdownMenu>
-            <DropdownMenuTrigger className="flex items-center gap-2 px-3 py-2 rounded-full bg-gray-50 hover:bg-gray-100 transition-colors text-[#347EFF] border border-gray-200">
-              {currentLanguage === "JP" ? (
-                <OptimizedImage 
-                  src={JP_FLAG_PATH}
-                  alt="Japanese flag" 
-                  className="w-5 h-4 object-cover border border-gray-200 rounded-sm"
-                  width={20} 
-                  height={16}
-                  persistent={true}
-                  priority={true}
-                />
-              ) : (
-                <img 
-                  src="/flags/us.png" 
-                  alt="US flag" 
-                  className="w-6 h-4 object-cover border border-gray-200 rounded-sm"
-                />
-              )}
-              <span className="text-[13px] font-inter font-medium">{currentLanguage}</span>
-              <ChevronDown size={12} className="text-[#347EFF]" />
-            </DropdownMenuTrigger>
-            <DropdownMenuContent align="end" className="w-[140px] z-[70]">
-              <DropdownMenuItem onClick={() => handleLanguageChange("EN")} className={currentLanguage === "EN" ? "bg-blue-50 text-[#347EFF]" : ""}>
-                <span className="flex items-center gap-2">
-                  <img 
-                    src="/flags/us.png" 
-                    alt="US flag" 
-                    className="w-5 h-4 object-cover border border-gray-200 rounded-sm"
-                  />
-                  <span className="font-medium">
-                    <TranslateText key={`en-english-${updateKey}`} text="EN (English)" language={currentLanguage} />
-                  </span>
-                </span>
-              </DropdownMenuItem>
-              <DropdownMenuItem onClick={() => handleLanguageChange("JP")} className={currentLanguage === "JP" ? "bg-blue-50 text-[#347EFF]" : ""}>
-                <span className="flex items-center gap-2">
-                  <OptimizedImage 
-                    src={JP_FLAG_PATH}
-                    alt="Japanese flag" 
-                    className="w-5 h-4 object-cover border border-gray-200 rounded-sm"
-                    width={20} 
-                    height={16}
-                    persistent={true}
-                  />
-                  <span className="font-medium">
-                    <TranslateText key={`jp-japanese-${updateKey}`} text="JP (日本語)" language={currentLanguage} />
-                  </span>
-                </span>
-              </DropdownMenuItem>
-            </DropdownMenuContent>
-          </DropdownMenu>
         </div>
       </div>
     </header>
