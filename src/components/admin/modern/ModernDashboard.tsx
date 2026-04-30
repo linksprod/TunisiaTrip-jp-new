@@ -58,18 +58,18 @@ export const ModernDashboard = () => {
       color: "text-blue-600",
       bgColor: "bg-blue-50 dark:bg-blue-950/20",
       borderColor: "border-blue-200 dark:border-blue-800",
-      trend: "up"
+      trend: analytics.postGrowthRate >= 0 ? "up" : "down"
     },
     {
-      title: t("Avg. Read Time"),
-      value: `${analytics.averageReadTime}m`,
-      change: analytics.readTimeGrowthRate,
+      title: t("Total Contacts"),
+      value: analytics.totalContacts,
+      change: analytics.contactGrowthRate,
       changeLabel: t("from last month"),
-      icon: Clock,
+      icon: MessageSquare,
       color: "text-emerald-600",
       bgColor: "bg-emerald-50 dark:bg-emerald-950/20",
       borderColor: "border-emerald-200 dark:border-emerald-800",
-      trend: "up"
+      trend: analytics.contactGrowthRate >= 0 ? "up" : "down"
     },
     {
       title: t("Page Speed"),
@@ -84,7 +84,9 @@ export const ModernDashboard = () => {
     },
     {
       title: t("Monthly Views"),
-      value: "12.4k",
+      value: analytics.monthlyViews > 999 
+        ? `${(analytics.monthlyViews / 1000).toFixed(1)}k` 
+        : analytics.monthlyViews,
       change: 15.8,
       changeLabel: t("from last month"),
       icon: Eye,
@@ -108,15 +110,15 @@ export const ModernDashboard = () => {
       title: t("View Analytics"),
       description: t("Check performance data"),
       icon: BarChart3,
-      href: "/admin/analytics",
+      href: "/admin/seo",
       color: "bg-gradient-to-r from-purple-500 to-purple-600",
       hoverColor: "hover:from-purple-600 hover:to-purple-700"
     },
     {
-      title: t("Manage Users"),
-      description: t("User administration"),
+      title: t("Manage Contacts"),
+      description: t("Contact administration"),
       icon: Users,
-      href: "/admin/users",
+      href: "/admin/contacts",
       color: "bg-gradient-to-r from-orange-500 to-orange-600",
       hoverColor: "hover:from-orange-600 hover:to-orange-700"
     }
