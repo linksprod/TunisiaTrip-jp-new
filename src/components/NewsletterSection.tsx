@@ -4,11 +4,12 @@ import { Button } from "@/components/ui/button";
 import { toast } from "@/hooks/use-toast";
 import { TranslateText } from "./translation/TranslateText";
 import { useTranslation } from "@/hooks/use-translation";
+import { supabase } from "@/integrations/supabase/client";
 export function NewsletterSection(): JSX.Element {
   const { currentLanguage, t } = useTranslation();
   const [email, setEmail] = useState("");
   const [question, setQuestion] = useState("");
-  const handleSubmit = (e: React.FormEvent) => {
+  const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
     if (!email) {
       toast({
@@ -28,21 +29,37 @@ export function NewsletterSection(): JSX.Element {
       return;
     }
 
-    // In a real app, you would send this data to your backend
-    console.log("Submitted:", {
-      email,
-      question
-    });
+    try {
+      const { error } = await supabase
+        .from('contacts')
+        .insert([{
+          name: "Newsletter User",
+          email,
+          message: question || "Newsletter Subscription",
+          subject: "Quick Question / Newsletter",
+          status: 'new',
+          submitted_date: new Date().toISOString().split('T')[0]
+        }]);
 
-    // Show success message
-    toast({
-      title: t("Thank you for your question!"),
-      description: t("We'll get back to you soon.")
-    });
+      if (error) throw error;
 
-    // Reset form
-    setEmail("");
-    setQuestion("");
+      // Show success message
+      toast({
+        title: t("Thank you for your question!"),
+        description: t("We'll get back to you soon.")
+      });
+
+      // Reset form
+      setEmail("");
+      setQuestion("");
+    } catch (error: any) {
+      console.error("Error submitting newsletter question:", error);
+      toast({
+        variant: "destructive",
+        title: t("Error"),
+        description: t("There was an error submitting your request.")
+      });
+    }
   };
   return <section className="max-w-[1200px] mx-auto px-4">
     <form onSubmit={handleSubmit} className="bg-blue-500 rounded-xl text-white p-6 flex flex-col md:flex-row items-center">

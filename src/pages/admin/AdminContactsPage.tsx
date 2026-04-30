@@ -1,5 +1,5 @@
 
-import React, { useState } from "react";
+import React, { useState, useEffect } from "react";
 import { EnhancedAdminLayout } from "@/components/admin/modern/EnhancedAdminLayout";
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card";
 import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from "@/components/ui/table";
@@ -10,96 +10,121 @@ import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import { TranslateText } from "@/components/translation/TranslateText";
 import { useTranslation } from "@/hooks/use-translation";
 import { useToast } from "@/components/ui/use-toast";
+import { supabase } from "@/integrations/supabase/client";
+import { Loader2, RefreshCw, Trash2 } from "lucide-react";
 
 interface Contact {
   id: string;
   name: string;
   email: string;
+  phone?: string;
   message: string;
   subject?: string;
-  submittedDate: string;
+  submitted_date: string;
   status: 'new' | 'responded' | 'archived';
 }
 
-// Mock data for contacts
-const mockContacts: Contact[] = [
-  {
-    id: "1",
-    name: "Akira Tanaka",
-    email: "akira.tanaka@example.com",
-    message: "Hello, I'm interested in booking a group tour for next month. Can you provide more information about your packages?",
-    subject: "Group Tour Inquiry",
-    submittedDate: "2025-05-05",
-    status: 'new'
-  },
-  {
-    id: "2",
-    name: "Sophie Martin",
-    email: "sophie.m@example.com",
-    message: "I have questions about the visa requirements for French citizens. Can you help me with the process?",
-    subject: "Visa Information",
-    submittedDate: "2025-05-03",
-    status: 'responded'
-  },
-  {
-    id: "3",
-    name: "John Smith",
-    email: "jsmith@example.com",
-    message: "Are there any special tours available during the summer months? I'm planning to visit in July.",
-    subject: "Summer Tours",
-    submittedDate: "2025-05-01",
-    status: 'archived'
-  },
-  {
-    id: "4",
-    name: "Maria Rodriguez",
-    email: "maria.r@example.com",
-    message: "Do you offer private tours for families with young children? We need something age-appropriate.",
-    subject: "Family Tours",
-    submittedDate: "2025-04-28",
-    status: 'new'
-  },
-  {
-    id: "5",
-    name: "Ahmed Hassan",
-    email: "a.hassan@example.com",
-    message: "I'm a photographer looking to capture Tunisia's landscapes. Are there any photography-focused tours?",
-    subject: "Photography Tours",
-    submittedDate: "2025-04-25",
-    status: 'responded'
-  }
-];
-
 const AdminContactsPage = () => {
-  const [contacts, setContacts] = useState<Contact[]>(mockContacts);
+  const [contacts, setContacts] = useState<Contact[]>([]);
+  const [loading, setLoading] = useState(true);
   const [selectedContact, setSelectedContact] = useState<Contact | null>(null);
   const [isDetailDialogOpen, setIsDetailDialogOpen] = useState(false);
   const [activeFilter, setActiveFilter] = useState<'all' | 'new' | 'responded' | 'archived'>('all');
   const { currentLanguage, t } = useTranslation();
   const { toast } = useToast();
 
+  const fetchContacts = async () => {
+    setLoading(true);
+    try {
+      const { data, error } = await supabase
+        .from('contacts')
+        .select('*')
+        .order('submitted_date', { ascending: false });
+
+      if (error) throw error;
+      setContacts(data || []);
+    } catch (error: any) {
+      console.error("Error fetching contacts:", error);
+      toast({
+        variant: "destructive",
+        title: t("Error"),
+        description: t("Failed to load contact submissions.")
+      });
+    } finally {
+      setLoading(false);
+    }
+  };
+
+  useEffect(() => {
+    fetchContacts();
+  }, []);
+
   const handleViewDetails = (contact: Contact) => {
     setSelectedContact(contact);
     setIsDetailDialogOpen(true);
   };
 
-  const handleUpdateStatus = (contactId: string, newStatus: 'new' | 'responded' | 'archived') => {
-    setContacts(contacts.map(contact => {
-      if (contact.id === contactId) {
-        return { ...contact, status: newStatus };
-      }
-      return contact;
-    }));
+  const handleUpdateStatus = async (contactId: string, newStatus: 'new' | 'responded' | 'archived') => {
+    try {
+      const { error } = await supabase
+        .from('contacts')
+        .update({ status: newStatus })
+        .eq('id', contactId);
 
-    if (selectedContact && selectedContact.id === contactId) {
-      setSelectedContact({ ...selectedContact, status: newStatus });
+      if (error) throw error;
+
+      setContacts(contacts.map(contact => {
+        if (contact.id === contactId) {
+          return { ...contact, status: newStatus };
+        }
+        return contact;
+      }));
+
+      if (selectedContact && selectedContact.id === contactId) {
+        setSelectedContact({ ...selectedContact, status: newStatus });
+      }
+
+      toast({
+        title: t("Status Updated"),
+        description: t("The contact status has been updated successfully.")
+      });
+    } catch (error: any) {
+      console.error("Error updating status:", error);
+      toast({
+        variant: "destructive",
+        title: t("Error"),
+        description: t("Failed to update status.")
+      });
     }
   };
 
-  const handleDeleteContact = (contactId: string) => {
-    setContacts(contacts.filter(contact => contact.id !== contactId));
-    if (selectedContact && selectedContact.id === contactId) {
-      setIsDetailDialogOpen(false);
+  const handleDeleteContact = async (contactId: string) => {
+    if (!confirm(t("Are you sure you want to delete this contact?"))) return;
+
+    try {
+      const { error } = await supabase
+        .from('contacts')
+        .delete()
+        .eq('id', contactId);
+
+      if (error) throw error;
+
+      setContacts(contacts.filter(contact => contact.id !== contactId));
+      if (selectedContact && selectedContact.id === contactId) {
+        setIsDetailDialogOpen(false);
+      }
+
+      toast({
+        title: t("Deleted"),
+        description: t("Contact submission has been deleted.")
+      });
+    } catch (error: any) {
+      console.error("Error deleting contact:", error);
+      toast({
+        variant: "destructive",
+        title: t("Error"),
+        description: t("Failed to delete contact.")
+      });
     }
   };
 
@@ -119,13 +144,19 @@ const AdminContactsPage = () => {
   return (
     <EnhancedAdminLayout>
       <div className="space-y-6">
-        <div>
-          <h1 className="text-3xl font-bold">
-            <TranslateText text="Contact Management" />
-          </h1>
-          <p className="text-muted-foreground mt-2">
-            <TranslateText text="Manage and respond to contact form submissions." />
-          </p>
+        <div className="flex justify-between items-center">
+          <div>
+            <h1 className="text-3xl font-bold">
+              <TranslateText text="Contact Management" />
+            </h1>
+            <p className="text-muted-foreground mt-2">
+              <TranslateText text="Manage and respond to contact form submissions." />
+            </p>
+          </div>
+          <Button variant="outline" size="sm" onClick={fetchContacts} disabled={loading}>
+            <RefreshCw className={`h-4 w-4 mr-2 ${loading ? 'animate-spin' : ''}`} />
+            <TranslateText text="Refresh" />
+          </Button>
         </div>
 
         <Card>
@@ -154,54 +185,69 @@ const AdminContactsPage = () => {
                 </TabsTrigger>
               </TabsList>
 
-              <Table>
-                <TableHeader>
-                  <TableRow>
-                    <TableHead>
-                      <TranslateText text="Date" />
-                    </TableHead>
-                    <TableHead>
-                      <TranslateText text="Name" />
-                    </TableHead>
-                    <TableHead>
-                      <TranslateText text="Email" />
-                    </TableHead>
-                    <TableHead>
-                      <TranslateText text="Subject" />
-                    </TableHead>
-                    <TableHead>
-                      <TranslateText text="Status" />
-                    </TableHead>
-                    <TableHead className="text-right">
-                      <TranslateText text="Actions" />
-                    </TableHead>
-                  </TableRow>
-                </TableHeader>
-                <TableBody>
-                  {filteredContacts.map(contact => (
-                    <TableRow key={contact.id}>
-                      <TableCell>{contact.submittedDate}</TableCell>
-                      <TableCell className="font-medium">{contact.name}</TableCell>
-                      <TableCell>{contact.email}</TableCell>
-                      <TableCell>{contact.subject || t("General Inquiry")}</TableCell>
-                      <TableCell>
-                        <Badge className={getStatusColor(contact.status)}>
-                          <TranslateText text={contact.status.charAt(0).toUpperCase() + contact.status.slice(1)} />
-                        </Badge>
-                      </TableCell>
-                      <TableCell className="text-right">
-                        <Button
-                          variant="outline"
-                          size="sm"
-                          onClick={() => handleViewDetails(contact)}
-                        >
-                          <TranslateText text="View Details" />
-                        </Button>
-                      </TableCell>
+              {loading ? (
+                <div className="flex flex-col items-center justify-center py-12">
+                  <Loader2 className="h-10 w-10 text-primary animate-spin mb-4" />
+                  <p className="text-muted-foreground">
+                    <TranslateText text="Loading submissions..." />
+                  </p>
+                </div>
+              ) : filteredContacts.length === 0 ? (
+                <div className="text-center py-12 border rounded-lg bg-muted/20">
+                  <p className="text-muted-foreground">
+                    <TranslateText text="No contact submissions found." />
+                  </p>
+                </div>
+              ) : (
+                <Table>
+                  <TableHeader>
+                    <TableRow>
+                      <TableHead>
+                        <TranslateText text="Date" />
+                      </TableHead>
+                      <TableHead>
+                        <TranslateText text="Name" />
+                      </TableHead>
+                      <TableHead>
+                        <TranslateText text="Email" />
+                      </TableHead>
+                      <TableHead>
+                        <TranslateText text="Subject" />
+                      </TableHead>
+                      <TableHead>
+                        <TranslateText text="Status" />
+                      </TableHead>
+                      <TableHead className="text-right">
+                        <TranslateText text="Actions" />
+                      </TableHead>
                     </TableRow>
-                  ))}
-                </TableBody>
-              </Table>
+                  </TableHeader>
+                  <TableBody>
+                    {filteredContacts.map(contact => (
+                      <TableRow key={contact.id}>
+                        <TableCell>{contact.submitted_date}</TableCell>
+                        <TableCell className="font-medium">{contact.name}</TableCell>
+                        <TableCell>{contact.email}</TableCell>
+                        <TableCell>{contact.subject || t("General Inquiry")}</TableCell>
+                        <TableCell>
+                          <Badge className={getStatusColor(contact.status)}>
+                            <TranslateText text={contact.status.charAt(0).toUpperCase() + contact.status.slice(1)} />
+                          </Badge>
+                        </TableCell>
+                        <TableCell className="text-right">
+                          <Button
+                            variant="outline"
+                            size="sm"
+                            onClick={() => handleViewDetails(contact)}
+                          >
+                            <TranslateText text="View Details" />
+                          </Button>
+                        </TableCell>
+                      </TableRow>
+                    ))}
+                  </TableBody>
+                </Table>
+              )}
             </Tabs>
           </CardContent>
         </Card>
@@ -229,13 +275,21 @@ const AdminContactsPage = () => {
                   </p>
                   <p className="text-sm">{selectedContact.email}</p>
                 </div>
+                {selectedContact.phone && (
+                  <div>
+                    <p className="text-sm font-medium text-gray-500">
+                      <TranslateText text="Phone" />
+                    </p>
+                    <p className="text-sm">{selectedContact.phone}</p>
+                  </div>
+                )}
                 <div>
                   <p className="text-sm font-medium text-gray-500">
                     <TranslateText text="Date Submitted" />
                   </p>
-                  <p className="text-sm">{selectedContact.submittedDate}</p>
+                  <p className="text-sm">{selectedContact.submitted_date}</p>
                 </div>
-                <div>
+                <div className="col-span-2">
                   <p className="text-sm font-medium text-gray-500">
                     <TranslateText text="Subject" />
                   </p>
@@ -252,7 +306,7 @@ const AdminContactsPage = () => {
               </div>
 
               <div className="flex justify-between mt-6">
-                <div className="space-x-2">
+                <div className="flex gap-2">
                   <Button
                     variant="outline"
                     size="sm"
@@ -284,6 +338,7 @@ const AdminContactsPage = () => {
                   size="sm"
                   onClick={() => handleDeleteContact(selectedContact.id)}
                 >
+                  <Trash2 className="h-4 w-4 mr-1" />
                   <TranslateText text="Delete" />
                 </Button>
               </div>

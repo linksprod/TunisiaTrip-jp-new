@@ -13,6 +13,7 @@ import { InfoImagesCarousel } from "./InfoImagesCarousel";
 import { TranslateText } from "../translation/TranslateText";
 import { useTranslation } from "@/hooks/use-translation";
 import { useLocation, useSearchParams } from "react-router-dom";
+import { supabase } from "@/integrations/supabase/client";
 
 const formSchema = z.object({
   typeOfRequest: z.string().min(1, "Type of request is required"),
@@ -69,7 +70,7 @@ export function ContactForm() {
     };
   }, [form]);
 
-  function onSubmit(data: z.infer<typeof formSchema>) {
+  async function onSubmit(data: z.infer<typeof formSchema>) {
     if (data.email !== data.confirmEmail) {
       toast({
         variant: "destructive",
@@ -78,11 +79,47 @@ export function ContactForm() {
       });
       return;
     }
-    toast({
-      title: currentLanguage === 'JP' ? 'フォームが送信されました' : "Form submitted",
-      description: currentLanguage === 'JP' ? 'すぐにご連絡いたします！' : "We'll get back to you soon!"
-    });
-    form.reset();
+
+    try {
+      console.log("Attempting to insert data:", {
+        name: data.name,
+        email: data.email,
+        phone: data.phone,
+        subject: data.typeOfRequest,
+        message: data.details,
+        status: 'new',
+        submittedDate: new Date().toISOString().split('T')[0]
+      });
+
+      const response = await supabase
+        .from('contacts')
+        .insert([{
+          name: data.name,
+          email: data.email,
+          phone: data.phone,
+          subject: data.typeOfRequest,
+          message: data.details,
+          status: 'new',
+          submitted_date: new Date().toISOString().split('T')[0]
+        }]);
+
+      console.log("Supabase response:", response);
+
+      if (response.error) throw response.error;
+
+      toast({
+        title: currentLanguage === 'JP' ? 'フォームが送信されました' : "Form submitted",
+        description: currentLanguage === 'JP' ? 'すぐにご連絡いたします！' : "We'll get back to you soon!"
+      });
+      form.reset();
+    } catch (error: any) {
+      console.error("DETAILED ERROR:", error);
+      toast({
+        variant: "destructive",
+        title: currentLanguage === 'JP' ? 'エラー' : "Error",
+        description: error.message || (currentLanguage === 'JP' ? '送信中にエラーが発生しました。' : "There was an error submitting your request.")
+      });
+    }
   }
 
   return (

@@ -15,7 +15,6 @@ import {
   Plus,
   ArrowUpRight,
   MessageSquare,
-  Image,
   FileText,
   Globe,
   Sparkles
@@ -106,14 +105,6 @@ export const ModernDashboard = () => {
       hoverColor: "hover:from-blue-600 hover:to-blue-700"
     },
     {
-      title: t("Upload Media"),
-      description: t("Add images and files"),
-      icon: Image,
-      href: "/admin/media",
-      color: "bg-gradient-to-r from-emerald-500 to-emerald-600",
-      hoverColor: "hover:from-emerald-600 hover:to-emerald-700"
-    },
-    {
       title: t("View Analytics"),
       description: t("Check performance data"),
       icon: BarChart3,
@@ -159,13 +150,6 @@ export const ModernDashboard = () => {
       time: t("1 day ago"),
       type: "seo",
       icon: Globe
-    },
-    {
-      action: t("Media files uploaded"),
-      title: t("10 new images added"),
-      time: t("2 days ago"),
-      type: "media",
-      icon: Image
     }
   ];
 

@@ -24,7 +24,6 @@ import {
   BookOpen,
   Users,
   Search,
-  Image,
   LogOut,
   ChevronRight,
   Shield,
@@ -53,11 +52,6 @@ export function EnhancedAdminLayout({ children }: EnhancedAdminLayoutProps) {
       icon: BookOpen,
       label: t("Blog"),
       href: "/admin/blog"
-    },
-    {
-      icon: Image,
-      label: t("Media"),
-      href: "/admin/media"
     },
     {
       icon: Users,
