@@ -72,11 +72,11 @@ export const ModernDashboard = () => {
       trend: analytics.contactGrowthRate >= 0 ? "up" : "down"
     },
     {
-      title: t("Page Speed"),
-      value: `${performanceMetrics.pageLoadTime}ms`,
-      change: -12,
-      changeLabel: t("performance gain"),
-      icon: Zap,
+      title: t("Avg. Read Time"),
+      value: `${analytics.averageReadTime}m`,
+      change: 2.5,
+      changeLabel: t("from last month"),
+      icon: Clock,
       color: "text-purple-600",
       bgColor: "bg-purple-50 dark:bg-purple-950/20",
       borderColor: "border-purple-200 dark:border-purple-800",
